@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignTalk - Penerjemah Bahasa Isyarat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">Sign<span>Talk.</span></div>
+        <div class="nav-label">BISINDO Recognition System</div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">KOMUNIKASI TANPA BATAS</p>
+            <h1>Express with your <span>hands.</span></h1>
+            <p class="subtitle">
+                Sistem pengenalan Bahasa Isyarat Indonesia (BISINDO)
+                secara real-time menggunakan teknologi Machine Learning.
+            </p>
+        </section>
+
+        <section class="workspace">
+
+            <div class="camera-card">
+                <div class="card-header">
+                    <div>
+                        <h2>Kamera</h2>
+                        <p>Posisikan tangan di depan kamera</p>
+                    </div>
+                    <span class="status" id="cameraStatus">
+                        <span class="status-dot"></span>
+                        Kamera belum aktif
+                    </span>
+                </div>
+
+                <div class="camera-area">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas" hidden></canvas>
+
+                    <div class="camera-placeholder" id="cameraPlaceholder">
+                        <div class="camera-icon">◎</div>
+                        <p>Kamera belum diaktifkan</p>
+                        <span>Tekan tombol mulai untuk membuka kamera</span>
+                    </div>
+                </div>
+
+                <div class="camera-controls">
+                    <button class="btn-primary" id="startButton">
+                        Mulai Kamera
+                    </button>
+                    <button class="btn-secondary" id="stopButton" disabled>
+                        Hentikan
+                    </button>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <div class="card-header">
+                    <div>
+                        <h2>Hasil Pengenalan</h2>
+                        <p>Hasil interpretasi gerakan tangan</p>
+                    </div>
+                    <span class="live-label">LIVE</span>
+                </div>
+
+                <div class="result-display">
+                    <span class="result-label">ISYARAT TERDETEKSI</span>
+                    <div class="prediction" id="prediction">-</div>
+                    <p id="resultMessage">Belum ada isyarat yang dikenali</p>
+                </div>
+
+                <div class="confidence-section">
+                    <div class="confidence-header">
+                        <span>Tingkat Keyakinan Model</span>
+                        <strong id="confidence">0%</strong>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-bar" id="confidenceBar"></div>
+                    </div>
+                </div>
+
+                <div class="speech-section">
+                    <div>
+                        <h3>Suara</h3>
+                        <p>Bacakan hasil pengenalan secara otomatis</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="speechToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <button class="btn-speech" id="speakButton" disabled>
+                    🔊 Dengarkan Hasil
+                </button>
+            </div>
+
+        </section>
+
+        <footer>
+            <p>SignTalk © 2026 · BISINDO Recognition System</p>
+            <p>MediaPipe Hands · Random Forest · Text-to-Speech</p>
+        </footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
