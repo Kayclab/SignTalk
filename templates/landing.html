@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignTalk</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons & Lottie Player CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+  <!-- Panggil File CSS Anda -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body class="relative">
+
+  <!-- BACKGROUND DECORATION -->
+  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#F0EBFF] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float-slow"></div>
+    <div class="absolute top-[20%] right-[-10%] w-[30rem] h-[30rem] bg-[#DCEBFF] rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-float-reverse"></div>
+    <div class="absolute bottom-[-20%] left-[20%] w-[40rem] h-[40rem] bg-[#A78BFA] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float-slow"></div>
+  </div>
+
+  <!-- FLOATING NAVIGATION BAR -->
+  <header class="fixed top-5 left-0 right-0 z-50 px-4 md:px-8">
+    <nav class="max-w-6xl mx-auto bg-white/90 backdrop-blur-md rounded-full shadow-[0_10px_30px_rgba(99,70,216,0.12)] border border-[#F0EBFF] px-6 md:px-8 h-16 flex items-center justify-between transition-all">
+      <a href="#home" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-[#6346D8] rounded-full flex items-center justify-center text-white shadow-md shadow-[#6346D8]/20">
+          <i data-lucide="hand" class="w-5 h-5"></i>
+        </div>
+        <span class="text-xl font-extrabold text-[#19143A]">SignTalk</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-7">
+        <a href="#home" class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1">
+          Home
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#features" class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1">
+          Features
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#about" class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1">
+          About
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#start" class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1">
+          Demo
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"></span>
+        </a>
+        <a href="#contact" class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1">
+          Contact
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"></span>
+        </a>
+        <a href="/camera" class="bg-[#6346D8] text-white px-5 py-2 rounded-full font-bold text-sm shadow-md shadow-[#6346D8]/30 hover:bg-[#5235c7] hover:scale-105 active:scale-95 transition-all">
+          Mulai SignTalk
+        </a>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button id="menu-btn" class="md:hidden text-[#19143A] p-2 focus:outline-none">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </nav>
+
+    <!-- Mobile Nav Menu -->
+    <div id="mobile-menu" class="hidden md:hidden max-w-6xl mx-auto mt-3 bg-white/95 backdrop-blur-md rounded-2xl border border-[#F0EBFF] shadow-xl px-6 py-5 space-y-3">
+      <a href="#home" class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]">Home</a>
+      <a href="#features" class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]">Features</a>
+      <a href="#about" class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]">About</a>
+      <a href="#start" class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]">Demo</a>
+      <a href="#contact" class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]">Contact</a>
+      <a href="/camera" class="block text-center bg-[#6346D8] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md">
+        Mulai SignTalk
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section id="home" class="min-h-screen pt-36 pb-16 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
+      <div class="flex-1 text-center lg:text-left space-y-6">
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#19143A] leading-tight">
+          Suarakan Gerakan Tanganmu <br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#6346D8] to-[#A78BFA]">Tanpa Batas</span>
+        </h1>
+        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+          <a href="/camera" class="w-full sm:w-auto bg-[#6346D8] text-white px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(99,70,216,0.4)] hover:shadow-[0_0_35px_rgba(167,139,250,0.6)] hover:-translate-y-1 transition-all">
+            Mulai SignTalk <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Visual -->
+      <div class="flex-1 w-full relative h-[400px] md:h-[500px] flex items-center justify-center">
+        <!-- Floating Accent Badges -->
+        <div class="absolute top-10 right-8 md:right-12 bg-white w-16 h-16 rounded-2xl shadow-xl border border-[#F0EBFF] flex items-center justify-center animate-float-slow z-20">
+          <span class="text-3xl font-black text-[#6346D8]">A</span>
+        </div>
+        <div class="absolute bottom-10 left-8 md:left-12 bg-white w-16 h-16 rounded-2xl shadow-xl border border-[#F0EBFF] flex items-center justify-center animate-float-reverse z-20">
+          <span class="text-3xl font-black text-[#A78BFA]">B</span>
+        </div>
+        <div class="absolute top-1/2 -right-4 md:right-4 bg-white w-14 h-14 rounded-full shadow-lg border border-[#F0EBFF] flex items-center justify-center animate-float-reverse z-20">
+          <i data-lucide="brain" class="w-7 h-7 text-[#6346D8]"></i>
+        </div>
+        <div class="absolute top-1/4 -left-4 md:left-8 bg-[#F0EBFF] w-14 h-14 rounded-2xl shadow-lg border border-white flex items-center justify-center animate-float-slow z-20">
+          <i data-lucide="message-square" class="w-6 h-6 text-[#19143A]"></i>
+        </div>
+
+        <!-- Main Circle Frame -->
+        <div class="relative w-72 h-72 md:w-[26rem] md:h-[26rem] rounded-full border-[8px] md:border-[10px] border-[#6346D8] bg-gradient-to-tr from-[#F0EBFF] to-[#DCEBFF] flex flex-col items-center justify-center shadow-2xl overflow-hidden animate-pulse-glow">
+          <lottie-player 
+            src="https://assets2.lottiefiles.com/packages/lf20_w51pcehl.json" 
+            background="transparent" 
+            speed="1" 
+            style="width: 240px; height: 240px;" 
+            loop 
+            autoplay>
+          </lottie-player>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: MAIN FEATURES -->
+    <section id="features" class="py-16 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto my-8">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-extrabold text-[#19143A] mb-4">Fitur Utama SignTalk</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Teknologi canggih yang kami gunakan untuk menjembatani komunikasi secara inklusif.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Feature 1 -->
+        <div class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors">
+            <i data-lucide="camera" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-xl font-bold text-[#19143A] mb-3">Deteksi Gerakan Tangan</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">Kamera mendeteksi pose dan landmark gerakan tangan dengan presisi tinggi.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors">
+            <i data-lucide="brain" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-xl font-bold text-[#19143A] mb-3">Pengenalan Berbasis AI</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">Model Machine Learning mengklasifikasikan gerakan isyarat secara akurat.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors">
+            <i data-lucide="file-text" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-xl font-bold text-[#19143A] mb-3">Hasil dalam Bentuk Teks</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">Gerakan otomatis diterjemahkan menjadi teks readable yang langsung dapat dibaca.</p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors">
+            <i data-lucide="zap" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-xl font-bold text-[#19143A] mb-3">Interaksi Real-Time</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">Pemrosesan super cepat tanpa delay untuk kelancaran komunikasi dua arah.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: ABOUT SIGNTALK -->
+    <section id="about" class="py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
+      <div class="bg-[#19143A] rounded-[3rem] p-10 md:p-16 flex flex-col lg:flex-row items-center gap-12 relative overflow-hidden text-white shadow-2xl">
+        <div class="flex-1 relative z-10 space-y-6">
+          <h2 class="text-4xl md:text-5xl font-extrabold">Tentang SignTalk</h2>
+          <p class="text-[#DCEBFF] text-lg leading-relaxed">
+            SignTalk merupakan platform pengenalan bahasa isyarat berbasis Artificial Intelligence (AI) dan Computer Vision untuk mendukung komunikasi yang lebih inklusif bagi penyandang disabilitas rungu dan wicara.
+          </p>
+        </div>
+
+        <div class="flex-1 w-full relative z-10">
+          <div class="w-full aspect-video bg-[#2A2359] rounded-3xl border border-[#6346D8] flex items-center justify-center overflow-hidden relative shadow-2xl">
+            <div class="absolute inset-0 bg-gradient-to-tr from-[#6346D8]/30 to-transparent"></div>
+            <div class="w-48 h-48 border-2 border-dashed border-[#A78BFA]/50 rounded-full flex items-center justify-center animate-spin" style="animation-duration: 20s;">
+              <div class="w-32 h-32 bg-[#6346D8]/40 rounded-full filter blur-md"></div>
+            </div>
+            <div class="absolute font-black text-2xl text-[#DCEBFF] tracking-widest">VISI INKLUSIF</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: INTERACTIVE BISINDO ALPHABET -->
+    <section id="demo-section" class="py-20 w-full overflow-hidden">
+      <div class="text-center mb-12 px-6 max-w-7xl mx-auto">
+        <h2 class="text-4xl font-extrabold text-[#19143A] mb-4">Jelajahi Bahasa Isyarat (BISINDO)</h2>
+        <p class="text-gray-600 max-w-xl mx-auto">
+          Klik kartu huruf di bawah untuk melihat contoh gerakan tangannya.
+        </p>
+      </div>
+
+      <div class="relative w-full overflow-hidden">
+        <!-- Floating Navigation Buttons -->
+        <button id="scroll-left" class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-xl flex items-center justify-center text-[#6346D8] hover:bg-[#F0EBFF] border border-[#F0EBFF] transition-all hover:scale-110">
+          <i data-lucide="chevron-left" class="w-6 h-6"></i>
+        </button>
+        <button id="scroll-right" class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-xl flex items-center justify-center text-[#6346D8] hover:bg-[#F0EBFF] border border-[#F0EBFF] transition-all hover:scale-110">
+          <i data-lucide="chevron-right" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Edge Soft Gradient Overlays -->
+        <div class="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none"></div>
+
+        <!-- Marquee Infinite Slider -->
+        <div id="carousel-wrapper" class="w-full overflow-hidden py-10">
+          <div id="carousel-container" class="animate-marquee hover:[animation-play-state:paused]">
+            <!-- Cards generated dynamically via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: HOW IT WORKS -->
+    <section id="how-it-works" class="py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto my-12">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-extrabold text-[#19143A] mb-3">Cara Kerja SignTalk</h2>
+        <p class="text-gray-600 max-w-xl mx-auto">Alur sederhana dalam mengenali bahasa isyarat.</p>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 lg:gap-6 max-w-6xl mx-auto">
+        <!-- Step 1 Card -->
+        <div class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0">
+            <i data-lucide="camera" class="w-7 h-7"></i>
+          </div>
+          <span class="text-lg font-extrabold text-[#19143A]">1. Input Kamera</span>
+        </div>
+
+        <!-- Arrow 1 -->
+        <div class="text-[#6346D8] shrink-0 py-2 md:py-0">
+          <i data-lucide="arrow-right" class="w-6 h-6 hidden md:block"></i>
+          <i data-lucide="arrow-down" class="w-6 h-6 md:hidden"></i>
+        </div>
+
+        <!-- Step 2 Card -->
+        <div class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0">
+            <i data-lucide="image" class="w-7 h-7"></i>
+          </div>
+          <span class="text-lg font-extrabold text-[#19143A]">2. Deteksi Gerakan</span>
+        </div>
+
+        <!-- Arrow 2 -->
+        <div class="text-[#6346D8] shrink-0 py-2 md:py-0">
+          <i data-lucide="arrow-right" class="w-6 h-6 hidden md:block"></i>
+          <i data-lucide="arrow-down" class="w-6 h-6 md:hidden"></i>
+        </div>
+
+        <!-- Step 3 Card -->
+        <div class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0">
+            <i data-lucide="cpu" class="w-7 h-7"></i>
+          </div>
+          <span class="text-lg font-extrabold text-[#19143A]">3. Artikan Gerakan</span>
+        </div>
+
+        <!-- Arrow 3 -->
+        <div class="text-[#6346D8] shrink-0 py-2 md:py-0">
+          <i data-lucide="arrow-right" class="w-6 h-6 hidden md:block"></i>
+          <i data-lucide="arrow-down" class="w-6 h-6 md:hidden"></i>
+        </div>
+
+        <!-- Step 4 Card -->
+        <div class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0">
+            <i data-lucide="type" class="w-7 h-7"></i>
+          </div>
+          <span class="text-lg font-extrabold text-[#19143A]">4. Output Teks</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: LARGE START SIGNTALK BANNER -->
+    <section id="start" class="py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto mb-16">
+      <div class="w-full bg-gradient-to-r from-[#6346D8] via-[#8B5CF6] to-[#A78BFA] rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl">
+        <div class="relative z-10 flex flex-col items-center space-y-6">
+          <h2 class="text-4xl md:text-6xl font-extrabold text-white">Mari Coba SignTalk Sekarang!</h2>
+          <p class="text-[#F0EBFF] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            Rasakan pengalaman komunikasi yang lebih inklusif dengan teknologi Artificial Intelligence terdepan yang dirancang khusus untuk Anda.
+          </p>
+          <a href="/camera" class="bg-[#FFFFFF] text-[#6346D8] px-10 py-5 rounded-full font-black text-xl flex items-center gap-3 shadow-[0_0_30px_rgba(255,255,255,0.5)] hover:scale-105 active:scale-95 transition-all inline-flex">
+            MULAI SIGNTALK <i data-lucide="arrow-right" class="w-6 h-6"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SECTION 8: FOOTER -->
+  <footer id="contact" class="bg-[#19143A] text-white py-12 border-t border-[#2A2359]">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+      <div class="flex flex-col items-center md:items-start space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-[#6346D8] rounded-lg flex items-center justify-center text-white">
+            <i data-lucide="hand" class="w-5 h-5"></i>
+          </div>
+          <span class="text-2xl font-extrabold text-white">SignTalk</span>
+        </div>
+        <p class="text-[#A78BFA] text-sm text-center md:text-left max-w-xs">
+          Platform pengenalan bahasa isyarat AI untuk komunikasi inklusif di Indonesia.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap justify-center md:justify-end gap-12 text-sm">
+        <div class="flex flex-col space-y-2">
+          <span class="font-bold text-[#DCEBFF]">Navigasi</span>
+          <a href="#home" class="text-gray-400 hover:text-white">Home</a>
+          <a href="#features" class="text-gray-400 hover:text-white">Features</a>
+          <a href="#about" class="text-gray-400 hover:text-white">About</a>
+          <a href="#start" class="text-gray-400 hover:text-white">Demo</a>
+        </div>
+        <div class="flex flex-col space-y-2">
+          <span class="font-bold text-[#DCEBFF]">Legal</span>
+          <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
+          <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
+        </div>
+        <div class="flex flex-col space-y-2">
+          <span class="font-bold text-[#DCIFF]">Social</span>
+          <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
+          <a href="#" class="text-gray-400 hover:text-white">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 mt-12 pt-8 border-t border-[#2A2359] text-center text-gray-500 text-sm">
+      &copy; 2026 SignTalk. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Panggil File JS Anda -->
+  <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+</body>
+</html>
