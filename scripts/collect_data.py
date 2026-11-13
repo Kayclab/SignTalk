@@ -1,9 +1,11 @@
 """
-collect_data.py  (versi diperbaiki)
+scripts/collect_data.py  (versi diperbaiki)
+
+Pemakaian (dari root proyek):  python scripts/collect_data.py
 
 Perbedaan penting dari versi lama:
   - Frame DICERMINKAN sebelum deteksi (sama dengan app.py)
-  - Memakai features.py (standar fitur yang sama dengan training & app)
+  - Memakai signtalk/features.py (standar fitur yang sama dengan training & app)
   - Menyimpan ke dataset/dataset_v2.csv (kolom f_0..f_125, label di akhir)
   - Bisa menetapkan jumlah tangan yang diharapkan, sehingga frame dengan
     tangan kedua yang gagal terdeteksi TIDAK ikut tersimpan (data bersih)
@@ -13,12 +15,16 @@ Kontrol:  S = simpan 1 sampel | A = rekam otomatis ON/OFF | Q = keluar
 """
 
 import csv
+import sys
 import time
 from pathlib import Path
 
+# root proyek -> agar `import signtalk` berfungsi saat dijalankan langsung
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import cv2
 
-from features import (
+from signtalk.features import (
     FEATURE_COLUMNS,
     MIRROR_INPUT,
     create_landmarker,
@@ -26,11 +32,13 @@ from features import (
     extract_features,
 )
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "dataset"
+from signtalk.paths import (
+    DATASET_DIR as DATA_DIR,
+    DATASET_PATH as CSV_PATH,
+    TASK_MODEL_PATH,
+)
+
 DATA_DIR.mkdir(exist_ok=True)
-CSV_PATH = DATA_DIR / "dataset_v2.csv"
-TASK_MODEL_PATH = BASE_DIR / "hand_landmarker.task"
 
 CAMERA_INDEX = 0
 AUTO_INTERVAL_SEC = 0.15   # jeda rekam otomatis
@@ -70,7 +78,7 @@ def check_header():
     if header != FEATURE_COLUMNS + ["label"]:
         raise SystemExit(
             "[ERROR] dataset_v2.csv tidak berformat v2. "
-            "Jalankan: python prepare_dataset.py"
+            "Jalankan: python scripts/prepare_dataset.py"
         )
 
 

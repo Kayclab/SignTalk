@@ -6,25 +6,26 @@ Skrip ini membandingkan fitur yang tertangkap dari kamera (dari debug_features.l
 dengan fitur yang ada di dataset untuk label tertentu.
 
 CARA PAKAI:
-1. Jalankan debug_features.py
+1. Jalankan tools/legacy/debug_features.py
 2. Di kamera, coba isyarat huruf "A" selama 5 detik
 3. Hentikan kamera
-4. Jalankan: python debug_compare.py
+4. Jalankan (dari root proyek): python tools/legacy/debug_compare.py
 5. Lihat output yang membandingkan rata-rata fitur A dari kamera vs dataset
 
+CATATAN: skrip LAMA (v1), tidak memakai signtalk/features.py.
 """
 
 import numpy as np
 import pandas as pd
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parents[2]  # root proyek
 FEATURES_LOG = BASE_DIR / "debug_features.log"
 DATASET_PATH = BASE_DIR / "dataset" / "dataset_tangan.csv"
 
 if not FEATURES_LOG.exists():
     print(f"[ERROR] File {FEATURES_LOG} tidak ditemukan.")
-    print("        Jalankan debug_features.py terlebih dahulu dan coba isyarat di kamera.")
+    print("        Jalankan tools/legacy/debug_features.py terlebih dahulu dan coba isyarat di kamera.")
     exit(1)
 
 if not DATASET_PATH.exists():

@@ -6,12 +6,13 @@ Skrip ini menjalankan Flask yang sama seperti app.py, tapi mencatat setiap fitur
 yang dikirim ke model, jadi kita bisa melihat perbedaannya dengan dataset.
 
 CARA PAKAI:
-1. Jalankan: python debug_features.py
+1. Jalankan (dari root proyek): python tools/legacy/debug_features.py
 2. Buka http://127.0.0.1:5000/camera
 3. Coba isyarat huruf A (atau label lain) selama 5 detik
 4. Di terminal akan muncul "Contoh fitur A: [...]" beberapa kali
-5. Jalankan debug_compare.py untuk membandingkan dengan dataset
+5. Jalankan tools/legacy/debug_compare.py untuk membandingkan dengan dataset
 
+CATATAN: skrip LAMA (v1), tidak memakai signtalk/features.py.
 """
 
 import urllib.request
@@ -34,8 +35,12 @@ from flask import (
     request
 )
 
-BASE_DIR = Path(__file__).resolve().parent
-app = Flask(__name__)
+BASE_DIR = Path(__file__).resolve().parents[2]  # root proyek
+app = Flask(
+    __name__,
+    template_folder=str(BASE_DIR / "templates"),
+    static_folder=str(BASE_DIR / "static"),
+)
 
 MODEL_DIR = BASE_DIR / "model"
 MODEL_PATH = os.getenv("RF_MODEL_PATH")
@@ -47,7 +52,7 @@ if MODEL_PATH:
 else:
     MODEL_PATH = None
 
-TASK_MODEL_PATH = BASE_DIR / "hand_landmarker.task"
+TASK_MODEL_PATH = MODEL_DIR / "hand_landmarker.task"
 
 CAMERA_INDEX = 0
 MAX_HANDS = 2

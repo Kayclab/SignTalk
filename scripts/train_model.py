@@ -6,13 +6,17 @@ Melatih Random Forest dengan evaluasi yang jujur:
   - menguji ketahanan: tangan kedua hilang, slot tertukar
 Model lama TIDAK ditimpa. Hasil disimpan sebagai model/random_forest_v2.pkl
 
-Pemakaian:  python train_model.py
+Pemakaian (dari root proyek):  python scripts/train_model.py
 """
 
 import json
 import sys
-from datetime import datetime
 from pathlib import Path
+
+# root proyek -> agar `import signtalk` berfungsi saat dijalankan langsung
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from datetime import datetime
 
 import joblib
 import numpy as np
@@ -25,19 +29,24 @@ from sklearn.metrics import (
     f1_score,
 )
 
-from features import (
+from signtalk.features import (
     EXPECTED_FEATURES,
     FEATURE_COLUMNS,
     FEATURE_VERSION,
     HAND_FEATURES,
 )
 
-BASE_DIR = Path(__file__).resolve().parent
-DATASET_PATH = BASE_DIR / "dataset" / "dataset_v2.csv"
-MODEL_DIR = BASE_DIR / "model"
+from signtalk.paths import (
+    CLASSIFICATION_REPORT_PATH,
+    CONFUSION_MATRIX_PATH,
+    DATASET_PATH,
+    META_PATH,
+    MODEL_COMPARISON_PATH,
+    MODEL_DIR,
+    MODEL_PATH,
+)
+
 MODEL_DIR.mkdir(exist_ok=True)
-MODEL_PATH = MODEL_DIR / "random_forest_v2.pkl"
-META_PATH = MODEL_DIR / "model_meta.json"
 
 RANDOM_STATE = 42
 TEST_FRACTION = 0.20      # bagian ujung tiap label dipakai sebagai uji
@@ -60,7 +69,7 @@ print("=" * 62)
 if not DATASET_PATH.exists():
     raise SystemExit(
         "[ERROR] dataset/dataset_v2.csv belum ada. "
-        "Jalankan dulu: python prepare_dataset.py"
+        "Jalankan dulu: python scripts/prepare_dataset.py"
     )
 
 df = pd.read_csv(DATASET_PATH)
@@ -191,14 +200,14 @@ new_result, new_pred = evaluate("MODEL BARU dengan augmentasi", candidate)
 labels_sorted = sorted(np.unique(y))
 cm = confusion_matrix(y_test, new_pred, labels=labels_sorted)
 pd.DataFrame(cm, index=labels_sorted, columns=labels_sorted).to_csv(
-    MODEL_DIR / "confusion_matrix_v2.csv"
+    CONFUSION_MATRIX_PATH
 )
 report = classification_report(
     y_test, new_pred, output_dict=True, zero_division=0
 )
-pd.DataFrame(report).transpose().to_csv(MODEL_DIR / "classification_report_v2.csv")
+pd.DataFrame(report).transpose().to_csv(CLASSIFICATION_REPORT_PATH)
 pd.DataFrame([base_result, new_result]).to_csv(
-    MODEL_DIR / "perbandingan_model.csv", index=False
+    MODEL_COMPARISON_PATH, index=False
 )
 
 per_class = (

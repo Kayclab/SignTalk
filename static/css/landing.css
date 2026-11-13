@@ -60,3 +60,419 @@ body {
   animation-play-state: paused;
 }
 
+/* =============================================================
+   PALET WARNA SIGNTALK
+   Primer  : ungu #6346D8 (10PB pada roda warna Munsell)
+   Sekunder: amber #FFB938 (keluarga Y, komplemen dari PB)
+   Aturan pakai ~60% putih / 30% ungu / 10% amber.
+   Amber untuk isian (tombol, gelembung, aksen). Teks kecil di atas
+   putih memakai --secondary-deep agar tetap terbaca.
+   ============================================================= */
+:root {
+  --primary: #6346D8;
+  --primary-dark: #5235C7;
+  --primary-light: #A78BFA;
+  --primary-soft: #F0EBFF;
+  --secondary: #FFB938;
+  --secondary-light: #FFD27A;
+  --secondary-soft: #FFF4DC;
+  --secondary-deep: #9A5B00;
+  --ink: #19143A;
+  --sky: #DCEBFF;
+}
+
+::selection { background: var(--secondary-light); color: var(--ink); }
+
+/* -------------------------------------------------------------
+   HERO: animasi masuk
+   ------------------------------------------------------------- */
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(24px); filter: blur(8px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+.hero-fade,
+.reveal-word {
+  opacity: 0;
+  animation: heroIn 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: var(--d, 0ms);
+}
+.reveal-word { display: inline-block; word-break: break-word; word-wrap: break-word; overflow-wrap: break-word; }
+
+/* "Tanpa Batas": gradasi ungu berkilau + garis bawah amber yang tergambar */
+.hero-highlight {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.06em;
+  background: linear-gradient(90deg, #6346D8, #8B5CF6, #A78BFA, #8B5CF6, #6346D8);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 7s linear infinite;
+}
+@keyframes shimmer { to { background-position: 150% 0; } }
+
+.hero-swash {
+  position: absolute;
+  left: -2%;
+  bottom: -0.14em;
+  width: 104%;
+  height: 0.3em;
+  overflow: visible;
+}
+.hero-swash path {
+  fill: none;
+  stroke: var(--secondary);
+  stroke-width: 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawLine 0.9s 1.05s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--secondary);
+  animation: ping 1.8s ease-out infinite;
+}
+@keyframes ping {
+  0%       { box-shadow: 0 0 0 0 rgba(255, 185, 56, 0.6); }
+  80%,100% { box-shadow: 0 0 0 10px rgba(255, 185, 56, 0); }
+}
+
+/* Kilau yang menyapu tombol saat hover */
+.btn-shine { position: relative; overflow: hidden; isolation: isolate; }
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.7s ease;
+}
+.btn-shine:hover::after { transform: translateX(120%); }
+
+/* -------------------------------------------------------------
+   HERO: panggung visual
+   ------------------------------------------------------------- */
+.hero-scene {
+  /* parallax mengikuti kursor (diset oleh landing.js) */
+  translate: calc(var(--px, 0) * 16px) calc(var(--py, 0) * 12px);
+  transition: translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hero-backdrop {
+  position: absolute;
+  width: min(20rem, 78vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #FFFFFF 0%, #F0EBFF 42%, #DCEBFF 100%);
+  box-shadow: 0 40px 80px -30px rgba(99, 70, 216, 0.4), inset 0 0 0 10px rgba(99, 70, 216, 0.9);
+  translate: calc(var(--px, 0) * -10px) calc(var(--py, 0) * -8px);
+  transition: translate 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  animation: breathe 6s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.03); }
+}
+.hero-orbit {
+  position: absolute;
+  width: min(24rem, 92vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(99, 70, 216, 0.28);
+  animation: spin 32s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.orbit-dot {
+  position: absolute;
+  left: calc(50% - 7px);
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--secondary);
+  box-shadow: 0 0 0 6px rgba(255, 185, 56, 0.22);
+}
+.orbit-dot--purple {
+  top: auto;
+  bottom: -6px;
+  left: calc(50% - 6px);
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  box-shadow: 0 0 0 6px rgba(99, 70, 216, 0.15);
+}
+.hero-chip {
+  position: absolute;
+  z-index: 15;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 1px solid #FFFFFF;
+  box-shadow: 0 14px 30px -12px rgba(25, 20, 58, 0.35);
+}
+
+/* -------------------------------------------------------------
+   LAPTOP
+   ------------------------------------------------------------- */
+.laptop {
+  position: relative;
+  z-index: 10;
+  width: min(340px, 70vw);
+  margin-top: 6%;
+  filter: drop-shadow(0 30px 30px rgba(25, 20, 58, 0.28));
+  animation: laptopFloat 6s ease-in-out infinite;
+}
+@keyframes laptopFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.laptop-svg { display: block; width: 100%; height: auto; }
+
+/* Layar: posisi persis area layar pada viewBox SVG 420x300 */
+.laptop-screen {
+  position: absolute;
+  left: 17.14%;
+  top: 7.33%;
+  width: 65.71%;
+  height: 58.67%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 0%, #3B2F86 0%, #241D52 55%, #19143A 100%);
+}
+.laptop-screen::after {
+  /* kilatan saat huruf baru "terdeteksi" */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(255, 210, 122, 0.45), transparent 65%);
+  opacity: 0;
+}
+.laptop-screen.flash::after { animation: screenFlash 0.6s ease-out; }
+@keyframes screenFlash {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.vf { position: absolute; width: 14%; height: 18%; border: 0 solid var(--primary-light); opacity: 0.85; }
+.vf-tl { top: 8%; left: 6%; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 6px; }
+.vf-tr { top: 8%; right: 6%; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 6px; }
+.vf-bl { bottom: 8%; left: 6%; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 6px; }
+.vf-br { bottom: 8%; right: 6%; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 6px; }
+
+.screen-live {
+  position: absolute;
+  top: 9%;
+  left: 23%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: clamp(7px, 1.6vw, 9px);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #F0EBFF;
+}
+.screen-live span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--secondary);
+  animation: blink 1.2s steps(2, start) infinite;
+}
+@keyframes blink { to { visibility: hidden; } }
+
+.screen-hand {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  height: 66%;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+}
+.hand-bones line {
+  stroke: var(--primary-light);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+.hand-joints circle {
+  fill: var(--secondary);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: jointPulse 2.4s ease-in-out infinite;
+}
+@keyframes jointPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50%      { transform: scale(1.5); opacity: 1; }
+}
+
+.screen-scan {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 14%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--secondary), transparent);
+  box-shadow: 0 0 12px 2px rgba(255, 185, 56, 0.55);
+  animation: scan 2.6s ease-in-out infinite alternate;
+}
+@keyframes scan { to { top: 80%; } }
+
+.screen-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: clamp(8px, 1.8vw, 11px);
+  font-weight: 600;
+  color: #DCEBFF;
+  white-space: nowrap;
+}
+.screen-caption b {
+  display: inline-block;
+  min-width: 1ch;
+  color: var(--secondary);
+  font-size: 1.35em;
+  font-weight: 800;
+}
+.screen-caption b.tick { animation: tick 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes tick {
+  from { transform: scale(0.3); }
+  to   { transform: scale(1); }
+}
+
+/* -------------------------------------------------------------
+   GELEMBUNG HURUF (dibuat & digerakkan oleh landing.js)
+   ------------------------------------------------------------- */
+.bubble-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+.bubble,
+.pop-ring,
+.pop-drop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+}
+.bubble {
+  pointer-events: auto;
+  cursor: pointer;
+  will-change: transform, opacity;
+}
+.bubble-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: calc(var(--s) * 0.44);
+  font-weight: 800;
+  line-height: 1;
+  animation: sway var(--sway, 3s) ease-in-out infinite alternate;
+}
+.bubble-inner::before {
+  /* pantulan cahaya khas gelembung */
+  content: "";
+  position: absolute;
+  top: 13%;
+  left: 20%;
+  width: 30%;
+  height: 18%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  transform: rotate(-30deg);
+}
+@keyframes sway {
+  from { transform: translateX(-5px) rotate(-7deg); }
+  to   { transform: translateX(5px) rotate(7deg); }
+}
+.bubble--purple .bubble-inner {
+  color: #FFFFFF;
+  background: radial-gradient(circle at 35% 30%, #A68BFA 0%, #6346D8 72%);
+  box-shadow: 0 12px 24px -10px rgba(99, 70, 216, 0.7),
+              inset -6px -8px 14px rgba(25, 20, 58, 0.28),
+              inset 4px 6px 10px rgba(255, 255, 255, 0.2);
+}
+.bubble--amber .bubble-inner {
+  color: var(--ink);
+  background: radial-gradient(circle at 35% 30%, #FFE7B0 0%, #FFB938 72%);
+  box-shadow: 0 12px 24px -10px rgba(230, 150, 20, 0.7),
+              inset -6px -8px 14px rgba(154, 91, 0, 0.22);
+}
+.bubble--glass .bubble-inner {
+  color: var(--primary);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 235, 255, 0.78) 72%);
+  border: 1.5px solid rgba(167, 139, 250, 0.65);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 24px -12px rgba(99, 70, 216, 0.55);
+}
+
+/* Efek "pecah" */
+.pop-ring {
+  pointer-events: none;
+  border-radius: 50%;
+  border: 3px solid var(--c);
+}
+.pop-drop {
+  pointer-events: none;
+  --s: 7px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+/* -------------------------------------------------------------
+   Reveal saat scroll (kelas ditambahkan oleh landing.js)
+   ------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  translate: 0 32px;
+  transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+              translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.is-visible { opacity: 1; translate: 0 0; }
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .hero { gap: 2rem 1.5rem !important; }
+  .hero h1 { letter-spacing: -0.02em !important; }
+}
+
+/* -------------------------------------------------------------
+   Aksesibilitas: hormati pengaturan "kurangi gerakan"
+   ------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-fade, .reveal-word { opacity: 1; filter: none; transform: none; }
+  .hero-swash path { stroke-dashoffset: 0; }
+  .reveal { opacity: 1; translate: 0 0; }
+}
+

@@ -1,0 +1,9 @@
+{
+  "feature_version": "v2-mirror-pixel-maxnorm-sorted",
+  "training_date": "2026-11-13T15:30:56.826338",
+  "training_samples": 37012,
+  "augmentation": "jitter, scale, rotate_hand, dropout",
+  "class_weight": "balanced",
+  "accuracy": 0.9994092453108847,
+  "weighted_f1": 0.999409929366804
+}

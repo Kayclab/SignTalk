@@ -1,8 +1,8 @@
 """
-features.py  -  SATU-SATUNYA standar fitur SignTalk.
+signtalk/features.py  -  SATU-SATUNYA standar fitur SignTalk.
 
-Dipakai oleh: collect_data.py, prepare_dataset.py, train_model.py,
-app.py dan test_live.py. Jangan menulis ulang logika ini di file lain.
+Dipakai oleh: app.py, scripts/collect_data.py, scripts/prepare_dataset.py,
+scripts/train_model.py, tools/test_live.py. Jangan menulis ulang logika ini di file lain.
 Jika Anda mengubah apa pun di sini, naikkan FEATURE_VERSION lalu
 latih ulang model.
 """
@@ -27,7 +27,7 @@ FEATURE_COLUMNS = [f"f_{i}" for i in range(EXPECTED_FEATURES)]
 MIRROR_INPUT = True
 
 # Resolusi yang diasumsikan untuk dataset lama (hanya dipakai
-# oleh prepare_dataset.py untuk mengonversi data lama).
+# oleh scripts/prepare_dataset.py untuk mengonversi data lama).
 LEGACY_WIDTH = 640
 LEGACY_HEIGHT = 480
 
@@ -138,7 +138,7 @@ def extract_features(hand_landmarks_list, width, height):
 
 
 # ------------------------------------------------------------
-# Konversi data lama -> standar sekarang (untuk prepare_dataset.py)
+# Konversi data lama -> standar sekarang (untuk scripts/prepare_dataset.py)
 # ------------------------------------------------------------
 def legacy_rows_to_v2(raw, width=LEGACY_WIDTH, height=LEGACY_HEIGHT,
                       mirror=False):

@@ -1,9 +1,22 @@
+"""
+tools/check_dataset.py - ringkasan kualitas dataset v2 per label.
+
+Pemakaian (dari root proyek):  python tools/check_dataset.py
+"""
+
+import sys
+from pathlib import Path
+
+# root proyek -> agar `import signtalk` berfungsi saat dijalankan langsung
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import numpy as np
 import pandas as pd
 
-from features import FEATURE_COLUMNS, HAND_FEATURES
+from signtalk.features import FEATURE_COLUMNS, HAND_FEATURES
+from signtalk.paths import DATASET_PATH
 
-df = pd.read_csv("dataset/dataset_v2.csv")
+df = pd.read_csv(DATASET_PATH)
 X = df[FEATURE_COLUMNS].to_numpy(dtype=float)
 two = np.abs(X[:, HAND_FEATURES:]).sum(axis=1) > 0
 

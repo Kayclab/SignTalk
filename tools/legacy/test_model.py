@@ -1,16 +1,24 @@
 
+"""tools/legacy/test_model.py - uji 1 sampel dengan model lama.
+CATATAN: skrip LAMA (v1), tidak memakai signtalk/features.py.
+"""
+
+from pathlib import Path
+
 import joblib
 import pandas as pd
 
+BASE_DIR = Path(__file__).resolve().parents[2]  # root proyek
+
 # 1. Memuat model yang sudah dilatih
-model = joblib.load("model/random_forest.pkl")
+model = joblib.load(BASE_DIR / "model" / "random_forest.pkl")
 
 print("Model berhasil dimuat!")
 print("Jumlah kelas:", len(model.classes_))
 print("Daftar kelas:", model.classes_)
 
 # 2. Mengambil satu sampel dari dataset
-df = pd.read_csv("dataset/dataset_tangan.csv")
+df = pd.read_csv(BASE_DIR / "dataset" / "dataset_tangan.csv")
 
 sample = df.iloc[[0], 1:]
 actual_label = str(df.iloc[0]["label"])

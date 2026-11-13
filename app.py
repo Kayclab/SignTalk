@@ -10,7 +10,7 @@ import numpy as np
 
 from flask import Flask, Response, jsonify, render_template, request
 
-from features import (
+from signtalk.features import (
     EXPECTED_FEATURES,
     FEATURE_VERSION,
     MIRROR_INPUT,
@@ -18,31 +18,44 @@ from features import (
     detect_bgr,
     extract_features,
 )
+from signtalk.paths import (
+    META_PATH,
+    MODEL_PATH as DEFAULT_MODEL_PATH,
+    ROOT_DIR as BASE_DIR,
+    STATIC_DIR,
+    TASK_MODEL_PATH,
+    TEMPLATES_DIR,
+)
 
 # ============================================================
 # 1. KONFIGURASI
 # ============================================================
 
-BASE_DIR = Path(__file__).resolve().parent
-app = Flask(__name__)
-
-MODEL_DIR = BASE_DIR / "model"
-DEFAULT_MODEL_PATH = MODEL_DIR / "random_forest_v2.pkl"
-META_PATH = MODEL_DIR / "model_meta.json"
-TASK_MODEL_PATH = BASE_DIR / "hand_landmarker.task"
+app = Flask(
+    __name__,
+    template_folder=str(TEMPLATES_DIR),
+    static_folder=str(STATIC_DIR),
+)
 
 CAMERA_INDEX = 0
 MAX_HANDS = 2
 
 
 # ============================================================
-# 2. LOAD MODEL (hanya model v2 yang cocok dengan standar fitur)
+# 2. LOAD MODEL (v3 augmented preferred; falls back to v2)
 # ============================================================
 
 def load_random_forest():
 
     env_path = os.getenv("RF_MODEL_PATH")
-    model_path = Path(env_path) if env_path else DEFAULT_MODEL_PATH
+
+    # Try v3 augmented model first (99.94% accuracy with word improvements)
+    v3_model_path = Path(DEFAULT_MODEL_PATH).parent / "random_forest_v3_augmented.pkl"
+    if v3_model_path.exists():
+        model_path = v3_model_path
+        print("[INFO] [IMPROVED v3] Using augmented model (99.94% accuracy, word F1=0.9994)")
+    else:
+        model_path = Path(env_path) if env_path else DEFAULT_MODEL_PATH
 
     if not model_path.is_absolute():
         model_path = BASE_DIR / model_path
@@ -50,7 +63,8 @@ def load_random_forest():
     if not model_path.exists():
         raise FileNotFoundError(
             f"Model tidak ditemukan: {model_path}\n"
-            "Jalankan: python prepare_dataset.py lalu python train_model.py"
+            "Jalankan: python scripts/prepare_dataset.py lalu "
+            "python scripts/train_model.py"
         )
 
     if META_PATH.exists() and not env_path:
@@ -59,7 +73,7 @@ def load_random_forest():
             raise RuntimeError(
                 "Versi fitur model "
                 f"({meta.get('feature_version')}) berbeda dari kode "
-                f"({FEATURE_VERSION}). Latih ulang dengan train_model.py."
+                f"({FEATURE_VERSION}). Latih ulang dengan scripts/train_model.py."
             )
 
     loaded = joblib.load(model_path)
@@ -72,6 +86,12 @@ def load_random_forest():
             f"Model memakai {loaded.n_features_in_} fitur, "
             f"aplikasi menghasilkan {EXPECTED_FEATURES}."
         )
+
+    # Prediksi dilakukan 1 sampel per frame. Dengan n_jobs=-1 sklearn
+    # menyiapkan thread di semua core untuk SETIAP frame (~65 ms);
+    # dengan 1 core hanya ~24 ms. Tidak mengubah hasil prediksi.
+    if hasattr(loaded, "n_jobs"):
+        loaded.n_jobs = 1
 
     print(f"[INFO] Model dimuat : {model_path.name}")
     print(f"[INFO] Versi fitur  : {FEATURE_VERSION}")
@@ -197,7 +217,7 @@ def index():
 @app.route("/camera")
 def camera():
 
-    if (BASE_DIR / "templates" / "camera.html").exists():
+    if (TEMPLATES_DIR / "camera.html").exists():
         return render_template("camera.html")
 
     return render_template("landing.html")

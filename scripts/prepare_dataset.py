@@ -3,30 +3,35 @@ prepare_dataset.py
 Mengonversi dataset lama menjadi dataset standar v2 TANPA mengubah
 file asli. Aman dijalankan berulang kali.
 
-Pemakaian:
-    python prepare_dataset.py
-    python prepare_dataset.py dataset/dataset_tangan.csv
+Pemakaian (dari root proyek):
+    python scripts/prepare_dataset.py
+    python scripts/prepare_dataset.py dataset/dataset_tangan.csv
 """
 
 import csv
 import sys
-from collections import Counter
 from pathlib import Path
+
+# root proyek -> agar `import signtalk` berfungsi saat dijalankan langsung
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from collections import Counter
 
 import numpy as np
 
-from features import (
+from signtalk.features import (
     EXPECTED_FEATURES,
     FEATURE_COLUMNS,
     legacy_rows_to_v2,
 )
 
-BASE_DIR = Path(__file__).resolve().parent
-SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else (
-    BASE_DIR / "dataset" / "dataset_tangan.csv"
+from signtalk.paths import (
+    DATASET_PATH as OUTPUT,
+    LEGACY_DATASET_PATH,
+    REJECTED_ROWS_PATH as REPORT_REJECT,
 )
-OUTPUT = BASE_DIR / "dataset" / "dataset_v2.csv"
-REPORT_REJECT = BASE_DIR / "dataset" / "baris_ditolak.csv"
+
+SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else LEGACY_DATASET_PATH
 
 if not SOURCE.exists():
     raise SystemExit(f"[ERROR] File tidak ditemukan: {SOURCE}")
@@ -49,7 +54,7 @@ with open(SOURCE, newline="", encoding="utf-8") as file:
             continue
         try:
             if "." in row[0]:
-                # label di kolom terakhir (hasil collect_data.py lama)
+                # label di kolom terakhir (hasil scripts/collect_data.py lama)
                 values = np.array(row[:EXPECTED_FEATURES], dtype=np.float64)
                 label = row[-1].strip()
                 kind = "terakhir"

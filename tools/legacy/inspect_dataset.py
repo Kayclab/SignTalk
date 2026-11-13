@@ -1,8 +1,14 @@
+"""tools/legacy/inspect_dataset.py - memeriksa koordinat dataset lama.
+CATATAN: skrip LAMA (v1), tidak memakai signtalk/features.py.
+"""
+
+from pathlib import Path
 
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv("dataset/dataset_tangan.csv")
+BASE_DIR = Path(__file__).resolve().parents[2]  # root proyek
+df = pd.read_csv(BASE_DIR / "dataset" / "dataset_tangan.csv")
 X = df.iloc[:, 1:].to_numpy(dtype=float)
 
 print("=" * 60)

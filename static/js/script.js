@@ -18,16 +18,37 @@ const speechToggle = document.getElementById("speechToggle");
 // ---------------------------------------------------------------
 // PENGATURAN (boleh diubah untuk menyetel kestabilan)
 // ---------------------------------------------------------------
-const SEND_INTERVAL_MS = 200; // jeda antar pengiriman frame
-const HISTORY_SIZE = 7; // jumlah hasil terakhir yang dipertimbangkan
-const MIN_VOTES = 4; // minimal berapa kali label yang sama muncul
-const CONFIDENCE_THRESHOLD = 40; // rata-rata confidence minimal (%) agar ditampilkan
+// Frame berikutnya dikirim begitu jawaban sebelumnya datang, dengan jeda
+// minimal ini (membatasi beban server, ~12 frame/detik).
+const MIN_FRAME_GAP_MS = 80;
+
+// Label baru dianggap "stabil" jika muncul berturut-turut minimal
+// CONFIRM_FRAMES kali DAN bertahan minimal CONFIRM_MS.
+// Lebih kecil = lebih cepat bereaksi, tetapi lebih mudah salah sesaat.
+const CONFIRM_FRAMES = 2;
+const CONFIRM_MS = 250;
+
+// Frame dengan confidence di bawah ini dianggap "tangan sedang berpindah"
+// dan diabaikan (tidak memutus atau membentuk label baru).
+const MIN_FRAME_CONFIDENCE = 35;
+
+// Saat tangan bergerak cepat, MediaPipe kadang gagal 1-2 frame (blur).
+// Hasil baru direset jika tangan hilang lebih lama dari ini.
+const LOST_HAND_RESET_MS = 500;
+
+// Suara: lebih cepat & lebih pendek = lebih sinkron dengan tangan.
+const SPEECH_RATE = 1.25;
+const SAY_LETTER_PREFIX = false; // true -> "Huruf B", false -> "B"
 
 let cameraStream = null;
-let predictionInterval = null;
 let isPredicting = false;
+let loopId = 0; // naik setiap start/stop agar hanya ada 1 loop aktif
 let lastSpokenText = "";
-let predictionHistory = [];
+
+// Status penstabil
+let stableLabel = null; // label yang sedang ditampilkan
+let candidate = null; // { label, since, frames, totalConfidence }
+let lastHandSeenAt = 0;
 
 // 1. MENGAKTIFKAN KAMERA
 async function startCamera() {
@@ -59,10 +80,10 @@ async function startCamera() {
     );
     stopButton.classList.add("bg-red-500", "text-white", "hover:bg-red-600");
 
-    predictionHistory = [];
+    resetStabilizer();
 
-    // Mulai kirim frame secara berkala
-    predictionInterval = setInterval(sendFrame, SEND_INTERVAL_MS);
+    // Mulai loop pengiriman frame
+    runPredictionLoop(++loopId);
 
     console.log("Kamera berhasil diaktifkan!");
   } catch (error) {
@@ -73,7 +94,20 @@ async function startCamera() {
   }
 }
 
-// 2. MENGIRIM GAMBAR KE FLASK API
+// 2. LOOP PREDIKSI: kirim frame -> tunggu jawaban -> langsung kirim lagi.
+//    (setInterval lama melewatkan tick saat server masih memproses,
+//    sehingga frame rate jatuh ke ~4 fps.)
+async function runPredictionLoop(id) {
+  while (id === loopId && cameraStream) {
+    const startedAt = performance.now();
+    await sendFrame();
+    const elapsed = performance.now() - startedAt;
+    const wait = Math.max(0, MIN_FRAME_GAP_MS - elapsed);
+    await new Promise((resolve) => setTimeout(resolve, wait || 0));
+  }
+}
+
+// MENGIRIM GAMBAR KE FLASK API
 async function sendFrame() {
   if (!cameraStream || isPredicting || video.readyState < 2) {
     return;
@@ -120,82 +154,81 @@ async function sendFrame() {
   }
 }
 
-// 3. PENSTABIL HASIL: pemungutan suara dari beberapa hasil terakhir
-function getStablePrediction() {
-  if (predictionHistory.length < MIN_VOTES) {
+// 3. PENSTABIL HASIL: label harus muncul BERTURUT-TURUT sebentar.
+//    Versi lama memakai voting 4 dari 7 frame terakhir: label baru harus
+//    "mengalahkan" sisa suara label lama dulu, sehingga tertinggal ~1 detik.
+function resetStabilizer() {
+  stableLabel = null;
+  candidate = null;
+  lastHandSeenAt = 0;
+}
+
+// Mengembalikan { label, confidence } jika label baru terkonfirmasi.
+function updateStabilizer(label, confidence, now) {
+  if (confidence < MIN_FRAME_CONFIDENCE) {
+    return null; // frame transisi: abaikan
+  }
+
+  if (candidate && candidate.label === label) {
+    candidate.frames += 1;
+    candidate.totalConfidence += confidence;
+  } else {
+    candidate = { label, since: now, frames: 1, totalConfidence: confidence };
+  }
+
+  const confirmed =
+    candidate.frames >= CONFIRM_FRAMES && now - candidate.since >= CONFIRM_MS;
+
+  if (!confirmed) {
     return null;
   }
 
-  const votes = new Map();
-
-  predictionHistory.forEach((item) => {
-    if (!votes.has(item.label)) {
-      votes.set(item.label, { count: 0, total: 0 });
-    }
-    const entry = votes.get(item.label);
-    entry.count += 1;
-    entry.total += item.confidence;
-  });
-
-  let bestLabel = null;
-  let bestEntry = null;
-
-  votes.forEach((entry, label) => {
-    if (bestEntry === null || entry.count > bestEntry.count) {
-      bestLabel = label;
-      bestEntry = entry;
-    }
-  });
-
-  if (bestEntry.count < MIN_VOTES) {
-    return null;
-  }
-
-  const averageConfidence = bestEntry.total / bestEntry.count;
-
-  if (averageConfidence < CONFIDENCE_THRESHOLD) {
-    return null;
-  }
-
+  const average = candidate.totalConfidence / candidate.frames;
   return {
-    label: bestLabel,
-    confidence: Math.round(averageConfidence * 10) / 10,
+    label: candidate.label,
+    confidence: Math.round(average * 10) / 10,
   };
+}
+
+function clearDisplay(message) {
+  predictionElement.textContent = "-";
+  resultMessage.textContent = message;
+  confidenceElement.textContent = "0%";
+  confidenceBar.style.width = "0%";
+  speakButton.disabled = true;
 }
 
 // 4. MENAMPILKAN HASIL PREDIKSI & FITUR SUARA
 function displayPrediction(data) {
+  const now = performance.now();
+
   if (!data.detected) {
-    predictionHistory = [];
-    predictionElement.textContent = "-";
-    resultMessage.textContent = "Tangan tidak terdeteksi.";
-    confidenceElement.textContent = "0%";
-    confidenceBar.style.width = "0%";
-    speakButton.disabled = true;
+    // Hilang sesaat (blur gerakan cepat): pertahankan hasil terakhir.
+    if (now - lastHandSeenAt < LOST_HAND_RESET_MS) {
+      return;
+    }
+    resetStabilizer();
     lastSpokenText = "";
+    clearDisplay("Tangan tidak terdeteksi.");
     return;
   }
 
-  predictionHistory.push({
-    label: String(data.prediction),
-    confidence: Number(data.confidence) || 0,
-  });
+  lastHandSeenAt = now;
 
-  if (predictionHistory.length > HISTORY_SIZE) {
-    predictionHistory.shift();
-  }
-
-  const stable = getStablePrediction();
+  const stable = updateStabilizer(
+    String(data.prediction),
+    Number(data.confidence) || 0,
+    now,
+  );
 
   if (!stable) {
-    predictionElement.textContent = "-";
-    resultMessage.textContent = `${data.detected_hands} tangan terdeteksi, isyarat belum jelas`;
-    confidenceElement.textContent = "0%";
-    confidenceBar.style.width = "0%";
-    speakButton.disabled = true;
-    return;
+    if (stableLabel === null) {
+      clearDisplay(`${data.detected_hands} tangan terdeteksi, isyarat belum jelas`);
+    }
+    return; // tetap tampilkan label stabil sebelumnya
   }
 
+  stableLabel = stable.label;
   predictionElement.textContent = stable.label;
   resultMessage.textContent = `${data.detected_hands} tangan terdeteksi`;
 
@@ -213,10 +246,7 @@ function displayPrediction(data) {
 
 // 5. MENGHENTIKAN KAMERA
 function stopCamera() {
-  if (predictionInterval) {
-    clearInterval(predictionInterval);
-    predictionInterval = null;
-  }
+  loopId += 1; // menghentikan loop prediksi yang sedang berjalan
 
   if (cameraStream) {
     cameraStream.getTracks().forEach((track) => {
@@ -247,8 +277,9 @@ function stopCamera() {
   stopButton.className =
     "flex-1 bg-gray-100 text-gray-400 py-3.5 px-6 rounded-full font-bold text-sm border border-gray-200 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
-  predictionHistory = [];
+  resetStabilizer();
   lastSpokenText = "";
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   console.log("Kamera berhasil dihentikan!");
 }
 
@@ -261,15 +292,15 @@ function speakText(text) {
   const cleanText = text.trim();
   let textToSpeak = cleanText;
 
-  // Jika hanya 1 karakter huruf (A-Z / a-z), beri awalan "Huruf"
-  if (/^[a-zA-Z]$/.test(cleanText)) {
+  // Huruf tunggal: opsional diberi awalan "Huruf" (lebih jelas, tapi lebih lama)
+  if (SAY_LETTER_PREFIX && /^[a-zA-Z]$/.test(cleanText)) {
     textToSpeak = `Huruf ${cleanText}`;
   }
   // Untuk angka (1-10), kata, atau kalimat: langsung dibaca kodenya saja tanpa awalan
 
   const utterance = new SpeechSynthesisUtterance(textToSpeak);
   utterance.lang = "id-ID";
-  utterance.rate = 1.0;
+  utterance.rate = SPEECH_RATE;
   window.speechSynthesis.speak(utterance);
 }
 

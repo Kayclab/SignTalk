@@ -1,9 +1,9 @@
 """
-test_live.py - Uji prediksi AKTUAL dengan webcam, memakai jalur yang sama
+tools/test_live.py - Uji prediksi AKTUAL dengan webcam, memakai jalur yang sama
 dengan aplikasi web (flip, MediaPipe mode IMAGE, kompresi JPEG 80%, fitur v2).
 
 Cara pakai:
-    python test_live.py
+    python tools/test_live.py   (dari root proyek)
 Ketik huruf/kata yang akan Anda peragakan (mis. A), tekan Enter, bentuk
 isyaratnya saat hitung mundur selesai. Rekaman 5 detik. Ulangi untuk label
 lain; kosongkan label lalu Enter untuk selesai.
@@ -11,31 +11,37 @@ Hasil ringkas dicetak dan disimpan di model/hasil_uji_live.csv
 """
 
 import csv
+import sys
 import time
-from collections import Counter
 from pathlib import Path
+
+# root proyek -> agar `import signtalk` berfungsi saat dijalankan langsung
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from collections import Counter
 
 import cv2
 import joblib
 import numpy as np
 
-from features import (
+from signtalk.features import (
     MIRROR_INPUT,
     create_landmarker,
     detect_bgr,
     extract_features,
 )
 
-BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = BASE_DIR / "model" / "random_forest_v2.pkl"
-TASK_PATH = BASE_DIR / "hand_landmarker.task"
-OUT_PATH = BASE_DIR / "model" / "hasil_uji_live.csv"
+from signtalk.paths import (
+    LIVE_TEST_RESULT_PATH as OUT_PATH,
+    MODEL_PATH,
+    TASK_MODEL_PATH as TASK_PATH,
+)
 
 COUNTDOWN_SEC = 3
 RECORD_SEC = 5
 
 if not MODEL_PATH.exists():
-    raise SystemExit("Model v2 belum ada. Jalankan train_model.py dulu.")
+    raise SystemExit("Model v2 belum ada. Jalankan scripts/train_model.py dulu.")
 
 model = joblib.load(MODEL_PATH)
 landmarker = create_landmarker(TASK_PATH)
