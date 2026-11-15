@@ -30,17 +30,17 @@ if (menuBtn && mobileMenu) {
 
   const VARIANTS = ['purple', 'yellow', 'pastel-1', 'plum', 'rose', 'yellow', 'pastel-2', 'mauve', 'peach', 'white', 'pastel-3'];
   const COLORS = {
-    'purple':   '#2B124C',
-    'plum':     '#522B5B',
-    'mauve':    '#854F6C',
-    'rose':     '#DFB6B2',
-    'peach':    '#FBE4DB',
-    'yellow':   '#F9C74F',
-    'white':    '#FAFAFA',
+    'purple': '#2B124C',
+    'plum': '#522B5B',
+    'mauve': '#854F6C',
+    'rose': '#DFB6B2',
+    'peach': '#FBE4DB',
+    'yellow': '#F9C74F',
+    'white': '#FAFAFA',
     'pastel-1': '#E9D5FF',
     'pastel-2': '#C4B5FD',
     'pastel-3': '#D8B4E2',
-    'pastel':   '#C4B5FD'
+    'pastel': '#C4B5FD'
   };
 
   const SPAWN_INTERVAL = 900;
@@ -68,9 +68,9 @@ if (menuBtn && mobileMenu) {
     el.className = `bubble bubble--${variant}`;
     el.style.setProperty('--s', `${size}px`);
     el.dataset.variant = variant;
-    
+
     const fontSize = text.length > 3 ? Math.max(12, size * 0.22) : Math.max(16, size * 0.4);
-    
+
     el.innerHTML = `
       <div class="bubble-inner" style="--sway:${rand(2.0, 3.2).toFixed(2)}s; font-size: ${fontSize}px;">
         ${text}
@@ -162,7 +162,7 @@ if (menuBtn && mobileMenu) {
 
     const side = Math.random() < 0.5 ? -1 : 1;
     const endX = clamp(emitter.x + side * rand(50, 180) * scaleFactor, size, emitter.width - size);
-    
+
     // Cukup melayang di atas laptop saja (sekitar 110px - 160px di atas layar)
     const endY = emitter.y - rand(110, 160) * scaleFactor;
     const dx = endX - emitter.x;
@@ -236,10 +236,10 @@ if (menuBtn && mobileMenu) {
     const deltaX = e.clientX - centerX;
     const deltaY = e.clientY - centerY;
 
-    const maxRotY = 16;
-    const maxRotX = 14;
-    const maxShiftX = 18;
-    const maxShiftY = 16;
+    const maxRotY = 70;
+    const maxRotX = 70;
+    const maxShiftX = 70;
+    const maxShiftY = 70;
 
     const rotY = Math.max(-maxRotY, Math.min(maxRotY, (deltaX / window.innerWidth) * 35));
     const rotX = Math.max(-6, Math.min(maxRotX, (deltaY / window.innerHeight) * 32));
@@ -372,21 +372,21 @@ if (menuBtn && mobileMenu) {
   // 11 Pil Total: 3 Stay di Atas + 4 Melayang di Tengah + 4 Gravity di Bawah
   const PILL_CONFIGS = [
     // === 3 BUBBLE STAY DI ATAS (Letak Berantakan, Tinggi ~50-75px) ===
-    { text: 'Semangat Terus! 💪',   isTop: true, layer: 'top', anchorXRatio: 0.18, anchorY: 54, baseAngle: -0.14, theme: { bg: '#F9C74F', text: '#2B124C' } },
-    { text: 'Kamu Luar Biasa! ✨',  isTop: true, layer: 'top', anchorXRatio: 0.52, anchorY: 44, baseAngle: 0.11,  theme: { bg: '#DFB6B2', text: '#2B124C' } },
+    { text: 'Semangat Terus! 💪', isTop: true, layer: 'top', anchorXRatio: 0.18, anchorY: 54, baseAngle: -0.14, theme: { bg: '#F9C74F', text: '#2B124C' } },
+    { text: 'Kamu Luar Biasa! ✨', isTop: true, layer: 'top', anchorXRatio: 0.52, anchorY: 44, baseAngle: 0.11, theme: { bg: '#DFB6B2', text: '#2B124C' } },
     { text: 'Tanganmu Bersuara 🤟', isTop: true, layer: 'top', anchorXRatio: 0.84, anchorY: 62, baseAngle: -0.08, theme: { bg: '#C4B5FD', text: '#2B124C' } },
 
     // === 4 BUBBLE MELAYANG DI TENGAH (Tinggi ~130-165px, Letak Berantakan) ===
-    { text: 'Jangan Menyerah! 🔥',   isTop: true, layer: 'mid', anchorXRatio: 0.12, anchorY: 142, baseAngle: 0.10,  theme: { bg: '#FBE4DB', text: '#2B124C' } },
-    { text: 'Kamu Pasti Bisa! 🌟',   isTop: true, layer: 'mid', anchorXRatio: 0.42, anchorY: 130, baseAngle: -0.12, theme: { bg: '#E9D5FF', text: '#2B124C' } },
-    { text: 'Dunia Mendengarmu 🌍',  isTop: true, layer: 'mid', anchorXRatio: 0.70, anchorY: 150, baseAngle: 0.09,  theme: { bg: '#522B5B', text: '#FFFFFF' } },
-    { text: 'Terus Berkarya! 🚀',    isTop: true, layer: 'mid', anchorXRatio: 0.94, anchorY: 136, baseAngle: -0.07, theme: { bg: '#F9C74F', text: '#2B124C' } },
+    { text: 'Jangan Menyerah! 🔥', isTop: true, layer: 'mid', anchorXRatio: 0.12, anchorY: 142, baseAngle: 0.10, theme: { bg: '#FBE4DB', text: '#2B124C' } },
+    { text: 'Kamu Pasti Bisa! 🌟', isTop: true, layer: 'mid', anchorXRatio: 0.42, anchorY: 130, baseAngle: -0.12, theme: { bg: '#E9D5FF', text: '#2B124C' } },
+    { text: 'Dunia Mendengarmu 🌍', isTop: true, layer: 'mid', anchorXRatio: 0.70, anchorY: 150, baseAngle: 0.09, theme: { bg: '#522B5B', text: '#FFFFFF' } },
+    { text: 'Terus Berkarya! 🚀', isTop: true, layer: 'mid', anchorXRatio: 0.94, anchorY: 136, baseAngle: -0.07, theme: { bg: '#F9C74F', text: '#2B124C' } },
 
     // === 4 BUBBLE DI BAWAH TETAP (Gravity — mengendap di lantai) ===
-    { text: 'Penuh Cinta ❤️',         isTop: false, layer: 'bot', theme: { bg: '#F9C74F', text: '#2B124C' } },
-    { text: 'Setara & Bangga 🤝',     isTop: false, layer: 'bot', theme: { bg: '#DFB6B2', text: '#2B124C' } },
-    { text: 'Inspirasi Kita 🌸',      isTop: false, layer: 'bot', theme: { bg: '#C4B5FD', text: '#2B124C' } },
-    { text: 'Karyamu Indah 🎨',       isTop: false, layer: 'bot', theme: { bg: '#FBE4DB', text: '#2B124C' } },
+    { text: 'Penuh Cinta ❤️', isTop: false, layer: 'bot', theme: { bg: '#F9C74F', text: '#2B124C' } },
+    { text: 'Setara & Bangga 🤝', isTop: false, layer: 'bot', theme: { bg: '#DFB6B2', text: '#2B124C' } },
+    { text: 'Inspirasi Kita 🌸', isTop: false, layer: 'bot', theme: { bg: '#C4B5FD', text: '#2B124C' } },
+    { text: 'Karyamu Indah 🎨', isTop: false, layer: 'bot', theme: { bg: '#FBE4DB', text: '#2B124C' } },
   ];
 
   // Hitung Barrier / Penghalang Dino agar Pil Tidak Bisa Menabrak Dino
@@ -708,14 +708,14 @@ if (menuBtn && mobileMenu) {
 
     const grid = document.createElement('div');
     // Jika kata-kata, buat kolom lebih lebar dan bersih
-    grid.className = catKey === 'words' 
+    grid.className = catKey === 'words'
       ? 'grid grid-cols-2 sm:grid-cols-3 gap-3.5'
       : 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3';
 
     cat.items.forEach(item => {
       const card = document.createElement('div');
       card.className = 'bg-[#FAF7FD] hover:bg-[#E9D5FF] border-2 border-[#C4B5FD]/50 hover:border-[#F9C74F] rounded-2xl p-4 flex items-center justify-center text-center cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md select-none';
-      
+
       // HANYA KATA / HURUF SAJA TANPA PENJELASAN
       card.innerHTML = `
         <span class="text-2xl sm:text-3xl font-extrabold text-[#2B124C] font-heading">${item.label}</span>
