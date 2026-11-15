@@ -1,0 +1,2 @@
+model,accuracy,macro_f1,weighted_f1,training_samples,validation_samples
+Random Forest V4,0.857238158772515,0.8522279535265411,0.8500875754418724,70104,8994

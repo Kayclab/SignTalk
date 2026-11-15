@@ -45,57 +45,75 @@ MAX_HANDS = 2
 # 2. LOAD MODEL (v3 augmented preferred; falls back to v2)
 # ============================================================
 
+
 def load_random_forest():
 
     env_path = os.getenv("RF_MODEL_PATH")
+    model_dir = Path(DEFAULT_MODEL_PATH).parent
 
-    # Try v3 augmented model first (99.94% accuracy with word improvements)
-    v3_model_path = Path(DEFAULT_MODEL_PATH).parent / "random_forest_v3_augmented.pkl"
-    if v3_model_path.exists():
-        model_path = v3_model_path
-        print("[INFO] [IMPROVED v3] Using augmented model (99.94% accuracy, word F1=0.9994)")
+    # Default: gunakan V4.
+    # Jika RF_MODEL_PATH ditentukan, gunakan model tersebut.
+    if env_path:
+        model_path = Path(env_path)
+
+        if not model_path.is_absolute():
+            model_path = BASE_DIR / model_path
     else:
-        model_path = Path(env_path) if env_path else DEFAULT_MODEL_PATH
-
-    if not model_path.is_absolute():
-        model_path = BASE_DIR / model_path
+        model_path = model_dir / "random_forest_v4.pkl"
 
     if not model_path.exists():
         raise FileNotFoundError(
-            f"Model tidak ditemukan: {model_path}\n"
-            "Jalankan: python scripts/prepare_dataset.py lalu "
-            "python scripts/train_model.py"
+            f"Model tidak ditemukan: {model_path}"
         )
 
-    if META_PATH.exists() and not env_path:
-        meta = json.loads(META_PATH.read_text(encoding="utf-8"))
+    # Pilih metadata sesuai model yang digunakan.
+    metadata_files = {
+        "random_forest_v4": model_dir / "model_v4_meta.json",
+        "random_forest_v3_augmented": model_dir / "model_v3_augmented_meta.json",
+        "random_forest_v2": META_PATH,
+        "random_forest": META_PATH,
+    }
+
+    meta_path = metadata_files.get(model_path.stem)
+
+    if meta_path and meta_path.exists():
+        meta = json.loads(
+            meta_path.read_text(encoding="utf-8")
+        )
+
         if meta.get("feature_version") != FEATURE_VERSION:
             raise RuntimeError(
-                "Versi fitur model "
-                f"({meta.get('feature_version')}) berbeda dari kode "
-                f"({FEATURE_VERSION}). Latih ulang dengan scripts/train_model.py."
+                "Versi fitur model berbeda dengan kode aplikasi. "
+                f"Model: {meta.get('feature_version')}, "
+                f"Aplikasi: {FEATURE_VERSION}"
             )
 
     loaded = joblib.load(model_path)
 
     if not hasattr(loaded, "predict"):
-        raise TypeError("File model tidak memiliki method predict().")
+        raise TypeError(
+            "File model tidak memiliki method predict()."
+        )
 
-    if getattr(loaded, "n_features_in_", EXPECTED_FEATURES) != EXPECTED_FEATURES:
+    if getattr(
+        loaded, "n_features_in_", EXPECTED_FEATURES
+    ) != EXPECTED_FEATURES:
         raise ValueError(
             f"Model memakai {loaded.n_features_in_} fitur, "
             f"aplikasi menghasilkan {EXPECTED_FEATURES}."
         )
 
-    # Prediksi dilakukan 1 sampel per frame. Dengan n_jobs=-1 sklearn
-    # menyiapkan thread di semua core untuk SETIAP frame (~65 ms);
-    # dengan 1 core hanya ~24 ms. Tidak mengubah hasil prediksi.
+    # Optimasi prediksi webcam.
     if hasattr(loaded, "n_jobs"):
         loaded.n_jobs = 1
 
-    print(f"[INFO] Model dimuat : {model_path.name}")
-    print(f"[INFO] Versi fitur  : {FEATURE_VERSION}")
-    print(f"[INFO] Jumlah kelas : {len(loaded.classes_)}")
+    print("=" * 50)
+    print("[INFO] MODEL SIGNTALK BERHASIL DIMUAT")
+    print(f"[INFO] Model       : {model_path.name}")
+    print(f"[INFO] Metadata    : {meta_path}")
+    print(f"[INFO] Versi fitur : {FEATURE_VERSION}")
+    print(f"[INFO] Jumlah kelas: {len(loaded.classes_)}")
+    print("=" * 50)
 
     return loaded
 
