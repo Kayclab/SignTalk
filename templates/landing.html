@@ -1,921 +1,717 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SignTalk</title>
 
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignTalk - Jembatan Bahasa Isyarat Cerdas</title>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      // Palet SignTalk: primer ungu (10PB) + sekunder amber (komplemen di roda warna)
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                DEFAULT: "#6346D8",
-                dark: "#5235C7",
-                light: "#A78BFA",
-                soft: "#F0EBFF",
-              },
-              secondary: {
-                DEFAULT: "#FFB938",
-                light: "#FFD27A",
-                soft: "#FFF4DC",
-                deep: "#9A5B00",
-              },
-              ink: "#19143A",
-            },
+  <!-- Google Fonts: Fredoka (Header) & Poppins (Body/Subheading) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-purple': '#2B124C',
+            'plum': '#522B5B',
+            'mauve': '#854F6C',
+            'blush-rose': '#DFB6B2',
+            'cream-peach': '#FBE4DB',
+            'amber-yellow': '#F9C74F',
+            'off-white': '#FAFAFA',
+            'pastel-lilac': '#E9D5FF',
+            'pastel-violet': '#C4B5FD',
+            'pastel-mauve': '#D8B4E2',
+          },
+          fontFamily: {
+            heading: ['Fredoka', 'cursive', 'sans-serif'],
+            body: ['Poppins', 'sans-serif'],
           },
         },
-      };
-    </script>
+      },
+    };
+  </script>
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Panggil File CSS Anda -->
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/landing.css') }}"
-    />
-  </head>
-  <body class="relative">
-    <!-- BACKGROUND DECORATION -->
-    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-      <div
-        class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#F0EBFF] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float-slow"
-      ></div>
-      <div
-        class="absolute top-[20%] right-[-10%] w-[30rem] h-[30rem] bg-[#DCEBFF] rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-float-reverse"
-      ></div>
-      <div
-        class="absolute bottom-[-20%] left-[20%] w-[40rem] h-[40rem] bg-[#A78BFA] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float-slow"
-      ></div>
-      <div
-        class="absolute top-[8%] right-[18%] w-72 h-72 bg-secondary-light rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-float-reverse"
-      ></div>
-    </div>
+  <!-- SignTalk Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}" />
+</head>
 
-    <!-- FLOATING NAVIGATION BAR -->
-    <header class="fixed top-5 left-0 right-0 z-50 px-4 md:px-8">
-      <nav
-        class="max-w-6xl mx-auto bg-white/90 backdrop-blur-md rounded-full shadow-[0_10px_30px_rgba(99,70,216,0.12)] border border-[#F0EBFF] px-6 md:px-8 h-16 flex items-center justify-between transition-all"
-      >
-        <a href="#home" class="flex items-center gap-2.5">
-          <div
-            class="w-9 h-9 bg-[#6346D8] rounded-full flex items-center justify-center text-white shadow-md shadow-[#6346D8]/20"
-          >
-            <i data-lucide="hand" class="w-5 h-5"></i>
-          </div>
-          <span class="text-xl font-extrabold text-[#19143A]">SignTalk</span>
-        </a>
+<body class="bg-white text-[#2B124C] relative antialiased selection:bg-[#F9C74F] selection:text-[#2B124C]">
 
-        <!-- Desktop Links -->
-        <div class="hidden md:flex items-center gap-7">
-          <a
-            href="#home"
-            class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1"
-          >
-            Home
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"
-            ></span>
-          </a>
-          <a
-            href="#features"
-            class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1"
-          >
-            Features
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"
-            ></span>
-          </a>
-          <a
-            href="#about"
-            class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1"
-          >
-            About
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"
-            ></span>
-          </a>
-          <a
-            href="#start"
-            class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1"
-          >
-            Demo
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"
-            ></span>
-          </a>
-          <a
-            href="#contact"
-            class="text-[#19143A] font-semibold text-sm hover:text-[#6346D8] transition-colors relative group py-1"
-          >
-            Contact
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6346D8] transition-all group-hover:w-full"
-            ></span>
-          </a>
-          <a
-            href="/camera"
-            class="bg-[#6346D8] text-white px-5 py-2 rounded-full font-bold text-sm shadow-md shadow-[#6346D8]/30 hover:bg-[#5235c7] hover:scale-105 active:scale-95 transition-all"
-          >
-            Mulai SignTalk
-          </a>
+  <!-- =======================================================
+         FLOATING NAVBAR
+         ======================================================= -->
+  <header class="fixed top-3 left-0 right-0 z-50 px-4 md:px-8">
+    <nav
+      class="max-w-6xl mx-auto bg-white/95 backdrop-blur-md rounded-full shadow-[0_8px_25px_rgba(43,18,76,0.06)] border border-[#E9D5FF] px-6 md:px-8 h-15 py-2.5 flex items-center justify-between transition-all">
+
+      <!-- Logo Tunggal dengan Background Bulat Putih -->
+      <a href="#home" class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-full bg-white shadow-sm border border-[#C4B5FD]/40 flex items-center justify-center p-1.5 overflow-hidden">
+          <img src="{{ url_for('static', filename='img/Logo.svg') }}" alt="SignTalk Logo"
+            class="w-full h-full object-contain" />
         </div>
+        <span class="text-2xl font-extrabold text-[#2B124C] font-heading tracking-wide">SignTalk</span>
+      </a>
 
-        <!-- Mobile Menu Toggle -->
-        <button
-          id="menu-btn"
-          class="md:hidden text-[#19143A] p-2 focus:outline-none"
-        >
-          <i data-lucide="menu" class="w-6 h-6"></i>
-        </button>
-      </nav>
+      <!-- Desktop Links dengan Garis Bawah yang Muncul Perlahan saat Hover -->
+      <div class="hidden lg:flex items-center gap-7 font-medium text-sm">
+        <a href="#home" class="nav-slow-line text-[#2B124C] hover:text-[#522B5B] transition-colors">Home</a>
+        <a href="#about" class="nav-slow-line text-[#2B124C] hover:text-[#522B5B] transition-colors">Apa itu
+          SignTalk</a>
+        <a href="#types" class="nav-slow-line text-[#2B124C] hover:text-[#522B5B] transition-colors">Jenis Isyarat</a>
+        <a href="#workflow" class="nav-slow-line text-[#2B124C] hover:text-[#522B5B] transition-colors">Alur</a>
+        <a href="#features" class="nav-slow-line text-[#2B124C] hover:text-[#522B5B] transition-colors">Fitur</a>
+        <a href="#messages" class="nav-slow-line text-[#2B124C] hover:text-[#522B5B] transition-colors">Pesan Teman
+          Tuli</a>
+      </div>
 
-      <!-- Mobile Nav Menu -->
-      <div
-        id="mobile-menu"
-        class="hidden md:hidden max-w-6xl mx-auto mt-3 bg-white/95 backdrop-blur-md rounded-2xl border border-[#F0EBFF] shadow-xl px-6 py-5 space-y-3"
-      >
-        <a
-          href="#home"
-          class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]"
-          >Home</a
-        >
-        <a
-          href="#features"
-          class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]"
-          >Features</a
-        >
-        <a
-          href="#about"
-          class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]"
-          >About</a
-        >
-        <a
-          href="#start"
-          class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]"
-          >Demo</a
-        >
-        <a
-          href="#contact"
-          class="block text-base font-semibold text-[#19143A] hover:text-[#6346D8]"
-          >Contact</a
-        >
-        <a
-          href="/camera"
-          class="block text-center bg-[#6346D8] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md"
-        >
-          Mulai SignTalk
+      <div class="hidden sm:flex items-center gap-3">
+        <a href="/camera"
+          class="bg-[#2B124C] hover:bg-[#522B5B] text-white px-6 py-2 rounded-full font-bold text-sm shadow-md transition-all hover:scale-105 active:scale-95 flex items-center gap-2 font-heading">
+          <span>Mulai SignTalk</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-[#F9C74F]"></i>
         </a>
       </div>
-    </header>
 
-    <main>
-      <!-- HERO SECTION -->
-      <section
-        id="home"
-        class="hero min-h-screen pt-28 md:pt-36 pb-12 md:pb-16 px-4 sm:px-6 md:px-12 lg:px-24 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-12"
-      >
-        <div
-          class="flex-1 min-w-0 text-center lg:text-left space-y-7 relative z-10"
-        >
-          <div
-            class="hero-fade inline-flex items-center gap-2.5 pl-3 pr-4 py-1.5 rounded-full bg-white/80 backdrop-blur border border-primary-soft shadow-sm text-sm font-semibold text-ink"
-            style="--d: 0ms"
-          >
-            <span class="live-dot" aria-hidden="true"></span>
-            Penerjemah BISINDO berbasis AI
-          </div>
+      <!-- Mobile Menu Toggle -->
+      <button id="menu-btn" class="lg:hidden text-[#2B124C] p-2 focus:outline-none" aria-label="Menu Mobile">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </nav>
 
-          <h1
-            class="text-base sm:text-lg md:text-4xl lg:text-7xl font-extrabold text-ink leading-[1.08] tracking-tight"
-          >
-            <span class="reveal-word" style="--d: 120ms">Suarakan</span>
-            <span class="reveal-word" style="--d: 220ms">Gerakan</span>
-            <span class="reveal-word" style="--d: 320ms">Tanganmu</span>
-            <br />
-            <span class="reveal-word" style="--d: 460ms">
-              <span class="hero-highlight"
-                >Tanpa Batas<svg
-                  class="hero-swash"
-                  viewBox="0 0 300 20"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <path d="M4 14 C 70 4, 160 3, 296 10" pathLength="100" /></svg
-              ></span>
-            </span>
-          </h1>
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu"
+      class="hidden lg:hidden max-w-6xl mx-auto mt-2 bg-white/95 backdrop-blur-md rounded-3xl border border-[#C4B5FD]/50 shadow-xl px-6 py-4 space-y-2.5 font-medium">
+      <a href="#home" class="block py-1 text-base font-semibold text-[#2B124C]">Home</a>
+      <a href="#about" class="block py-1 text-base font-semibold text-[#2B124C]">Apa itu SignTalk</a>
+      <a href="#types" class="block py-1 text-base font-semibold text-[#2B124C]">Jenis Isyarat</a>
+      <a href="#workflow" class="block py-1 text-base font-semibold text-[#2B124C]">Alur</a>
+      <a href="#features" class="block py-1 text-base font-semibold text-[#2B124C]">Fitur</a>
+      <a href="#messages" class="block py-1 text-base font-semibold text-[#2B124C]">Pesan Teman Tuli</a>
+      <a href="/camera"
+        class="block text-center bg-[#2B124C] text-[#F9C74F] px-6 py-2.5 rounded-full font-bold text-sm shadow-md mt-1 font-heading">
+        Mulai SignTalk Sekarang
+      </a>
+    </div>
+  </header>
 
-          <p
-            class="hero-fade text-lg md:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed"
-            style="--d: 650ms"
-          >
-            Terjemahkan isyarat tangan menjadi
-            <strong class="text-ink">teks dan suara</strong> secara langsung,
-            cukup dengan kamera laptopmu.
-          </p>
+  <main class="space-y-4 md:space-y-6">
+    <!-- =======================================================
+           1. HERO SECTION: GARIS BAWAH HANYA DI "TANPA BATAS" & FONT KONSISTEN
+           ======================================================= -->
+    <section id="home"
+      class="pt-28 md:pt-36 pb-8 px-4 sm:px-6 md:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+      <!-- Kiri: Teks & Tombol Utama (Font Fredoka Sama Persis dengan Apa itu SignTalk) -->
+      <div class="flex-1 min-w-0 text-center lg:text-left space-y-5 relative z-10">
+        <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold text-[#2B124C] ">
+          <span>Suarakan Gerakan Tanganmu</span>
+          <br />
+          <!-- Garis Bawah HANYA pada "Tanpa Batas" dan Mengikuti Panjang Kata -->
+          <span class="font-heading header-line text-[#F9C74F]">Tanpa Batas</span>
+        </h1>
 
-          <div
-            class="hero-fade flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
-            style="--d: 780ms"
-          >
-            <a
-              href="/camera"
-              class="btn-shine w-full sm:w-auto bg-primary text-white px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(99,70,216,0.4)] hover:shadow-[0_0_35px_rgba(167,139,250,0.6)] hover:-translate-y-1 transition-all"
-            >
-              Mulai SignTalk <i data-lucide="arrow-right" class="w-5 h-5"></i>
-            </a>
-            <a
-              href="#how-it-works"
-              class="w-full sm:w-auto px-7 py-4 rounded-full font-bold text-ink bg-white/70 backdrop-blur border border-primary-soft flex items-center justify-center gap-2 hover:border-primary-light hover:-translate-y-1 transition-all"
-            >
-              <i data-lucide="play-circle" class="w-5 h-5 text-primary"></i>
-              Lihat cara kerja
-            </a>
-          </div>
+        <p class="text-base sm:text-lg text-[#522B5B] max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+          Terjemahkan isyarat tangan menjadi <strong class="text-[#F9C74F]">teks dan suara</strong> secara langsung,
+          cukup dengan kamera laptopmu.
+        </p>
 
-          <ul
-            class="hero-fade flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-sm font-semibold text-gray-500"
-            style="--d: 900ms"
-          >
-            <li class="flex items-center gap-1.5">
-              <i
-                data-lucide="check-circle-2"
-                class="w-4 h-4 text-secondary-deep"
-              ></i>
-              Huruf A–Z &amp; angka 1–10
-            </li>
-            <li class="flex items-center gap-1.5">
-              <i
-                data-lucide="check-circle-2"
-                class="w-4 h-4 text-secondary-deep"
-              ></i>
-              46 isyarat
-            </li>
-            <li class="flex items-center gap-1.5">
-              <i
-                data-lucide="check-circle-2"
-                class="w-4 h-4 text-secondary-deep"
-              ></i>
-              Teks + suara
-            </li>
-          </ul>
+        <div class="flex items-center justify-center lg:justify-start pt-1">
+          <a href="/camera"
+            class="inline-flex items-center gap-3 bg-[#2B124C] hover:bg-[#522B5B] text-[#F9C74F] px-9 py-4 rounded-full font-bold text-lg shadow-xl shadow-[#2B124C]/20 hover:scale-105 active:scale-95 transition-all font-heading">
+            <span>Mulai SignTalk</span>
+            <i data-lucide="video" class="w-5 h-5"></i>
+          </a>
         </div>
+      </div>
 
-        <!-- Hero Visual: laptop yang "mengeluarkan" gelembung huruf -->
-        <div
-          id="hero-visual"
-          class="hero-fade flex-1 w-full relative h-[320px] sm:h-[420px] md:h-[540px] flex items-center justify-center"
-          style="--d: 300ms"
-        >
-          <div
-            id="hero-scene"
-            class="hero-scene absolute inset-0 flex items-center justify-center"
-          >
-            <div class="hero-backdrop" aria-hidden="true"></div>
-            <div class="hero-orbit" aria-hidden="true">
-              <span class="orbit-dot orbit-dot--amber"></span>
-              <span class="orbit-dot orbit-dot--purple"></span>
-            </div>
+      <!-- Kanan: Laptop Diperbesar & Gelembung Cukup Melayang di Atas Laptop -->
+      <div id="hero-visual"
+        class="flex-1 w-full relative h-[380px] sm:h-[440px] md:h-[480px] flex items-center justify-center overflow-visible">
+        <div class="hero-scene">
+          <!-- Panggung Gelembung Cukup Melayang di Atas Layar Laptop -->
+          <div id="bubble-stage" class="bubble-stage"></div>
 
-            <!-- Floating chips (hidden on mobile, shown on md and up) -->
-            <div
-              class="hero-chip hidden md:flex top-[10%] left-[6%] bg-primary-soft animate-float-slow"
-              aria-hidden="true"
-            >
-              <i data-lucide="message-square" class="w-6 h-6 text-ink"></i>
-            </div>
-            <div
-              class="hero-chip hidden md:flex top-[44%] right-[2%] bg-white rounded-full animate-float-reverse"
-              aria-hidden="true"
-            >
-              <i data-lucide="brain" class="w-7 h-7 text-primary"></i>
-            </div>
-            <div
-              class="hero-chip hidden md:flex bottom-[8%] left-[12%] bg-secondary animate-float-reverse"
-              aria-hidden="true"
-            >
-              <i data-lucide="volume-2" class="w-6 h-6 text-ink"></i>
-            </div>
+          <!-- Laptop Ukuran Besar Diperbesar -->
+          <div class="laptop-large">
+            <svg class="laptop-svg" viewBox="0 0 420 300">
+              <defs>
+                <linearGradient id="lidGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#522B5B" />
+                  <stop offset="1" stop-color="#2B124C" />
+                </linearGradient>
+                <linearGradient id="baseGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#E9D5FF" />
+                  <stop offset="1" stop-color="#C4B5FD" />
+                </linearGradient>
+              </defs>
+              <rect x="60" y="10" width="300" height="200" rx="16" fill="url(#lidGrad)" />
+              <circle cx="210" cy="16.5" r="2.8" fill="#F9C74F" />
+              <path d="M18 212 H402 L384 236 Q381 241 374 241 H46 Q39 241 36 236 Z" fill="url(#baseGrad)" />
+              <rect x="18" y="207" width="384" height="8" rx="4" fill="#E2CEF8" />
+              <rect x="180" y="211" width="60" height="3" rx="1.5" fill="#BFA7E8" />
+            </svg>
 
-            <!-- Laptop -->
-            <div class="laptop" aria-hidden="true">
-              <svg class="laptop-svg" viewBox="0 0 420 300">
-                <defs>
-                  <linearGradient id="lidGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#2A2359" />
-                    <stop offset="1" stop-color="#19143A" />
-                  </linearGradient>
-                  <linearGradient id="baseGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#F3EFFF" />
-                    <stop offset="1" stop-color="#D9D0FF" />
-                  </linearGradient>
-                </defs>
-                <rect
-                  x="60"
-                  y="10"
-                  width="300"
-                  height="200"
-                  rx="16"
-                  fill="url(#lidGrad)"
-                />
-                <circle cx="210" cy="16.5" r="2.6" fill="#FFB938" />
-                <path
-                  d="M18 212 H402 L384 236 Q381 241 374 241 H46 Q39 241 36 236 Z"
-                  fill="url(#baseGrad)"
-                />
-                <rect
-                  x="18"
-                  y="207"
-                  width="384"
-                  height="8"
-                  rx="4"
-                  fill="#E9E3FF"
-                />
-                <rect
-                  x="180"
-                  y="207"
-                  width="60"
-                  height="5"
-                  rx="2.5"
-                  fill="#C9BCFA"
-                />
+            <!-- Layar Laptop -->
+            <div id="laptop-screen" class="laptop-screen">
+              <div class="vf vf-tl"></div>
+              <div class="vf-tr"></div>
+              <div class="vf-bl"></div>
+              <div class="vf-br"></div>
+
+              <div class="screen-live">
+                <span></span> SCANNING
+              </div>
+
+              <svg class="screen-hand" viewBox="0 0 120 120">
+                <g class="hand-bones">
+                  <line x1="60" y1="105" x2="60" y2="82" />
+                  <line x1="60" y1="82" x2="36" y2="68" />
+                  <line x1="36" y1="68" x2="26" y2="52" />
+                  <line x1="60" y1="82" x2="48" y2="44" />
+                  <line x1="48" y1="44" x2="44" y2="22" />
+                  <line x1="60" y1="82" x2="60" y2="40" />
+                  <line x1="60" y1="40" x2="60" y2="18" />
+                  <line x1="60" y1="82" x2="72" y2="44" />
+                  <line x1="72" y1="44" x2="76" y2="24" />
+                  <line x1="60" y1="82" x2="84" y2="54" />
+                  <line x1="84" y1="54" x2="92" y2="38" />
+                </g>
+                <g class="hand-joints">
+                  <circle cx="60" cy="105" r="3.2" />
+                  <circle cx="60" cy="82" r="3" />
+                  <circle cx="36" cy="68" r="2.8" />
+                  <circle cx="26" cy="52" r="3.2" />
+                  <circle cx="48" cy="44" r="2.8" />
+                  <circle cx="44" cy="22" r="3.2" />
+                  <circle cx="60" cy="40" r="2.8" />
+                  <circle cx="60" cy="18" r="3.2" />
+                  <circle cx="72" cy="44" r="2.8" />
+                  <circle cx="76" cy="24" r="3.2" />
+                  <circle cx="84" cy="54" r="2.8" />
+                  <circle cx="92" cy="38" r="3.2" />
+                </g>
               </svg>
 
-              <div id="laptop-screen" class="laptop-screen">
-                <span class="vf vf-tl"></span><span class="vf vf-tr"></span>
-                <span class="vf vf-bl"></span><span class="vf vf-br"></span>
-                <span class="screen-live"><span></span>LIVE</span>
-                <svg class="screen-hand" viewBox="0 0 100 120">
-                  <g class="hand-bones">
-                    <line x1="50" y1="112" x2="36" y2="104" />
-                    <line x1="36" y1="104" x2="26" y2="92" />
-                    <line x1="26" y1="92" x2="19" y2="80" />
-                    <line x1="19" y1="80" x2="13" y2="69" />
-                    <line x1="50" y1="112" x2="38" y2="70" />
-                    <line x1="38" y1="70" x2="35" y2="50" />
-                    <line x1="35" y1="50" x2="33" y2="37" />
-                    <line x1="33" y1="37" x2="32" y2="26" />
-                    <line x1="38" y1="70" x2="50" y2="67" />
-                    <line x1="50" y1="67" x2="50" y2="45" />
-                    <line x1="50" y1="45" x2="50" y2="31" />
-                    <line x1="50" y1="31" x2="50" y2="19" />
-                    <line x1="50" y1="67" x2="61" y2="69" />
-                    <line x1="61" y1="69" x2="64" y2="49" />
-                    <line x1="64" y1="49" x2="66" y2="36" />
-                    <line x1="66" y1="36" x2="67" y2="26" />
-                    <line x1="61" y1="69" x2="71" y2="74" />
-                    <line x1="71" y1="74" x2="77" y2="58" />
-                    <line x1="77" y1="58" x2="80" y2="48" />
-                    <line x1="80" y1="48" x2="83" y2="39" />
-                    <line x1="50" y1="112" x2="71" y2="74" />
-                  </g>
-                  <g class="hand-joints">
-                    <circle
-                      cx="50"
-                      cy="112"
-                      r="2.6"
-                      style="animation-delay: 0ms"
-                    />
-                    <circle
-                      cx="36"
-                      cy="104"
-                      r="2.6"
-                      style="animation-delay: 90ms"
-                    />
-                    <circle
-                      cx="26"
-                      cy="92"
-                      r="2.6"
-                      style="animation-delay: 180ms"
-                    />
-                    <circle
-                      cx="19"
-                      cy="80"
-                      r="2.6"
-                      style="animation-delay: 270ms"
-                    />
-                    <circle
-                      cx="13"
-                      cy="69"
-                      r="3.4"
-                      style="animation-delay: 360ms"
-                    />
-                    <circle
-                      cx="38"
-                      cy="70"
-                      r="2.6"
-                      style="animation-delay: 450ms"
-                    />
-                    <circle
-                      cx="35"
-                      cy="50"
-                      r="2.6"
-                      style="animation-delay: 540ms"
-                    />
-                    <circle
-                      cx="33"
-                      cy="37"
-                      r="2.6"
-                      style="animation-delay: 630ms"
-                    />
-                    <circle
-                      cx="32"
-                      cy="26"
-                      r="3.4"
-                      style="animation-delay: 720ms"
-                    />
-                    <circle
-                      cx="50"
-                      cy="67"
-                      r="2.6"
-                      style="animation-delay: 810ms"
-                    />
-                    <circle
-                      cx="50"
-                      cy="45"
-                      r="2.6"
-                      style="animation-delay: 900ms"
-                    />
-                    <circle
-                      cx="50"
-                      cy="31"
-                      r="2.6"
-                      style="animation-delay: 990ms"
-                    />
-                    <circle
-                      cx="50"
-                      cy="19"
-                      r="3.4"
-                      style="animation-delay: 1080ms"
-                    />
-                    <circle
-                      cx="61"
-                      cy="69"
-                      r="2.6"
-                      style="animation-delay: 1170ms"
-                    />
-                    <circle
-                      cx="64"
-                      cy="49"
-                      r="2.6"
-                      style="animation-delay: 1260ms"
-                    />
-                    <circle
-                      cx="66"
-                      cy="36"
-                      r="2.6"
-                      style="animation-delay: 1350ms"
-                    />
-                    <circle
-                      cx="67"
-                      cy="26"
-                      r="3.4"
-                      style="animation-delay: 1440ms"
-                    />
-                    <circle
-                      cx="71"
-                      cy="74"
-                      r="2.6"
-                      style="animation-delay: 1530ms"
-                    />
-                    <circle
-                      cx="77"
-                      cy="58"
-                      r="2.6"
-                      style="animation-delay: 1620ms"
-                    />
-                    <circle
-                      cx="80"
-                      cy="48"
-                      r="2.6"
-                      style="animation-delay: 1710ms"
-                    />
-                    <circle
-                      cx="83"
-                      cy="39"
-                      r="3.4"
-                      style="animation-delay: 1800ms"
-                    />
-                  </g>
+              <div class="screen-scan"></div>
+
+              <div class="screen-caption">
+                <span>Terdeteksi:</span>
+                <b id="screen-letter">A</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+           2. SECTION: APA ITU SIGNTALK (DINO BERGOYANG KANAN KIRI)
+           ======================================================= -->
+    <section id="about" class="py-8 md:py-10 px-4 sm:px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
+      <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-14">
+        <!-- Kiri: Dino Memegang Buku dengan Efek Goyang Kanan Kiri (dino-sway) -->
+        <div class="w-full lg:w-5/12 flex items-center justify-center">
+          <img src="{{ url_for('static', filename='img/Dino baca buku.png') }}"
+            alt="Dino sedang memegang buku dan mendapatkan ide"
+            class="dino-sway max-h-76 w-auto object-contain drop-shadow-md" />
+        </div>
+
+        <!-- Kanan: Penjelasan Lengkap -->
+        <div class="w-full lg:w-7/12 space-y-4 text-left">
+          <h2>
+            <span class="header-line text-3xl sm:text-4xl font-extrabold text-[#2B124C] font-heading">Apa itu
+              SignTalk?</span>
+          </h2>
+
+          <p class="text-[#522B5B] text-base leading-relaxed font-normal">
+            <strong>SignTalk</strong> adalah platform cerdas yang dirancang untuk menerjemahkan Bahasa Isyarat Indonesia
+            (<strong class="text-[#F9C74F]">BISINDO</strong>) ke dalam teks dan suara secara real-time. Platform ini
+            hadir untuk mempermudah komunikasi inklusif antara <strong class="text-[#F9C74F]">Teman Tuli</strong> dan
+            <strong class="text-[#F9C74F]">Teman Dengar</strong>.
+          </p>
+
+          <p class="text-[#522B5B] text-base leading-relaxed font-normal">
+            Didukung teknologi Computer Vision (MediaPipe) dan Machine Learning (Random Forest) berkinerja tinggi,
+            SignTalk mengekstrak 126 koordinat sendi tangan secara real-time dari kamera laptop, lalu mengubahnya
+            menjadi teks dan suara natural tanpa memerlukan perangkat keras tambahan.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+           3. SECTION: JENIS BAHASA ISYARAT (STRUKTUR SAMA PERSIS GAMBAR 1)
+           ======================================================= -->
+    <section id="types" class="py-8 md:py-10 px-4 sm:px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h2>
+          <span class="header-line text-3xl sm:text-4xl font-extrabold text-[#2B124C] font-heading">Jenis Bahasa Isyarat
+            di Indonesia</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+        <!-- KARTU 1: BISINDO (STRUKTUR & WARNA SAMA PERSIS GAMBAR 1: BG #FFF8EE, BORDER KUNING, CENTANG KUNING DALAM KOTAK) -->
+        <div
+          class="lg:col-span-7 bg-[#FFF8EE] rounded-[2.5rem] p-6 sm:p-8 border-2 border-[#F9C74F] shadow-sm flex flex-col relative min-h-[320px] overflow-hidden">
+          <!-- Centang Kuning di Pojok Kanan Atas Sesuai Gambar 1 -->
+          <div
+            class="absolute top-5 right-5 sm:top-6 sm:right-6 w-8 h-8 rounded-full bg-[#F9C74F] text-[#2B124C] flex items-center justify-center font-black text-base shadow-sm z-10">
+            <i data-lucide="check" class="w-5 h-5 stroke-[3.5]"></i>
+          </div>
+
+          <div class="flex flex-row items-stretch h-full gap-0">
+            <!-- Tulisan di Sebelah Kiri: BISINDO + Deskripsi + Label SignTalk (langsung di bawah deskripsi) -->
+            <div class="flex-1 text-left z-10 flex flex-col pr-4">
+              <h3 class="text-3xl sm:text-4xl font-extrabold text-[#2B124C] font-heading leading-tight">BISINDO</h3>
+              <p class="text-sm sm:text-base text-[#2B124C]/85 leading-relaxed mt-3">
+                Bahasa Isyarat Indonesia yang berkembang secara alami di masyarakat dan komunitas Tuli di seluruh
+                Indonesia.
+              </p>
+              <!-- Badge langsung di bawah paragraf deskripsi, sesuai gambar -->
+              <div class="mt-4">
+                <p
+                  class="text-xs font-bold text-[#2B124C] bg-[#FDE68A]/60 border border-[#F9C74F]/70 px-3.5 py-1.5 rounded-xl inline-flex items-center gap-1.5 shadow-sm">
+                  <i data-lucide="sparkles" class="w-4 h-4 text-[#2B124C]"></i>
+                  <span>SignTalk menggunakan bahasa isyarat ini sebagai bahasa utama penerjemah.</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Dino di Sisi Kanan: Agak ke Kanan (justify-end), mengisi tinggi penuh kartu sesuai gambar -->
+            <div class="flex-shrink-0 flex items-end justify-end self-end -mb-6 sm:-mb-8 -mr-6 sm:-mr-8">
+              <img src="{{ url_for('static', filename='img/Dino Bisindo.png') }}"
+                alt="Dino sedang membuat gerakan isyarat bisindo"
+                class="h-72 sm:h-80 lg:h-[340px] w-auto object-contain hover:scale-105 transition-transform origin-bottom-right" />
+            </div>
+          </div>
+        </div>
+
+        <!-- KARTU 2: SIBI (STRUKTUR & WARNA SAMA PERSIS GAMBAR 1: BG PASTEL UNGU #EADBFC, TULISAN ATAS, BUKU DI BAWAH) -->
+        <div
+          class="lg:col-span-5 bg-[#EADBFC] rounded-[2.5rem] p-6 sm:p-8 border border-[#D8B4FE]/50 shadow-sm flex flex-col justify-between relative min-h-[320px]">
+          <div class="text-left flex-1">
+            <h3 class="text-3xl sm:text-4xl font-extrabold text-[#2B124C] font-heading leading-tight">SIBI</h3>
+            <p class="text-sm sm:text-base text-[#2B124C]/85 leading-relaxed mt-3">
+              Sistem Isyarat Bahasa Indonesia yang dibakukan secara formal untuk kurikulum sekolah luar biasa dengan
+              tata bahasa Indonesia baku.
+            </p>
+          </div>
+
+          <!-- Gambar Buku di Bagian Bawah Menggunakan buku.png Sesuai Gambar 1 -->
+          <div class="mt-4 flex items-center justify-center">
+            <img src="{{ url_for('static', filename='img/buku.png') }}" alt="Gambar Buku SIBI"
+              class="max-h-36 w-auto object-contain drop-shadow-sm hover:scale-105 transition-transform" />
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================
+           4. SECTION: ALUR PENGGUNAAN SIGNTALK
+           - HAPUS ANGKA 1 2 3 4 & BULATANNYA
+           - BERGERAK GANTIAN ZOOM 1 -> 2 -> 3 -> 4
+           ======================================================= -->
+    <section id="workflow" class="py-8 md:py-10 px-4 sm:px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h2>
+          <span class="header-line text-3xl sm:text-4xl font-extrabold text-[#2B124C] font-heading">Alur Penggunaan
+            SignTalk</span>
+        </h2>
+      </div>
+
+      <!-- 4 Langkah: Zoom Bergantian 1 2 3 4 Tanpa Angka & Tanpa Bulatan -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
+        <!-- Langkah 1: Buka Kamera -->
+        <div class="alur-card active" data-step="0">
+          <div class="alur-icon-box">
+            <i data-lucide="video" class="w-7 h-7"></i>
+          </div>
+          <h3 class="alur-title">Buka Kamera</h3>
+          <p class="alur-desc">
+            Akses halaman kamera SignTalk dan izinkan peramban mengakses webcam laptop Anda.
+          </p>
+        </div>
+
+        <!-- Langkah 2: Bentuk Isyarat -->
+        <div class="alur-card" data-step="1">
+          <div class="alur-icon-box">
+            <i data-lucide="hand" class="w-7 h-7"></i>
+          </div>
+          <h3 class="alur-title">Bentuk Isyarat</h3>
+          <p class="alur-desc">
+            Posisikan tangan Anda di depan kamera dengan gestur huruf, angka, atau kata BISINDO.
+          </p>
+        </div>
+
+        <!-- Langkah 3: Deteksi Cerdas AI -->
+        <div class="alur-card" data-step="2">
+          <div class="alur-icon-box">
+            <i data-lucide="cpu" class="w-7 h-7"></i>
+          </div>
+          <h3 class="alur-title">Deteksi Cerdas AI</h3>
+          <p class="alur-desc">
+            MediaPipe &amp; Random Forest memproses 126 landmark tangan dan mengenali pola secara instan.
+          </p>
+        </div>
+
+        <!-- Langkah 4: Teks & Suara -->
+        <div class="alur-card" data-step="3">
+          <div class="alur-icon-box">
+            <i data-lucide="volume-2" class="w-7 h-7"></i>
+          </div>
+          <h3 class="alur-title">Teks &amp; Suara</h3>
+          <p class="alur-desc">
+            Hasil terjemahan langsung tertulis di layar dan dibunyikan dengan suara Text-to-Speech.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+           5. SECTION: FITUR PADA SIGNTALK
+           - Header: "Fitur pada SignTalk"
+           - Kepala Dino tanpa kotak/background
+           - Kartu-kartu berwarna ungu pastel
+           - 3 Kapsul kuning bersih
+           ======================================================= -->
+    <section id="features" class="py-8 md:py-10 px-4 sm:px-6 md:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
+      <div class="text-center mb-6">
+        <h2>
+          <span class="header-line text-3xl sm:text-4xl font-extrabold text-[#2B124C] font-heading">Fitur pada
+            SignTalk</span>
+        </h2>
+      </div>
+
+      <!-- GRID 3 KOLOM SESUAI GAMBAR 2 DENGAN WARNA KARTU UNGU PASTEL -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+        <!-- KOLOM KIRI (lg:col-span-3): KARTU TINGGI UNGU PASTEL -->
+        <div class="lg:col-span-3 fitur-card-pastel flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-[#2B124C] text-[#F9C74F] flex items-center justify-center">
+              <i data-lucide="camera" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold font-heading text-[#2B124C]">Penerjemah Bahasa Isyarat</h3>
+            <p class="text-sm text-[#2B124C]/85 leading-relaxed">
+              Penerjemah bahasa isyarat melalui kamera real-time dengan kamus bahasa isyarat interaktif yang dapat
+              diakses langsung.
+            </p>
+          </div>
+        </div>
+
+        <!-- KOLOM TENGAH (lg:col-span-6): KEPALA DINO DI ATAS (TANPA KOTAK) + 3 KARTU KECIL DI BAWAH -->
+        <div class="lg:col-span-6 flex flex-col justify-between gap-5">
+
+          <!-- Kepala Dino Mengikuti Kursor: HANYA KEPALA DINO SAJA (TANPA KOTAK UNGU / TANPA TEKS) -->
+          <div class="flex items-center justify-center flex-1 py-2">
+            <img id="dino-head-img" src="{{ url_for('static', filename='img/Kepala Dino.png') }}"
+              alt="Kepala dino yang melihat ke bawah dan mengikuti kursor"
+              class="max-h-52 w-auto object-contain transition-transform duration-75 drop-shadow-md" />
+          </div>
+
+          <!-- 3 Kartu Kecil di Bawah Kepala Dino Berwarna Ungu Pastel -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Kartu 1 -->
+            <div class="fitur-card-pastel p-4 text-center flex flex-col justify-between">
+              <h4 class="text-base font-bold font-heading text-[#2B124C] mb-1">Latihan Kata</h4>
+              <p class="text-[11px] text-[#2B124C]/80 leading-normal">
+                Rangkai huruf demi huruf dengan isyarat tangan.
+              </p>
+            </div>
+
+            <!-- Kartu 2 -->
+            <div class="fitur-card-pastel p-4 text-center flex flex-col justify-between">
+              <h4 class="text-base font-bold font-heading text-[#2B124C] mb-1">Kuis Isyarat</h4>
+              <p class="text-[11px] text-[#2B124C]/80 leading-normal">
+                Tantangan kuis menguji daya ingat isyarat Anda.
+              </p>
+            </div>
+
+            <!-- Kartu 3 -->
+            <div class="fitur-card-pastel p-4 text-center flex flex-col justify-between">
+              <h4 class="text-base font-bold font-heading text-[#2B124C] mb-1">Game Puzzle</h4>
+              <p class="text-[11px] text-[#2B124C]/80 leading-normal">
+                Cocokkan huruf alfabet dengan gambar isyarat benar.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- KOLOM KANAN (lg:col-span-3): KARTU TINGGI UNGU PASTEL -->
+        <div class="lg:col-span-3 fitur-card-pastel flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-[#2B124C] text-[#F9C74F] flex items-center justify-center">
+              <i data-lucide="volume-2" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold font-heading text-[#2B124C]">Text to Speech</h3>
+            <p class="text-sm text-[#2B124C]/85 leading-relaxed">
+              Mengubah hasil deteksi isyarat secara langsung menjadi ucapan suara yang jernih dan otomatis.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3 KAPSUL KUNING BERSIH SESUAI GAMBAR 2 (HURUF A-Z, ANGKA 1-10, 10 KATA) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-3 max-w-4xl mx-auto">
+        <button id="btn-modal-letters" class="fitur-capsule-btn w-full">
+          Huruf A–Z
+        </button>
+
+        <button id="btn-modal-numbers" class="fitur-capsule-btn w-full">
+          Angka 1–10
+        </button>
+
+        <button id="btn-modal-words" class="fitur-capsule-btn w-full">
+          10 Kata
+        </button>
+      </div>
+    </section>
+
+    <!-- =======================================================
+           6. SECTION: PESAN UNTUK TEMAN TULI
+           - Dino Diperbesar Signifikan
+           - 3 Bubble Stay di Atas (Letak Berantakan) & 4 Bubble di Bawah Tetap
+           - Love Keluar Menyebar Kanan, Kiri, Atas
+           - Zero Clipping (Tidak Terpotong di Atas)
+           ======================================================= -->
+    <section id="messages" class="py-8 md:py-10 px-4 sm:px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
+      <div
+        class="bg-[#E9D5FF] rounded-[2.5rem] p-6 sm:p-8 lg:p-10 shadow-lg border border-[#C4B5FD] flex flex-col lg:flex-row items-center gap-8 relative overflow-hidden ">
+
+        <!-- Kiri: Dino Surat Cinta Diperbesar Lebih Besar Lagi -->
+        <div id="dino-surat-container"
+          class="w-full lg:w-5/12 flex flex-col items-center justify-center text-center relative z-20 cursor-pointer select-none">
+          <img id="dino-surat-img" src="{{ url_for('static', filename='img/Dino surat cinta.png') }}"
+            alt="Dino memegang surat cinta"
+            class="h-80 sm:h-96 lg:h-[440px] w-auto max-w-full object-contain drop-shadow-xl hover:scale-105 active:scale-95 transition-transform" />
+        </div>
+
+        <!-- Kanan: Header + Canvas Pills (Tanpa Tombol Acak) -->
+        <div class="w-full lg:w-7/12 space-y-3 relative z-10 flex flex-col justify-between h-full">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <h2>
+              <span class="header-line text-2xl sm:text-3xl font-extrabold text-[#2B124C] font-heading">Pesan untuk
+                teman tuli</span>
+            </h2>
+          </div>
+
+          <!-- Arena Fisika 2D Gravity Pills (Tinggi 420px, 3+4 Melayang + 4 Bawah) -->
+          <div id="gravity-container" class="gravity-arena">
+            <canvas id="gravity-canvas"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================
+           7. CTA SEBELUM FOOTER
+           ======================================================= -->
+    <section class="py-8 md:py-10 px-4 max-w-4xl mx-auto text-center space-y-5">
+      <h2>
+        <span class="header-line text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#2B124C] font-heading">Mulai
+          belajar bahasa isyarat sekarang</span>
+      </h2>
+      <p class="text-base text-[#522B5B] max-w-lg mx-auto">
+        Coba penerjemah kamera SignTalk sekarang juga dan rasakan kemudahan berkomunikasi inklusif.
+      </p>
+      <div class="pt-1">
+        <a href="/camera"
+          class="inline-flex items-center gap-3 bg-[#2B124C] hover:bg-[#522B5B] text-[#F9C74F] px-9 py-4 rounded-full font-bold text-lg shadow-xl shadow-[#2B124C]/20 hover:scale-105 active:scale-95 transition-all font-heading">
+          <span>Mulai SignTalk</span>
+          <i data-lucide="arrow-right" class="w-6 h-6"></i>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- =======================================================
+         FOOTER DENGAN 3 ANGGOTA TIM DARI CAMERA.HTML
+         ======================================================= -->
+  <footer class="bg-[#19143A] text-white py-10 px-6 border-t border-[#2A2359] mt-10">
+    <div class="max-w-6xl mx-auto space-y-8">
+
+      <div
+        class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 border-b border-[#2A2359] pb-8">
+
+        <!-- App Brand Info dengan Logo Bulat Putih -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center p-1.5 shadow-md">
+              <img src="{{ url_for('static', filename='img/Logo.svg') }}" alt="SignTalk Logo"
+                class="w-full h-full object-contain" />
+            </div>
+            <span class="text-2xl font-extrabold font-heading text-white">SignTalk</span>
+          </div>
+          <p class="text-xs text-[#A78BFA] max-w-sm">
+            MediaPipe Hands · Random Forest · Text-to-Speech · BISINDO
+          </p>
+        </div>
+
+        <!-- 3 Kotak Anggota Tim -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-auto">
+
+          <!-- Anggota 1 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Kaila Puteri Iskandar</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="https://instagram.com/kailaa.putri" target="_blank" rel="noopener noreferrer"
+                class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                 </svg>
-                <span class="screen-scan"></span>
-                <span class="screen-caption"
-                  >Terdeteksi <b id="screen-letter">A</b></span
-                >
+              </a>
+              <a href="https://linkedin.com/in/KailaPuteriIskandar" target="_blank" rel="noopener noreferrer"
+                class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path
+                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
+              </a>
+              <a href="mailto:kailaputeriiska@gmail.com" class="text-gray-400 hover:text-[#A78BFA] transition-colors"
+                title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Anggota 2 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Anggota Tim 2</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
               </div>
             </div>
 
-            <!-- Gelembung huruf dibuat oleh landing.js -->
-            <div
-              id="bubble-stage"
-              class="bubble-stage"
-              aria-hidden="true"
-            ></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION 3: MAIN FEATURES -->
-      <section
-        id="features"
-        class="py-16 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto my-8"
-      >
-        <div class="text-center mb-16" data-reveal>
-          <span
-            class="inline-flex items-center gap-1.5 px-3.5 py-1 mb-4 rounded-full bg-secondary-soft text-secondary-deep text-xs font-extrabold tracking-widest uppercase"
-            ><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Fitur</span
-          >
-          <h2 class="text-4xl font-extrabold text-[#19143A] mb-4">
-            Fitur Utama SignTalk
-          </h2>
-          <p class="text-gray-600 max-w-2xl mx-auto">
-            Teknologi canggih yang kami gunakan untuk menjembatani komunikasi
-            secara inklusif.
-          </p>
-        </div>
-
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-          data-reveal
-        >
-          <!-- Feature 1 -->
-          <div
-            class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors"
-            >
-              <i data-lucide="camera" class="w-8 h-8"></i>
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="#" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                </svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path
+                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
             </div>
-            <h3 class="text-xl font-bold text-[#19143A] mb-3">
-              Deteksi Gerakan Tangan
-            </h3>
-            <p class="text-gray-600 text-sm leading-relaxed">
-              Kamera mendeteksi pose dan landmark gerakan tangan dengan presisi
-              tinggi.
-            </p>
-          </div>
-          <!-- Feature 2 -->
-          <div
-            class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors"
-            >
-              <i data-lucide="brain" class="w-8 h-8"></i>
-            </div>
-            <h3 class="text-xl font-bold text-[#19143A] mb-3">
-              Pengenalan Berbasis AI
-            </h3>
-            <p class="text-gray-600 text-sm leading-relaxed">
-              Model Machine Learning mengklasifikasikan gerakan isyarat secara
-              akurat.
-            </p>
-          </div>
-          <!-- Feature 3 -->
-          <div
-            class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors"
-            >
-              <i data-lucide="file-text" class="w-8 h-8"></i>
-            </div>
-            <h3 class="text-xl font-bold text-[#19143A] mb-3">
-              Hasil dalam Bentuk Teks
-            </h3>
-            <p class="text-gray-600 text-sm leading-relaxed">
-              Gerakan otomatis diterjemahkan menjadi teks readable yang langsung
-              dapat dibaca.
-            </p>
-          </div>
-          <!-- Feature 4 -->
-          <div
-            class="bg-white p-8 rounded-3xl shadow-lg border border-[#F0EBFF] flex flex-col items-center text-center hover:-translate-y-3 transition-transform duration-300 group"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#6346D8] group-hover:text-white transition-colors"
-            >
-              <i data-lucide="zap" class="w-8 h-8"></i>
-            </div>
-            <h3 class="text-xl font-bold text-[#19143A] mb-3">
-              Interaksi Real-Time
-            </h3>
-            <p class="text-gray-600 text-sm leading-relaxed">
-              Pemrosesan super cepat tanpa delay untuk kelancaran komunikasi dua
-              arah.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION 4: ABOUT SIGNTALK -->
-      <section
-        id="about"
-        class="py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto"
-      >
-        <div
-          data-reveal
-          class="bg-[#19143A] rounded-[3rem] p-10 md:p-16 flex flex-col lg:flex-row items-center gap-12 relative overflow-hidden text-white shadow-2xl"
-        >
-          <div class="flex-1 relative z-10 space-y-6">
-            <h2 class="text-4xl md:text-5xl font-extrabold">
-              Tentang SignTalk
-            </h2>
-            <p class="text-[#DCEBFF] text-lg leading-relaxed">
-              SignTalk merupakan platform pengenalan bahasa isyarat berbasis
-              Artificial Intelligence (AI) dan Computer Vision untuk mendukung
-              komunikasi yang lebih inklusif bagi penyandang disabilitas rungu
-              dan wicara.
-            </p>
           </div>
 
-          <div class="flex-1 w-full relative z-10">
-            <div
-              class="w-full aspect-video bg-[#2A2359] rounded-3xl border border-[#6346D8] flex items-center justify-center overflow-hidden relative shadow-2xl"
-            >
+          <!-- Anggota 3 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
               <div
-                class="absolute inset-0 bg-gradient-to-tr from-[#6346D8]/30 to-transparent"
-              ></div>
-              <div
-                class="w-48 h-48 border-2 border-dashed border-[#A78BFA]/50 rounded-full flex items-center justify-center animate-spin"
-                style="animation-duration: 20s"
-              >
-                <div
-                  class="w-32 h-32 bg-[#6346D8]/40 rounded-full filter blur-md"
-                ></div>
+                class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
               </div>
-              <div
-                class="absolute font-black text-2xl text-[#DCEBFF] tracking-widest"
-              >
-                VISI INKLUSIF
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Anggota Tim 3</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <!-- SECTION 5: INTERACTIVE BISINDO ALPHABET -->
-      <section id="demo-section" class="py-20 w-full overflow-hidden">
-        <div class="text-center mb-12 px-6 max-w-7xl mx-auto" data-reveal>
-          <span
-            class="inline-flex items-center gap-1.5 px-3.5 py-1 mb-4 rounded-full bg-secondary-soft text-secondary-deep text-xs font-extrabold tracking-widest uppercase"
-            ><i data-lucide="hand" class="w-3.5 h-3.5"></i> Alfabet
-            BISINDO</span
-          >
-          <h2 class="text-4xl font-extrabold text-[#19143A] mb-4">
-            Jelajahi Bahasa Isyarat (BISINDO)
-          </h2>
-          <p class="text-gray-600 max-w-xl mx-auto">
-            Klik kartu huruf di bawah untuk melihat contoh gerakan tangannya.
-          </p>
-        </div>
-
-        <div class="relative w-full overflow-hidden">
-          <!-- Floating Navigation Buttons -->
-          <button
-            id="scroll-left"
-            class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-xl flex items-center justify-center text-[#6346D8] hover:bg-[#F0EBFF] border border-[#F0EBFF] transition-all hover:scale-110"
-          >
-            <i data-lucide="chevron-left" class="w-6 h-6"></i>
-          </button>
-          <button
-            id="scroll-right"
-            class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-xl flex items-center justify-center text-[#6346D8] hover:bg-[#F0EBFF] border border-[#F0EBFF] transition-all hover:scale-110"
-          >
-            <i data-lucide="chevron-right" class="w-6 h-6"></i>
-          </button>
-
-          <!-- Edge Soft Gradient Overlays -->
-          <div
-            class="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none"
-          ></div>
-          <div
-            class="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none"
-          ></div>
-
-          <!-- Marquee Infinite Slider -->
-          <div id="carousel-wrapper" class="w-full overflow-hidden py-10">
-            <div
-              id="carousel-container"
-              class="animate-marquee hover:[animation-play-state:paused]"
-            >
-              <!-- Cards generated dynamically via JS -->
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="#" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                </svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path
+                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- SECTION 6: HOW IT WORKS -->
-      <section
-        id="how-it-works"
-        class="py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto my-12"
-      >
-        <div class="text-center mb-16" data-reveal>
-          <span
-            class="inline-flex items-center gap-1.5 px-3.5 py-1 mb-4 rounded-full bg-secondary-soft text-secondary-deep text-xs font-extrabold tracking-widest uppercase"
-            ><i data-lucide="workflow" class="w-3.5 h-3.5"></i> Cara Kerja</span
-          >
-          <h2 class="text-4xl font-extrabold text-[#19143A] mb-3">
-            Cara Kerja SignTalk
-          </h2>
-          <p class="text-gray-600 max-w-xl mx-auto">
-            Alur sederhana dalam mengenali bahasa isyarat.
-          </p>
-        </div>
-
-        <div
-          class="flex flex-col md:flex-row items-center justify-between gap-4 lg:gap-6 max-w-6xl mx-auto"
-          data-reveal
-        >
-          <!-- Step 1 Card -->
-          <div
-            class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0"
-            >
-              <i data-lucide="camera" class="w-7 h-7"></i>
-            </div>
-            <span class="text-lg font-extrabold text-[#19143A]"
-              >1. Input Kamera</span
-            >
-          </div>
-
-          <!-- Arrow 1 -->
-          <div class="text-secondary shrink-0 py-2 md:py-0">
-            <i data-lucide="arrow-right" class="w-6 h-6 hidden md:block"></i>
-            <i data-lucide="arrow-down" class="w-6 h-6 md:hidden"></i>
-          </div>
-
-          <!-- Step 2 Card -->
-          <div
-            class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0"
-            >
-              <i data-lucide="image" class="w-7 h-7"></i>
-            </div>
-            <span class="text-lg font-extrabold text-[#19143A]"
-              >2. Deteksi Gerakan</span
-            >
-          </div>
-
-          <!-- Arrow 2 -->
-          <div class="text-secondary shrink-0 py-2 md:py-0">
-            <i data-lucide="arrow-right" class="w-6 h-6 hidden md:block"></i>
-            <i data-lucide="arrow-down" class="w-6 h-6 md:hidden"></i>
-          </div>
-
-          <!-- Step 3 Card -->
-          <div
-            class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0"
-            >
-              <i data-lucide="cpu" class="w-7 h-7"></i>
-            </div>
-            <span class="text-lg font-extrabold text-[#19143A]"
-              >3. Artikan Gerakan</span
-            >
-          </div>
-
-          <!-- Arrow 3 -->
-          <div class="text-secondary shrink-0 py-2 md:py-0">
-            <i data-lucide="arrow-right" class="w-6 h-6 hidden md:block"></i>
-            <i data-lucide="arrow-down" class="w-6 h-6 md:hidden"></i>
-          </div>
-
-          <!-- Step 4 Card -->
-          <div
-            class="flex-1 w-full bg-white rounded-[2rem] p-8 h-56 shadow-md border border-[#F0EBFF] flex flex-col items-center justify-center text-center hover:shadow-xl hover:-translate-y-1 transition-all"
-          >
-            <div
-              class="w-16 h-16 bg-[#F0EBFF] text-[#6346D8] rounded-2xl flex items-center justify-center mb-5 shrink-0"
-            >
-              <i data-lucide="type" class="w-7 h-7"></i>
-            </div>
-            <span class="text-lg font-extrabold text-[#19143A]"
-              >4. Output Teks</span
-            >
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION 7: LARGE START SIGNTALK BANNER -->
-      <section
-        id="start"
-        class="py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto mb-16"
-      >
-        <div
-          data-reveal
-          class="w-full bg-gradient-to-r from-[#6346D8] via-[#8B5CF6] to-[#A78BFA] rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl"
-        >
-          <div
-            class="absolute -top-16 -right-10 w-64 h-64 rounded-full bg-secondary opacity-30 blur-2xl animate-float-slow"
-            aria-hidden="true"
-          ></div>
-          <div
-            class="absolute -bottom-20 -left-12 w-72 h-72 rounded-full border-[18px] border-white/10 animate-float-reverse"
-            aria-hidden="true"
-          ></div>
-          <div class="relative z-10 flex flex-col items-center space-y-6">
-            <h2 class="text-4xl md:text-6xl font-extrabold text-white">
-              Mari Coba SignTalk Sekarang!
-            </h2>
-            <p
-              class="text-[#F0EBFF] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
-            >
-              Rasakan pengalaman komunikasi yang lebih inklusif dengan teknologi
-              Artificial Intelligence terdepan yang dirancang khusus untuk Anda.
-            </p>
-            <a
-              href="/camera"
-              class="btn-shine bg-secondary text-ink px-10 py-5 rounded-full font-black text-xl items-center gap-3 shadow-[0_10px_40px_rgba(255,185,56,0.55)] hover:bg-secondary-light hover:scale-105 active:scale-95 transition-all inline-flex"
-            >
-              MULAI SIGNTALK <i data-lucide="arrow-right" class="w-6 h-6"></i>
-            </a>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- SECTION 8: FOOTER -->
-    <footer
-      id="contact"
-      class="bg-[#19143A] text-white py-12 border-t border-[#2A2359]"
-    >
-      <div
-        class="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col md:flex-row justify-between items-center md:items-start gap-8"
-      >
-        <div class="flex flex-col items-center md:items-start space-y-3">
-          <div class="flex items-center gap-2">
-            <div
-              class="w-8 h-8 bg-[#6346D8] rounded-lg flex items-center justify-center text-white"
-            >
-              <i data-lucide="hand" class="w-5 h-5"></i>
-            </div>
-            <span class="text-2xl font-extrabold text-white">SignTalk</span>
-          </div>
-          <p class="text-[#A78BFA] text-sm text-center md:text-left max-w-xs">
-            Platform pengenalan bahasa isyarat AI untuk komunikasi inklusif di
-            Indonesia.
-          </p>
-        </div>
-
-        <div
-          class="flex flex-wrap justify-center md:justify-end gap-12 text-sm"
-        >
-          <div class="flex flex-col space-y-2">
-            <span class="font-bold text-[#DCEBFF]">Navigasi</span>
-            <a href="#home" class="text-gray-400 hover:text-white">Home</a>
-            <a href="#features" class="text-gray-400 hover:text-white"
-              >Features</a
-            >
-            <a href="#about" class="text-gray-400 hover:text-white">About</a>
-            <a href="#start" class="text-gray-400 hover:text-white">Demo</a>
-          </div>
-          <div class="flex flex-col space-y-2">
-            <span class="font-bold text-[#DCEBFF]">Legal</span>
-            <a href="#" class="text-gray-400 hover:text-white"
-              >Privacy Policy</a
-            >
-            <a href="#" class="text-gray-400 hover:text-white"
-              >Terms of Service</a
-            >
-          </div>
-          <div class="flex flex-col space-y-2">
-            <span class="font-bold text-[#DCEBFF]">Social</span>
-            <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
-            <a href="#" class="text-gray-400 hover:text-white">LinkedIn</a>
-          </div>
         </div>
       </div>
-      <div
-        class="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 mt-12 pt-8 border-t border-[#2A2359] text-center text-gray-500 text-sm"
-      >
-        &copy; 2026 SignTalk. All rights reserved.
-      </div>
-    </footer>
 
-    <!-- Panggil File JS Anda -->
-    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
-  </body>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#A78BFA]/80">
+        <p>&copy; 2026 SignTalk. Dibuat dengan cinta untuk inklusivitas dan komunikasi setara.</p>
+        <div class="flex gap-6">
+          <a href="#home" class="hover:text-white transition-colors">Kembali ke Atas</a>
+          <a href="/camera" class="hover:text-white transition-colors">Buka Kamera</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- =======================================================
+         MODAL POPUP INTERAKTIF (HANYA KATA/HURUF SAJA)
+         ======================================================= -->
+  <div id="category-modal" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div class="modal-content p-6 sm:p-8 relative">
+      <div class="flex items-start justify-between pb-4 border-b border-[#E9D5FF]">
+        <div>
+          <h3 id="modal-title" class="text-2xl sm:text-3xl font-extrabold text-[#2B124C] font-heading">
+            Kamus Isyarat
+          </h3>
+          <p id="modal-desc" class="text-xs sm:text-sm text-[#854F6C] mt-1"></p>
+        </div>
+        <button id="modal-close" class="modal-close" aria-label="Tutup Popup">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="modal-body" class="py-6"></div>
+
+      <div class="pt-4 border-t border-[#E9D5FF] flex justify-end">
+        <a href="/camera"
+          class="bg-[#2B124C] text-[#F9C74F] px-6 py-2.5 rounded-full font-bold text-sm font-heading hover:bg-[#522B5B] transition-all">
+          Praktekkan di Kamera Sekarang
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SignTalk JS -->
+  <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+</body>
+
 </html>

@@ -1,93 +1,59 @@
-// Initialize Lucide Icons
+// Inisialisasi Lucide Icons
 lucide.createIcons();
 
 // Mobile Navigation Toggle
 const menuBtn = document.getElementById('menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
-menuBtn.addEventListener('click', () => {
-  mobileMenu.classList.toggle('hidden');
-});
-
-// Populate Alphabet Flip Cards
-const carouselContainer = document.getElementById('carousel-container');
-const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
-// Duplicate 2x for seamless continuous loop marquee
-const doubleLetters = [...letters, ...letters]; 
-
-doubleLetters.forEach((letter) => {
-  const cardWrapper = document.createElement('div');
-  cardWrapper.className = 'relative w-56 h-72 perspective cursor-pointer flex-shrink-0 mx-4 select-none';
-
-  cardWrapper.innerHTML = `
-    <div class="card-inner w-full h-full preserve-3d transition-transform duration-700">
-      <!-- Front -->
-      <div class="absolute inset-0 backface-hidden bg-gradient-to-br from-[#F0EBFF] to-white rounded-3xl flex flex-col items-center justify-center border-2 border-[#DCEBFF] shadow-lg hover:shadow-xl transition-shadow">
-        <span class="text-8xl font-black text-[#6346D8]">${letter}</span>
-        <span class="absolute bottom-4 text-xs font-semibold text-[#A78BFA] tracking-widest uppercase">Klik untuk lihat</span>
-      </div>
-      <!-- Back -->
-      <div class="absolute inset-0 backface-hidden bg-white rounded-3xl flex flex-col items-center p-4 border-2 border-[#A78BFA] shadow-lg rotate-y-180">
-        <div class="w-full flex-1 bg-[#F8F6FF] rounded-2xl mb-3 flex items-center justify-center overflow-hidden border border-[#F0EBFF]">
-          <span class="text-sm font-bold text-[#6346D8]">[Foto Isyarat ${letter}]</span>
-        </div>
-        <div class="text-center w-full">
-          <h4 class="text-lg font-bold text-[#19143A]">Isyarat '${letter}'</h4>
-          <p class="text-xs text-gray-500 mt-1">Genggam tangan seperti pola ini</p>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // 3D Flip Click Interaction
-  const innerCard = cardWrapper.querySelector('.card-inner');
-  cardWrapper.addEventListener('click', (e) => {
-    e.stopPropagation();
-    innerCard.classList.toggle('rotate-y-180');
+if (menuBtn && mobileMenu) {
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
   });
-
-  carouselContainer.appendChild(cardWrapper);
-});
-
-// Arrow Nav Controls for Marquee Scroll Shift
-const marqueeContainer = document.getElementById('carousel-container');
-
-document.getElementById('scroll-left').addEventListener('click', () => {
-  const currentTransform = new WebKitCSSMatrix(window.getComputedStyle(marqueeContainer).transform);
-  marqueeContainer.style.transform = `translateX(${currentTransform.m41 + 320}px)`; 
-});
-
-document.getElementById('scroll-right').addEventListener('click', () => {
-  const currentTransform = new WebKitCSSMatrix(window.getComputedStyle(marqueeContainer).transform);
-  marqueeContainer.style.transform = `translateX(${currentTransform.m41 - 320}px)`;
-});
-
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
 
 // =============================================================
-// HERO: gelembung huruf yang keluar dari layar laptop
+// 1. HERO BUBBLES: HANYA MELAYANG DI ATAS LAPTOP (TIDAK SAMPAI LANGIT)
 // =============================================================
-(function heroBubbles() {
+(function initHeroBubbles() {
   const stage = document.getElementById('bubble-stage');
   const screen = document.getElementById('laptop-screen');
   const screenLetter = document.getElementById('screen-letter');
   const heroVisual = document.getElementById('hero-visual');
   if (!stage || !screen || !heroVisual) return;
 
-  const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  const VARIANTS = ['purple', 'amber', 'glass', 'purple', 'glass', 'amber'];
-  const COLORS = { purple: '#6346D8', amber: '#FFB938', glass: '#A78BFA' };
-  const SPAWN_EVERY_MS = 750;
-  const MAX_BUBBLES = 9;
+  const VOCABULARY = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+    'U', 'V', 'W', 'X', 'Y', 'Z',
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+    'Halo', 'Bisa', 'Belajar', 'Teman', 'Terima Kasih', 'Sama-sama', 'Maaf', 'Tolong', 'Permisi', 'Isyarat'
+  ];
 
-  let index = 0;
+  const VARIANTS = ['purple', 'yellow', 'pastel-1', 'plum', 'rose', 'yellow', 'pastel-2', 'mauve', 'peach', 'white', 'pastel-3'];
+  const COLORS = {
+    'purple':   '#2B124C',
+    'plum':     '#522B5B',
+    'mauve':    '#854F6C',
+    'rose':     '#DFB6B2',
+    'peach':    '#FBE4DB',
+    'yellow':   '#F9C74F',
+    'white':    '#FAFAFA',
+    'pastel-1': '#E9D5FF',
+    'pastel-2': '#C4B5FD',
+    'pastel-3': '#D8B4E2',
+    'pastel':   '#C4B5FD'
+  };
+
+  const SPAWN_INTERVAL = 900;
+  const MAX_BUBBLES = 8;
+
+  let vocabIndex = 0;
   let liveCount = 0;
   let heroOnScreen = true;
 
   const rand = (min, max) => min + Math.random() * (max - min);
-  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const clamp = (val, min, max) => Math.min(max, Math.max(min, val));
 
-  // Titik keluar = tengah layar laptop, relatif terhadap panggung gelembung
-  function emitterPoint() {
+  function getEmitterPoint() {
     const s = stage.getBoundingClientRect();
     const r = screen.getBoundingClientRect();
     return {
@@ -97,50 +63,52 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     };
   }
 
-  function makeBubble(letter, variant, size) {
+  function createBubbleElement(text, variant, size) {
     const el = document.createElement('div');
     el.className = `bubble bubble--${variant}`;
     el.style.setProperty('--s', `${size}px`);
     el.dataset.variant = variant;
-    el.innerHTML = `<div class="bubble-inner" style="--sway:${rand(2.2, 3.6).toFixed(2)}s">${letter}</div>`;
+    
+    const fontSize = text.length > 3 ? Math.max(12, size * 0.22) : Math.max(16, size * 0.4);
+    
+    el.innerHTML = `
+      <div class="bubble-inner" style="--sway:${rand(2.0, 3.2).toFixed(2)}s; font-size: ${fontSize}px;">
+        ${text}
+      </div>
+    `;
     stage.appendChild(el);
     return el;
   }
 
-  function showOnScreen(letter) {
-    if (screenLetter) {
-      screenLetter.textContent = letter;
-      screenLetter.classList.remove('tick');
-      void screenLetter.offsetWidth; // restart animasi
-      screenLetter.classList.add('tick');
-    }
+  function showDetectedText(text) {
+    if (screenLetter) screenLetter.textContent = text;
     screen.classList.remove('flash');
     void screen.offsetWidth;
     screen.classList.add('flash');
   }
 
-  // Efek pecah: gelembung membesar & hilang + cincin + percikan
-  function pop(el, flight) {
+  function popBubble(el, flightAnimation) {
     if (el.dataset.popped) return;
     el.dataset.popped = '1';
 
     const matrix = new DOMMatrixReadOnly(getComputedStyle(el).transform);
     const x = matrix.m41;
     const y = matrix.m42;
-    const color = COLORS[el.dataset.variant];
+    const color = COLORS[el.dataset.variant] || '#F9C74F';
     const size = parseFloat(el.style.getPropertyValue('--s'));
-    if (flight) flight.cancel();
+
+    if (flightAnimation) flightAnimation.cancel();
 
     el.style.pointerEvents = 'none';
     el.animate(
       [
         { transform: `translate(${x}px, ${y}px) scale(1)`, opacity: 1 },
-        { transform: `translate(${x}px, ${y}px) scale(1.45)`, opacity: 0 },
+        { transform: `translate(${x}px, ${y}px) scale(1.35)`, opacity: 0 },
       ],
-      { duration: 220, easing: 'ease-out', fill: 'forwards' }
+      { duration: 200, easing: 'ease-out', fill: 'forwards' }
     ).onfinish = () => {
       el.remove();
-      liveCount -= 1;
+      liveCount = Math.max(0, liveCount - 1);
     };
 
     const ring = document.createElement('div');
@@ -150,15 +118,15 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     stage.appendChild(ring);
     ring.animate(
       [
-        { transform: `translate(${x}px, ${y}px) scale(0.7)`, opacity: 0.9 },
-        { transform: `translate(${x}px, ${y}px) scale(1.6)`, opacity: 0 },
+        { transform: `translate(${x}px, ${y}px) scale(0.6)`, opacity: 1 },
+        { transform: `translate(${x}px, ${y}px) scale(1.5)`, opacity: 0 },
       ],
-      { duration: 450, easing: 'ease-out', fill: 'forwards' }
+      { duration: 380, easing: 'ease-out', fill: 'forwards' }
     ).onfinish = () => ring.remove();
 
-    for (let i = 0; i < 6; i += 1) {
-      const angle = (Math.PI * 2 * i) / 6 + rand(-0.3, 0.3);
-      const distance = size * rand(0.7, 1.05);
+    for (let i = 0; i < 5; i++) {
+      const angle = (Math.PI * 2 * i) / 5 + rand(-0.2, 0.2);
+      const distance = size * rand(0.65, 1.05);
       const drop = document.createElement('div');
       drop.className = 'pop-drop';
       drop.style.setProperty('--c', color);
@@ -171,119 +139,619 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
             opacity: 0,
           },
         ],
-        { duration: rand(380, 520), easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' }
+        { duration: rand(320, 440), easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' }
       ).onfinish = () => drop.remove();
     }
   }
 
-  function spawn() {
+  function spawnBubble() {
     if (!heroOnScreen || document.hidden || liveCount >= MAX_BUBBLES) return;
 
-    const letter = LETTERS[index % LETTERS.length];
-    const variant = VARIANTS[index % VARIANTS.length];
-    index += 1;
+    const item = VOCABULARY[vocabIndex % VOCABULARY.length];
+    const variant = VARIANTS[vocabIndex % VARIANTS.length];
+    vocabIndex++;
 
-    const o = emitterPoint();
-    const scale = clamp(o.width / 540, 0.65, 1);
-    const size = Math.round(rand(52, 74) * scale);
-    const el = makeBubble(letter, variant, size);
-    liveCount += 1;
-    showOnScreen(letter);
+    const emitter = getEmitterPoint();
+    const scaleFactor = clamp(emitter.width / 540, 0.75, 1.1);
+    const baseSize = item.length > 4 ? rand(70, 90) : rand(54, 74);
+    const size = Math.round(baseSize * scaleFactor);
 
-    // Lintasan: keluar dari layar, melambung ke atas & menyebar ke samping
+    const bubbleEl = createBubbleElement(item, variant, size);
+    liveCount++;
+    showDetectedText(item);
+
     const side = Math.random() < 0.5 ? -1 : 1;
-    const endX = clamp(o.x + side * rand(70, 240) * scale, size, o.width - size);
-    const endY = Math.max(o.y - rand(210, 330) * scale, size * 0.6);
-    const dx = endX - o.x;
-    const dy = endY - o.y;
+    const endX = clamp(emitter.x + side * rand(50, 180) * scaleFactor, size, emitter.width - size);
+    
+    // Cukup melayang di atas laptop saja (sekitar 110px - 160px di atas layar)
+    const endY = emitter.y - rand(110, 160) * scaleFactor;
+    const dx = endX - emitter.x;
+    const dy = endY - emitter.y;
 
-    const flight = el.animate(
+    const flight = bubbleEl.animate(
       [
-        { transform: `translate(${o.x}px, ${o.y}px) scale(0.1)`, opacity: 0 },
-        { transform: `translate(${o.x + dx * 0.06}px, ${o.y - 42 * scale}px) scale(1.18)`, opacity: 1, offset: 0.1 },
-        { transform: `translate(${o.x + dx * 0.1}px, ${o.y - 56 * scale}px) scale(0.94)`, offset: 0.16 },
-        { transform: `translate(${o.x + dx * 0.45 + rand(-25, 25)}px, ${o.y + dy * 0.5}px) scale(1)`, offset: 0.5 },
-        { transform: `translate(${endX}px, ${endY}px) scale(1.04)`, opacity: 1 },
+        {
+          transform: `translate(${emitter.x}px, ${emitter.y}px) scale(0.25)`,
+          opacity: 0,
+        },
+        {
+          transform: `translate(${emitter.x + dx * 0.3}px, ${emitter.y + dy * 0.35}px) scale(1.05)`,
+          opacity: 1,
+          offset: 0.25,
+        },
+        {
+          transform: `translate(${emitter.x + dx * 0.8}px, ${emitter.y + dy * 0.8}px) scale(1)`,
+          opacity: 0.95,
+          offset: 0.75,
+        },
+        {
+          transform: `translate(${endX}px, ${endY}px) scale(0.95)`,
+          opacity: 0,
+        },
       ],
-      { duration: rand(4300, 5600), easing: 'cubic-bezier(.25,.6,.3,1)', fill: 'forwards' }
+      {
+        duration: rand(4200, 5500),
+        easing: 'cubic-bezier(.16,.65,.3,1)',
+        fill: 'forwards',
+      }
     );
-    flight.onfinish = () => pop(el, null);
 
-    // Interaktif: sentuh / arahkan kursor ke gelembung untuk memecahkannya
-    el.addEventListener('pointerenter', () => pop(el, flight), { once: true });
-    el.addEventListener('click', () => pop(el, flight), { once: true });
-  }
-
-  // Tanpa animasi (pengguna memilih "kurangi gerakan"): gelembung statis
-  if (prefersReducedMotion) {
-    const o = emitterPoint();
-    const scale = clamp(o.width / 540, 0.65, 1);
-    [
-      ['S', 'purple', -150, -170],
-      ['I', 'amber', -60, -250],
-      ['G', 'glass', 50, -230],
-      ['N', 'purple', 150, -160],
-    ].forEach(([letter, variant, dx, dy]) => {
-      const el = makeBubble(letter, variant, Math.round(62 * scale));
-      el.style.transform = `translate(${o.x + dx * scale}px, ${o.y + dy * scale}px)`;
+    bubbleEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      popBubble(bubbleEl, flight);
     });
-    return;
+
+    flight.onfinish = () => {
+      if (!bubbleEl.dataset.popped) {
+        bubbleEl.remove();
+        liveCount = Math.max(0, liveCount - 1);
+      }
+    };
   }
 
-  // Hemat CPU: berhenti membuat gelembung saat hero tidak terlihat
-  new IntersectionObserver((entries) => {
-    heroOnScreen = entries[0].isIntersecting;
-  }).observe(heroVisual);
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      heroOnScreen = entries[0].isIntersecting;
+    }, { threshold: 0.1 });
+    obs.observe(heroVisual);
+  }
 
-  // Mulai setelah animasi masuk hero selesai
-  setTimeout(() => {
-    spawn();
-    setTimeout(spawn, 280);
-    setInterval(spawn, SPAWN_EVERY_MS);
-  }, 1100);
+  setInterval(spawnBubble, SPAWN_INTERVAL);
+  setTimeout(spawnBubble, 300);
+  setTimeout(spawnBubble, 900);
 })();
 
 // =============================================================
-// HERO: parallax ringan mengikuti kursor (hanya perangkat mouse)
+// 2. KEPALA DINO MENGIKUTI KURSOR (SECTION FITUR)
 // =============================================================
-(function heroParallax() {
-  const hero = document.getElementById('home');
-  const scene = document.getElementById('hero-scene');
-  if (!hero || !scene || prefersReducedMotion) return;
-  if (!window.matchMedia('(pointer: fine)').matches) return;
+(function initDinoHeadTracking() {
+  const dinoHead = document.getElementById('dino-head-img');
+  if (!dinoHead) return;
 
-  hero.addEventListener('pointermove', (event) => {
-    const rect = hero.getBoundingClientRect();
-    scene.style.setProperty('--px', ((event.clientX - rect.left) / rect.width - 0.5).toFixed(3));
-    scene.style.setProperty('--py', ((event.clientY - rect.top) / rect.height - 0.5).toFixed(3));
-  });
-  hero.addEventListener('pointerleave', () => {
-    scene.style.setProperty('--px', 0);
-    scene.style.setProperty('--py', 0);
+  window.addEventListener('mousemove', (e) => {
+    const rect = dinoHead.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const deltaX = e.clientX - centerX;
+    const deltaY = e.clientY - centerY;
+
+    const maxRotY = 16;
+    const maxRotX = 14;
+    const maxShiftX = 18;
+    const maxShiftY = 16;
+
+    const rotY = Math.max(-maxRotY, Math.min(maxRotY, (deltaX / window.innerWidth) * 35));
+    const rotX = Math.max(-6, Math.min(maxRotX, (deltaY / window.innerHeight) * 32));
+
+    const shiftX = Math.max(-maxShiftX, Math.min(maxShiftX, (deltaX / window.innerWidth) * 28));
+    const shiftY = Math.max(-6, Math.min(maxShiftY, (deltaY / window.innerHeight) * 26));
+
+    dinoHead.style.transform = `translate(${shiftX}px, ${shiftY}px) rotateY(${rotY}deg) rotateX(${-rotX}deg)`;
   });
 })();
 
 // =============================================================
-// Reveal saat scroll untuk section di bawah hero
+// ALUR PENGGUNAAN SIGNTALK: AUTO ROTATING ZOOM 1 -> 2 -> 3 -> 4
 // =============================================================
-(function scrollReveal() {
-  const targets = document.querySelectorAll('[data-reveal]');
-  if (!targets.length || prefersReducedMotion || !('IntersectionObserver' in window)) return;
+(function initAlurZoomRotation() {
+  const alurCards = document.querySelectorAll('.alur-card');
+  if (!alurCards || alurCards.length === 0) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+  let currentIndex = 0;
+  let intervalId = null;
+  let isHovered = false;
+
+  function setActiveStep(index) {
+    alurCards.forEach((card, idx) => {
+      if (idx === index) {
+        card.classList.add('active');
+      } else {
+        card.classList.remove('active');
+      }
+    });
+  }
+
+  // Set awal langkah 1 aktif
+  setActiveStep(0);
+
+  function startRotation() {
+    if (intervalId) clearInterval(intervalId);
+    intervalId = setInterval(() => {
+      if (!isHovered) {
+        currentIndex = (currentIndex + 1) % alurCards.length;
+        setActiveStep(currentIndex);
+      }
+    }, 2200);
+  }
+
+  alurCards.forEach((card, idx) => {
+    card.addEventListener('mouseenter', () => {
+      isHovered = true;
+      currentIndex = idx;
+      setActiveStep(currentIndex);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      isHovered = false;
+    });
+
+    card.addEventListener('click', () => {
+      currentIndex = idx;
+      setActiveStep(currentIndex);
+    });
+  });
+
+  startRotation();
+})();
+
+// =============================================================
+// 3. PESAN TEMAN TULI: 3 BUBBLE DI ATAS (BERANTAKAN) & 4 DI BAWAH TETAP
+//    - LOVE MENYEBAR KANAN, KIRI, ATAS
+//    - ZERO CLIPPING (TIDAK TERPOTONG DI ATAS)
+//    - TIDAK BISA MENABRAK DINO
+// =============================================================
+(function initGravityPills() {
+  const canvas = document.getElementById('gravity-canvas');
+  const container = document.getElementById('gravity-container');
+  const btnShuffle = document.getElementById('btn-shuffle-capsules');
+  const dinoSuratContainer = document.getElementById('dino-surat-container');
+  const dinoSuratImg = document.getElementById('dino-surat-img');
+
+  // Efek Love Menyebar Kanan, Kiri, dan Atas saat Dino ditekan
+  if (dinoSuratContainer) {
+    dinoSuratContainer.addEventListener('click', (e) => {
+      const rect = dinoSuratContainer.getBoundingClientRect();
+      const count = 9; // 9 love hearts menyebar serempak
+
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const bubble = document.createElement('div');
+          bubble.className = 'love-bubble-single';
+          const size = 34 + Math.random() * 16;
+          bubble.style.width = `${size}px`;
+          bubble.style.height = `${size}px`;
+
+          // Posisi awal tepat di dada / amplop surat dino
+          bubble.style.left = `${rect.width * 0.5}px`;
+          bubble.style.top = `${rect.height * 0.52}px`;
+
+          // Sudut menyebar: dari -160 derajat (kiri) hingga -20 derajat (kanan)
+          const baseAngle = -160 + (i / (count - 1)) * 140;
+          const jitter = (Math.random() - 0.5) * 16;
+          const rad = (baseAngle + jitter) * (Math.PI / 180);
+          const dist = 110 + Math.random() * 85;
+
+          const dx = Math.cos(rad) * dist;
+          const dy = Math.sin(rad) * dist;
+          const rot = (Math.random() - 0.5) * 46;
+
+          bubble.style.setProperty('--dx', `${dx.toFixed(1)}px`);
+          bubble.style.setProperty('--dy', `${dy.toFixed(1)}px`);
+          bubble.style.setProperty('--rot', `${rot.toFixed(1)}deg`);
+          bubble.innerHTML = `<span style="font-size: ${size * 0.52}px;">❤️</span>`;
+
+          dinoSuratContainer.appendChild(bubble);
+          setTimeout(() => bubble.remove(), 2500);
+        }, i * 40);
+      }
+    });
+  }
+
+  if (!canvas || !container) return;
+
+  const ctx = canvas.getContext('2d');
+  let width = (canvas.width = container.clientWidth);
+  let height = (canvas.height = container.clientHeight || 380);
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = container.clientWidth;
+    height = canvas.height = container.clientHeight || 380;
+  });
+
+  // 11 Pil Total: 3 Stay di Atas + 4 Melayang di Tengah + 4 Gravity di Bawah
+  const PILL_CONFIGS = [
+    // === 3 BUBBLE STAY DI ATAS (Letak Berantakan, Tinggi ~50-75px) ===
+    { text: 'Semangat Terus! 💪',   isTop: true, layer: 'top', anchorXRatio: 0.18, anchorY: 54, baseAngle: -0.14, theme: { bg: '#F9C74F', text: '#2B124C' } },
+    { text: 'Kamu Luar Biasa! ✨',  isTop: true, layer: 'top', anchorXRatio: 0.52, anchorY: 44, baseAngle: 0.11,  theme: { bg: '#DFB6B2', text: '#2B124C' } },
+    { text: 'Tanganmu Bersuara 🤟', isTop: true, layer: 'top', anchorXRatio: 0.84, anchorY: 62, baseAngle: -0.08, theme: { bg: '#C4B5FD', text: '#2B124C' } },
+
+    // === 4 BUBBLE MELAYANG DI TENGAH (Tinggi ~130-165px, Letak Berantakan) ===
+    { text: 'Jangan Menyerah! 🔥',   isTop: true, layer: 'mid', anchorXRatio: 0.12, anchorY: 142, baseAngle: 0.10,  theme: { bg: '#FBE4DB', text: '#2B124C' } },
+    { text: 'Kamu Pasti Bisa! 🌟',   isTop: true, layer: 'mid', anchorXRatio: 0.42, anchorY: 130, baseAngle: -0.12, theme: { bg: '#E9D5FF', text: '#2B124C' } },
+    { text: 'Dunia Mendengarmu 🌍',  isTop: true, layer: 'mid', anchorXRatio: 0.70, anchorY: 150, baseAngle: 0.09,  theme: { bg: '#522B5B', text: '#FFFFFF' } },
+    { text: 'Terus Berkarya! 🚀',    isTop: true, layer: 'mid', anchorXRatio: 0.94, anchorY: 136, baseAngle: -0.07, theme: { bg: '#F9C74F', text: '#2B124C' } },
+
+    // === 4 BUBBLE DI BAWAH TETAP (Gravity — mengendap di lantai) ===
+    { text: 'Penuh Cinta ❤️',         isTop: false, layer: 'bot', theme: { bg: '#F9C74F', text: '#2B124C' } },
+    { text: 'Setara & Bangga 🤝',     isTop: false, layer: 'bot', theme: { bg: '#DFB6B2', text: '#2B124C' } },
+    { text: 'Inspirasi Kita 🌸',      isTop: false, layer: 'bot', theme: { bg: '#C4B5FD', text: '#2B124C' } },
+    { text: 'Karyamu Indah 🎨',       isTop: false, layer: 'bot', theme: { bg: '#FBE4DB', text: '#2B124C' } },
+  ];
+
+  // Hitung Barrier / Penghalang Dino agar Pil Tidak Bisa Menabrak Dino
+  function getDinoBarrier() {
+    const dinoTarget = dinoSuratImg || dinoSuratContainer;
+    if (!dinoTarget) return { right: 0, bottom: 0 };
+    const cRect = canvas.getBoundingClientRect();
+    const dRect = dinoTarget.getBoundingClientRect();
+    return {
+      right: dRect.right - cRect.left,
+      bottom: dRect.bottom - cRect.top
+    };
+  }
+
+  class Pill {
+    constructor(cfg, initialX, initialY) {
+      this.text = cfg.text;
+      this.theme = cfg.theme;
+      this.isTop = cfg.isTop;
+      this.layer = cfg.layer || (cfg.isTop ? 'top' : 'bot');
+      this.anchorXRatio = cfg.anchorXRatio || 0.5;
+      this.anchorY = cfg.anchorY || 60;
+      this.baseAngle = cfg.baseAngle || 0;
+      this.phase = Math.random() * Math.PI * 2;
+
+      ctx.font = 'bold 14px Fredoka, cursive';
+      const textWidth = ctx.measureText(this.text).width;
+      this.w = Math.max(92, textWidth + 34);
+      this.h = 38;
+      this.r = this.h / 2;
+
+      this.x = initialX;
+      this.y = initialY;
+      this.vx = (Math.random() - 0.5) * 2;
+      this.vy = 0;
+      this.angle = this.baseAngle;
+      this.vAngle = 0;
+      this.isDragging = false;
+    }
+
+    update(time) {
+      if (this.isDragging) return;
+
+      const halfW = this.w / 2;
+      const halfH = this.h / 2;
+
+      // Penghalang Dino (Pil tidak bisa menabrak dino)
+      const dino = getDinoBarrier();
+      const minLeftAllowed = Math.max(12, dino.right + 12);
+
+      if (this.layer === 'top' || this.layer === 'mid') {
+        // BUBBLE MELAYANG (top + mid): Hover di posisi anchor masing-masing
+        const targetX = minLeftAllowed + halfW + this.anchorXRatio * Math.max(60, width - minLeftAllowed - this.w - 18);
+        const hoverOffsetY = Math.sin(time * 0.0022 + this.phase) * 5;
+        const targetY = this.anchorY + hoverOffsetY;
+
+        // Pegas elastis mengembalikan ke posisi anchor saat selesai di-drag
+        this.vx += (targetX - this.x) * 0.045;
+        this.vy += (targetY - this.y) * 0.045;
+        this.vx *= 0.87;
+        this.vy *= 0.87;
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Ayunan sudut halus
+        this.angle = this.baseAngle + Math.cos(time * 0.0018 + this.phase) * 0.035;
+      } else {
+        // BUBBLE DI BAWAH (bot): Gravity — mengendap di lantai
+        const gravity = 0.38;
+        const friction = 0.985;
+        const bounce = 0.52;
+
+        this.vy += gravity;
+        this.vx *= friction;
+        this.vy *= friction;
+        this.vAngle *= 0.96;
+
+        this.x += this.vx;
+        this.y += this.vy;
+        this.angle += this.vAngle;
+
+        // Pantulan lantai (Dasar Kotak Ungu)
+        if (this.y + halfH > height) {
+          this.y = height - halfH;
+          this.vy = -Math.abs(this.vy) * bounce;
+          this.vx *= 0.86;
+          this.vAngle *= 0.82;
         }
-      });
-    },
-    { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
-  );
+      }
 
-  targets.forEach((el) => {
-    el.classList.add('reveal');
-    observer.observe(el);
+      // Pastikan pembatas kiri & kanan
+      if (this.x - halfW < minLeftAllowed) {
+        this.x = minLeftAllowed + halfW;
+        this.vx = Math.abs(this.vx) * 0.5 + 0.6;
+      } else if (this.x + halfW > width - 10) {
+        this.x = width - 10 - halfW;
+        this.vx = -Math.abs(this.vx) * 0.5;
+      }
+
+      // ZERO CLIPPING ATAS: Jangan sampai ada bagian sudut/teks yang terpotong di atas!
+      const maxExt = Math.sin(Math.abs(this.angle)) * halfW + Math.cos(this.angle) * halfH;
+      const minAllowedY = maxExt + 14;
+      if (this.y < minAllowedY) {
+        this.y = minAllowedY;
+        this.vy = Math.abs(this.vy) * 0.4;
+      }
+    }
+
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle);
+
+      // Bayangan lembut pil
+      ctx.shadowColor = 'rgba(43, 18, 76, 0.16)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 4;
+
+      // Gambar Pil / Kapsul
+      ctx.fillStyle = this.theme.bg;
+      ctx.strokeStyle = '#2B124C';
+      ctx.lineWidth = 2.2;
+
+      ctx.beginPath();
+      ctx.roundRect(-this.w / 2, -this.h / 2, this.w, this.h, this.r);
+      ctx.fill();
+      ctx.stroke();
+
+      // Reset bayangan untuk teks agar tajam
+      ctx.shadowColor = 'transparent';
+
+      // Gambar Teks Semangat
+      ctx.fillStyle = this.theme.text;
+      ctx.font = 'bold 14px Fredoka, cursive';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, 0, 1.5);
+
+      ctx.restore();
+    }
+
+    contains(px, py) {
+      const dx = px - this.x;
+      const dy = py - this.y;
+      return Math.sqrt(dx * dx + dy * dy) < Math.max(this.w / 2, this.h);
+    }
+  }
+
+  // Buat 11 Pil: 3 di Atas (top) + 4 Melayang Tengah (mid) + 4 Gravity Bawah (bot)
+  const pills = [];
+  const dinoInit = getDinoBarrier();
+  const spawnLeft = Math.max(20, dinoInit.right + 25);
+  const spawnWidth = Math.max(220, width - spawnLeft - 40);
+
+  let botCount = 0;
+  PILL_CONFIGS.forEach((cfg, i) => {
+    let initX, initY;
+    if (cfg.layer === 'top' || cfg.layer === 'mid') {
+      initX = spawnLeft + (cfg.anchorXRatio || 0.5) * spawnWidth;
+      initY = cfg.anchorY || 60;
+    } else {
+      // bot: sebar di bawah
+      initX = spawnLeft + botCount * (spawnWidth / 4) + Math.random() * 20;
+      initY = height - 50 - Math.random() * 20;
+      botCount++;
+    }
+    pills.push(new Pill(cfg, initX, initY));
+  });
+
+  // Interaksi Drag dengan Kursor
+  let draggedPill = null;
+  let lastMouse = { x: 0, y: 0 };
+
+  canvas.addEventListener('mousedown', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    lastMouse = { x: mx, y: my };
+
+    for (let i = pills.length - 1; i >= 0; i--) {
+      if (pills[i].contains(mx, my)) {
+        draggedPill = pills[i];
+        draggedPill.isDragging = true;
+        pills.splice(i, 1);
+        pills.push(draggedPill);
+        break;
+      }
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!draggedPill) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    draggedPill.vx = (mx - lastMouse.x) * 0.7;
+    draggedPill.vy = (my - lastMouse.y) * 0.7;
+
+    // Pastikan saat di-drag juga tidak bisa menabrak dino & tidak terpotong di atas
+    const dino = getDinoBarrier();
+    const minLeft = Math.max(12, dino.right + 12) + draggedPill.w / 2;
+    const maxRight = width - 10 - draggedPill.w / 2;
+    const minTop = draggedPill.h / 2 + 14;
+
+    draggedPill.x = Math.max(minLeft, Math.min(maxRight, mx));
+    draggedPill.y = Math.max(minTop, Math.min(height - draggedPill.h / 2, my));
+    lastMouse = { x: mx, y: my };
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (draggedPill) {
+      draggedPill.isDragging = false;
+      draggedPill = null;
+    }
+  });
+
+  // Tombol Acak Pesan dihapus — tidak ada lagi #btn-shuffle-capsules
+
+  // Loop Fisika & Animasi (Butter Smooth 60fps)
+  function animateGravity(time) {
+    ctx.clearRect(0, 0, width, height);
+
+    // Tabrakan antar pil
+    for (let i = 0; i < pills.length; i++) {
+      for (let j = i + 1; j < pills.length; j++) {
+        const p1 = pills[i];
+        const p2 = pills[j];
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const minDist = (p1.r + p2.r) * 1.15;
+
+        if (dist < minDist && dist > 0) {
+          const overlap = minDist - dist;
+          const nx = dx / dist;
+          const ny = dy / dist;
+
+          if (!p1.isDragging && p1.layer === 'bot') {
+            p1.x -= nx * overlap * 0.5;
+            p1.y -= ny * overlap * 0.5;
+            p1.vx -= nx * 0.6;
+            p1.vy -= ny * 0.6;
+          }
+          if (!p2.isDragging && p2.layer === 'bot') {
+            p2.x += nx * overlap * 0.5;
+            p2.y += ny * overlap * 0.5;
+            p2.vx += nx * 0.6;
+            p2.vy += ny * 0.6;
+          }
+        }
+      }
+    }
+
+    pills.forEach((p) => {
+      p.update(time);
+      p.draw();
+    });
+
+    requestAnimationFrame(animateGravity);
+  }
+
+  requestAnimationFrame(animateGravity);
+})();
+
+// =============================================================
+// 4. POPUP / MODAL INTERAKTIF: HANYA KATA-KATA TANPA PENJELASAN
+// =============================================================
+(function initCategoryModal() {
+  const modalOverlay = document.getElementById('category-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDesc = document.getElementById('modal-desc');
+  const modalBody = document.getElementById('modal-body');
+  const modalClose = document.getElementById('modal-close');
+
+  if (!modalOverlay || !modalTitle || !modalDesc || !modalBody) return;
+
+  const DATA_CATEGORIES = {
+    letters: {
+      title: 'Huruf A–Z (BISINDO)',
+      desc: 'Daftar huruf abjad bahasa isyarat yang dapat dideteksi.',
+      items: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(char => ({
+        label: char
+      }))
+    },
+    numbers: {
+      title: 'Angka 1–10 (BISINDO)',
+      desc: 'Daftar angka bahasa isyarat yang dapat dideteksi.',
+      items: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map(num => ({
+        label: num
+      }))
+    },
+    words: {
+      title: '10 Kata Penting (BISINDO)',
+      desc: 'Daftar kosakata isyarat harian yang dapat dideteksi.',
+      items: [
+        { label: 'Halo' },
+        { label: 'Terima Kasih' },
+        { label: 'Sama-sama' },
+        { label: 'Maaf' },
+        { label: 'Tolong' },
+        { label: 'Permisi' },
+        { label: 'Bisa' },
+        { label: 'Belajar' },
+        { label: 'Teman' },
+        { label: 'Isyarat' }
+      ]
+    }
+  };
+
+  function openCategory(catKey) {
+    const cat = DATA_CATEGORIES[catKey];
+    if (!cat) return;
+
+    modalTitle.textContent = cat.title;
+    modalDesc.textContent = cat.desc;
+    modalBody.innerHTML = '';
+
+    const grid = document.createElement('div');
+    // Jika kata-kata, buat kolom lebih lebar dan bersih
+    grid.className = catKey === 'words' 
+      ? 'grid grid-cols-2 sm:grid-cols-3 gap-3.5'
+      : 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3';
+
+    cat.items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'bg-[#FAF7FD] hover:bg-[#E9D5FF] border-2 border-[#C4B5FD]/50 hover:border-[#F9C74F] rounded-2xl p-4 flex items-center justify-center text-center cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md select-none';
+      
+      // HANYA KATA / HURUF SAJA TANPA PENJELASAN
+      card.innerHTML = `
+        <span class="text-2xl sm:text-3xl font-extrabold text-[#2B124C] font-heading">${item.label}</span>
+      `;
+
+      card.addEventListener('click', () => {
+        card.classList.add('scale-95', 'bg-[#F9C74F]');
+        setTimeout(() => card.classList.remove('scale-95', 'bg-[#F9C74F]'), 180);
+      });
+
+      grid.appendChild(card);
+    });
+
+    modalBody.appendChild(grid);
+    modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  const btnLetters = document.getElementById('btn-modal-letters');
+  const btnNumbers = document.getElementById('btn-modal-numbers');
+  const btnWords = document.getElementById('btn-modal-words');
+
+  if (btnLetters) btnLetters.addEventListener('click', () => openCategory('letters'));
+  if (btnNumbers) btnNumbers.addEventListener('click', () => openCategory('numbers'));
+  if (btnWords) btnWords.addEventListener('click', () => openCategory('words'));
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
   });
 })();

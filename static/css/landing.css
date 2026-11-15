@@ -1,244 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* =============================================================
+   DESIGN TOKENS & COLOR PALETTE LIBRARY (SIGNTALK)
+   ============================================================= */
+:root {
+  --color-dark-purple: #2B124C;
+  --color-plum: #522B5B;
+  --color-mauve: #854F6C;
+  --color-rose: #DFB6B2;
+  --color-peach: #FBE4DB;
+  --color-yellow: #F9C74F;
+  --color-bg: #FFFFFF;
+  
+  /* Ungu Pastel */
+  --color-pastel-1: #E9D5FF;
+  --color-pastel-2: #C4B5FD;
+  --color-pastel-3: #D8B4E2;
+  --color-pastel-light: #F8F2FF;
+  
+  --font-heading: 'Fredoka', cursive, sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  
+  --shadow-soft: 0 8px 24px rgba(43, 18, 76, 0.05);
+  --shadow-card: 0 12px 30px rgba(43, 18, 76, 0.08);
+  --shadow-hover: 0 18px 40px rgba(43, 18, 76, 0.14);
+}
+
 html {
   scroll-behavior: smooth;
 }
+
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #FFFFFF;
-  color: #19143A;
+  font-family: var(--font-body);
+  background-color: #FFFFFF !important;
+  color: var(--color-dark-purple);
   overflow-x: hidden;
 }
-.perspective {
-  perspective: 1000px;
-}
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-.backface-hidden {
-  backface-visibility: hidden;
-}
-.rotate-y-180 {
-  transform: rotateY(180deg);
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Fredoka', cursive, sans-serif !important;
+  letter-spacing: 0.02em;
 }
 
-/* Keyframe Animations */
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(3deg); }
-}
-@keyframes floatReverse {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(15px) rotate(-3deg); }
-}
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.05); }
+p, span, a, button, input, .font-body {
+  font-family: var(--font-body);
 }
 
-.animate-float-slow {
-  animation: floatSlow 4s ease-in-out infinite;
-}
-.animate-float-reverse {
-  animation: floatReverse 5s ease-in-out infinite;
-}
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
+body strong,
+body b,
+.highlight-yellow {
+  color: var(--color-yellow) !important;
+  font-weight: 700;
 }
 
-/* Continuous Infinite Scroll Animation */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 35s linear infinite;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
+::selection {
+  background: var(--color-yellow);
+  color: var(--color-dark-purple);
 }
 
 /* =============================================================
-   PALET WARNA SIGNTALK
-   Primer  : ungu #6346D8 (10PB pada roda warna Munsell)
-   Sekunder: amber #FFB938 (keluarga Y, komplemen dari PB)
-   Aturan pakai ~60% putih / 30% ungu / 10% amber.
-   Amber untuk isian (tombol, gelembung, aksen). Teks kecil di atas
-   putih memakai --secondary-deep agar tetap terbaca.
+   1 & 6. HEADER HOVER: GARIS BAWAH MENGIKUTI PANJANG KATA PERSIS
    ============================================================= */
-:root {
-  --primary: #6346D8;
-  --primary-dark: #5235C7;
-  --primary-light: #A78BFA;
-  --primary-soft: #F0EBFF;
-  --secondary: #FFB938;
-  --secondary-light: #FFD27A;
-  --secondary-soft: #FFF4DC;
-  --secondary-deep: #9A5B00;
-  --ink: #19143A;
-  --sky: #DCEBFF;
-}
-
-::selection { background: var(--secondary-light); color: var(--ink); }
-
-/* -------------------------------------------------------------
-   HERO: animasi masuk
-   ------------------------------------------------------------- */
-@keyframes heroIn {
-  from { opacity: 0; transform: translateY(24px); filter: blur(8px); }
-  to   { opacity: 1; transform: none; filter: none; }
-}
-.hero-fade,
-.reveal-word {
-  opacity: 0;
-  animation: heroIn 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-  animation-delay: var(--d, 0ms);
-}
-.reveal-word { display: inline-block; word-break: break-word; word-wrap: break-word; overflow-wrap: break-word; }
-
-/* "Tanpa Batas": gradasi ungu berkilau + garis bawah amber yang tergambar */
-.hero-highlight {
+.header-line {
   position: relative;
   display: inline-block;
-  padding-bottom: 0.06em;
-  background: linear-gradient(90deg, #6346D8, #8B5CF6, #A78BFA, #8B5CF6, #6346D8);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shimmer 7s linear infinite;
+  cursor: pointer;
+  padding-bottom: 3px;
 }
-@keyframes shimmer { to { background-position: 150% 0; } }
 
-.hero-swash {
+.header-line::after {
+  content: '';
   position: absolute;
-  left: -2%;
-  bottom: -0.14em;
-  width: 104%;
-  height: 0.3em;
-  overflow: visible;
-}
-.hero-swash path {
-  fill: none;
-  stroke: var(--secondary);
-  stroke-width: 7;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation: drawLine 0.9s 1.05s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-}
-@keyframes drawLine { to { stroke-dashoffset: 0; } }
-
-.live-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--secondary);
-  animation: ping 1.8s ease-out infinite;
-}
-@keyframes ping {
-  0%       { box-shadow: 0 0 0 0 rgba(255, 185, 56, 0.6); }
-  80%,100% { box-shadow: 0 0 0 10px rgba(255, 185, 56, 0); }
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3.5px;
+  background-color: var(--color-yellow);
+  border-radius: 2px;
+  transition: width 0.45s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Kilau yang menyapu tombol saat hover */
-.btn-shine { position: relative; overflow: hidden; isolation: isolate; }
-.btn-shine::after {
-  content: "";
+.header-line:hover::after {
+  width: 100%;
+}
+
+.nav-slow-line {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 3px;
+}
+
+.nav-slow-line::after {
+  content: '';
   position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
-  transform: translateX(-120%);
-  transition: transform 0.7s ease;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2.5px;
+  background-color: var(--color-yellow);
+  border-radius: 2px;
+  transition: width 0.45s cubic-bezier(0.25, 1, 0.5, 1);
 }
-.btn-shine:hover::after { transform: translateX(120%); }
 
-/* -------------------------------------------------------------
-   HERO: panggung visual
-   ------------------------------------------------------------- */
+.nav-slow-line:hover::after {
+  width: 100%;
+}
+
+/* =============================================================
+   6. SECTION APA ITU SIGNTALK: DINO GOYANG KANAN KIRI
+   ============================================================= */
+@keyframes dinoRocking {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  25% {
+    transform: rotate(-6deg) translateY(-4px);
+  }
+  75% {
+    transform: rotate(6deg) translateY(-4px);
+  }
+}
+
+.dino-sway {
+  animation: dinoRocking 3.5s ease-in-out infinite;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+/* =============================================================
+   1. HERO SECTION: BUBBLE HANYA MELAYANG DI ATAS LAPTOP
+   ============================================================= */
 .hero-scene {
-  /* parallax mengikuti kursor (diset oleh landing.js) */
-  translate: calc(var(--px, 0) * 16px) calc(var(--py, 0) * 12px);
-  transition: translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.hero-backdrop {
-  position: absolute;
-  width: min(20rem, 78vw);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #FFFFFF 0%, #F0EBFF 42%, #DCEBFF 100%);
-  box-shadow: 0 40px 80px -30px rgba(99, 70, 216, 0.4), inset 0 0 0 10px rgba(99, 70, 216, 0.9);
-  translate: calc(var(--px, 0) * -10px) calc(var(--py, 0) * -8px);
-  transition: translate 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-  animation: breathe 6s ease-in-out infinite;
-}
-@keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.03); }
-}
-.hero-orbit {
-  position: absolute;
-  width: min(24rem, 92vw);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 1.5px dashed rgba(99, 70, 216, 0.28);
-  animation: spin 32s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.orbit-dot {
-  position: absolute;
-  left: calc(50% - 7px);
-  top: -7px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--secondary);
-  box-shadow: 0 0 0 6px rgba(255, 185, 56, 0.22);
-}
-.orbit-dot--purple {
-  top: auto;
-  bottom: -6px;
-  left: calc(50% - 6px);
-  width: 12px;
-  height: 12px;
-  background: var(--primary);
-  box-shadow: 0 0 0 6px rgba(99, 70, 216, 0.15);
-}
-.hero-chip {
-  position: absolute;
-  z-index: 15;
-  width: 3.5rem;
-  height: 3.5rem;
+  position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 1rem;
-  border: 1px solid #FFFFFF;
-  box-shadow: 0 14px 30px -12px rgba(25, 20, 58, 0.35);
 }
 
-/* -------------------------------------------------------------
-   LAPTOP
-   ------------------------------------------------------------- */
-.laptop {
+.laptop-large {
   position: relative;
   z-index: 10;
-  width: min(340px, 70vw);
-  margin-top: 6%;
-  filter: drop-shadow(0 30px 30px rgba(25, 20, 58, 0.28));
+  width: min(580px, 94vw);
+  filter: drop-shadow(0 25px 35px rgba(43, 18, 76, 0.22));
   animation: laptopFloat 6s ease-in-out infinite;
 }
+
 @keyframes laptopFloat {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-8px); }
 }
-.laptop-svg { display: block; width: 100%; height: auto; }
 
-/* Layar: posisi persis area layar pada viewBox SVG 420x300 */
+.laptop-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .laptop-screen {
   position: absolute;
   left: 17.14%;
@@ -247,23 +165,28 @@ body {
   height: 58.67%;
   border-radius: 8px;
   overflow: hidden;
-  background: radial-gradient(120% 90% at 50% 0%, #3B2F86 0%, #241D52 55%, #19143A 100%);
+  background: radial-gradient(120% 90% at 50% 0%, #391A5E 0%, #2B124C 60%, #1A0A30 100%);
 }
+
 .laptop-screen::after {
-  /* kilatan saat huruf baru "terdeteksi" */
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 45%, rgba(255, 210, 122, 0.45), transparent 65%);
+  background: radial-gradient(circle at 50% 45%, rgba(249, 199, 79, 0.4), transparent 65%);
   opacity: 0;
+  pointer-events: none;
 }
-.laptop-screen.flash::after { animation: screenFlash 0.6s ease-out; }
+
+.laptop-screen.flash::after {
+  animation: screenFlash 0.5s ease-out;
+}
+
 @keyframes screenFlash {
   0%   { opacity: 1; }
   100% { opacity: 0; }
 }
 
-.vf { position: absolute; width: 14%; height: 18%; border: 0 solid var(--primary-light); opacity: 0.85; }
+.vf { position: absolute; width: 14%; height: 18%; border: 0 solid var(--color-pastel-2); opacity: 0.85; }
 .vf-tl { top: 8%; left: 6%; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 6px; }
 .vf-tr { top: 8%; right: 6%; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 6px; }
 .vf-bl { bottom: 8%; left: 6%; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 6px; }
@@ -271,48 +194,54 @@ body {
 
 .screen-live {
   position: absolute;
-  top: 9%;
-  left: 23%;
+  top: 8%;
+  left: 22%;
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: clamp(7px, 1.6vw, 9px);
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: #F0EBFF;
+  gap: 5px;
+  font-size: clamp(8px, 1.8vw, 10px);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #FFF;
 }
+
 .screen-live span {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--secondary);
+  background: var(--color-yellow);
+  box-shadow: 0 0 8px var(--color-yellow);
   animation: blink 1.2s steps(2, start) infinite;
 }
+
 @keyframes blink { to { visibility: hidden; } }
 
 .screen-hand {
   position: absolute;
   left: 50%;
-  top: 46%;
-  height: 66%;
+  top: 48%;
+  height: 64%;
   transform: translate(-50%, -50%);
   overflow: visible;
 }
+
 .hand-bones line {
-  stroke: var(--primary-light);
-  stroke-width: 1.6;
+  stroke: var(--color-pastel-2);
+  stroke-width: 1.8;
   stroke-linecap: round;
-  opacity: 0.9;
+  opacity: 0.85;
 }
+
 .hand-joints circle {
-  fill: var(--secondary);
+  fill: var(--color-yellow);
   transform-box: fill-box;
   transform-origin: center;
   animation: jointPulse 2.4s ease-in-out infinite;
 }
+
 @keyframes jointPulse {
   0%, 100% { transform: scale(1); opacity: 0.9; }
-  50%      { transform: scale(1.5); opacity: 1; }
+  50%      { transform: scale(1.4); opacity: 1; }
 }
 
 .screen-scan {
@@ -322,51 +251,46 @@ body {
   top: 14%;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, transparent, var(--secondary), transparent);
-  box-shadow: 0 0 12px 2px rgba(255, 185, 56, 0.55);
-  animation: scan 2.6s ease-in-out infinite alternate;
+  background: linear-gradient(90deg, transparent, var(--color-yellow), transparent);
+  box-shadow: 0 0 12px 2px rgba(249, 199, 79, 0.6);
+  animation: scan 2.5s ease-in-out infinite alternate;
 }
-@keyframes scan { to { top: 80%; } }
+
+@keyframes scan { to { top: 82%; } }
 
 .screen-caption {
   position: absolute;
   left: 50%;
-  bottom: 7%;
+  bottom: 6%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px;
+  padding: 3px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: clamp(8px, 1.8vw, 11px);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: clamp(9px, 2vw, 11px);
   font-weight: 600;
-  color: #DCEBFF;
+  color: #FFF;
   white-space: nowrap;
 }
+
 .screen-caption b {
-  display: inline-block;
-  min-width: 1ch;
-  color: var(--secondary);
-  font-size: 1.35em;
+  color: var(--color-yellow);
+  font-size: 1.25em;
   font-weight: 800;
 }
-.screen-caption b.tick { animation: tick 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); }
-@keyframes tick {
-  from { transform: scale(0.3); }
-  to   { transform: scale(1); }
-}
 
-/* -------------------------------------------------------------
-   GELEMBUNG HURUF (dibuat & digerakkan oleh landing.js)
-   ------------------------------------------------------------- */
+/* Panggung Gelembung: Membatasi agar HANYA melayang tepat di atas laptop */
 .bubble-stage {
   position: absolute;
-  inset: 0;
-  z-index: 20;
+  inset: -30px 0 0 0;
+  z-index: 25;
   pointer-events: none;
+  overflow: visible;
 }
+
 .bubble,
 .pop-ring,
 .pop-drop {
@@ -377,11 +301,18 @@ body {
   height: var(--s);
   margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
 }
+
 .bubble {
   pointer-events: auto;
   cursor: pointer;
   will-change: transform, opacity;
+  transition: filter 0.2s ease;
 }
+
+.bubble:hover {
+  filter: brightness(1.2) scale(1.1);
+}
+
 .bubble-inner {
   position: relative;
   width: 100%;
@@ -389,55 +320,134 @@ body {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  font-size: calc(var(--s) * 0.44);
-  font-weight: 800;
+  font-family: var(--font-heading);
+  font-size: calc(var(--s) * 0.38);
+  font-weight: 700;
   line-height: 1;
+  text-align: center;
+  padding: 4px;
   animation: sway var(--sway, 3s) ease-in-out infinite alternate;
 }
+
 .bubble-inner::before {
-  /* pantulan cahaya khas gelembung */
   content: "";
   position: absolute;
-  top: 13%;
+  top: 14%;
   left: 20%;
-  width: 30%;
+  width: 28%;
   height: 18%;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   transform: rotate(-30deg);
 }
+
 @keyframes sway {
-  from { transform: translateX(-5px) rotate(-7deg); }
-  to   { transform: translateX(5px) rotate(7deg); }
-}
-.bubble--purple .bubble-inner {
-  color: #FFFFFF;
-  background: radial-gradient(circle at 35% 30%, #A68BFA 0%, #6346D8 72%);
-  box-shadow: 0 12px 24px -10px rgba(99, 70, 216, 0.7),
-              inset -6px -8px 14px rgba(25, 20, 58, 0.28),
-              inset 4px 6px 10px rgba(255, 255, 255, 0.2);
-}
-.bubble--amber .bubble-inner {
-  color: var(--ink);
-  background: radial-gradient(circle at 35% 30%, #FFE7B0 0%, #FFB938 72%);
-  box-shadow: 0 12px 24px -10px rgba(230, 150, 20, 0.7),
-              inset -6px -8px 14px rgba(154, 91, 0, 0.22);
-}
-.bubble--glass .bubble-inner {
-  color: var(--primary);
-  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 235, 255, 0.78) 72%);
-  border: 1.5px solid rgba(167, 139, 250, 0.65);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 12px 24px -12px rgba(99, 70, 216, 0.55);
+  from { transform: translateX(-6px) rotate(-6deg); }
+  to   { transform: translateX(6px) rotate(6deg); }
 }
 
-/* Efek "pecah" */
+/* =============================================================
+   SEMUA VARIAN WARNA BUBBLE SESUAI COLOR PALETTE SIGNTALK
+   ============================================================= */
+/* 1. Dark Purple (#2B124C) */
+.bubble--dark-purple .bubble-inner,
+.bubble--purple .bubble-inner {
+  color: #FFFFFF;
+  background: radial-gradient(circle at 35% 30%, #522B5B 0%, #2B124C 75%);
+  box-shadow: 0 10px 24px -6px rgba(43, 18, 76, 0.65),
+              inset -4px -6px 10px rgba(0, 0, 0, 0.3),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.25);
+}
+
+/* 2. Plum / Medium Purple (#522B5B) */
+.bubble--plum .bubble-inner {
+  color: #F9C74F;
+  background: radial-gradient(circle at 35% 30%, #854F6C 0%, #522B5B 75%);
+  box-shadow: 0 10px 24px -6px rgba(82, 43, 91, 0.6),
+              inset -4px -6px 10px rgba(0, 0, 0, 0.25),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.25);
+}
+
+/* 3. Mauve (#854F6C) */
+.bubble--mauve .bubble-inner {
+  color: #FFFFFF;
+  background: radial-gradient(circle at 35% 30%, #DFB6B2 0%, #854F6C 75%);
+  box-shadow: 0 10px 24px -6px rgba(133, 79, 108, 0.55),
+              inset -4px -6px 10px rgba(0, 0, 0, 0.2),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.3);
+}
+
+/* 4. Dusty Rose (#DFB6B2) */
+.bubble--rose .bubble-inner {
+  color: var(--color-dark-purple);
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #DFB6B2 75%);
+  box-shadow: 0 10px 24px -6px rgba(223, 182, 178, 0.65),
+              inset -4px -6px 10px rgba(133, 79, 108, 0.15),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.5);
+}
+
+/* 5. Peach (#FBE4DB) */
+.bubble--peach .bubble-inner {
+  color: var(--color-dark-purple);
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #FBE4DB 75%);
+  box-shadow: 0 10px 24px -6px rgba(251, 228, 219, 0.7),
+              inset -4px -6px 10px rgba(223, 182, 178, 0.2),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.6);
+}
+
+/* 6. Yellow (#F9C74F) */
+.bubble--yellow .bubble-inner {
+  color: var(--color-dark-purple);
+  background: radial-gradient(circle at 35% 30%, #FFE699 0%, #F9C74F 75%);
+  box-shadow: 0 10px 24px -6px rgba(249, 199, 79, 0.65),
+              inset -4px -6px 10px rgba(180, 130, 20, 0.25),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.5);
+}
+
+/* 7. Soft Pearl White (#FAFAFA) */
+.bubble--white .bubble-inner {
+  color: var(--color-dark-purple);
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #F4F1FA 75%);
+  box-shadow: 0 10px 24px -6px rgba(43, 18, 76, 0.2),
+              inset -4px -6px 10px rgba(43, 18, 76, 0.08),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(196, 181, 253, 0.6);
+}
+
+/* 8. Pastel Lavender (#E9D5FF) */
+.bubble--pastel-1 .bubble-inner {
+  color: var(--color-dark-purple);
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #E9D5FF 75%);
+  box-shadow: 0 10px 24px -6px rgba(233, 213, 255, 0.7),
+              inset -4px -6px 10px rgba(43, 18, 76, 0.15),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.5);
+}
+
+/* 9. Pastel Lilac (#C4B5FD) */
+.bubble--pastel-2 .bubble-inner,
+.bubble--pastel .bubble-inner {
+  color: var(--color-dark-purple);
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #C4B5FD 75%);
+  box-shadow: 0 10px 24px -6px rgba(196, 181, 253, 0.7),
+              inset -4px -6px 10px rgba(43, 18, 76, 0.15),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.5);
+}
+
+/* 10. Pastel Orchid (#D8B4E2) */
+.bubble--pastel-3 .bubble-inner {
+  color: var(--color-dark-purple);
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #D8B4E2 75%);
+  box-shadow: 0 10px 24px -6px rgba(216, 180, 226, 0.7),
+              inset -4px -6px 10px rgba(82, 43, 91, 0.15),
+              inset 3px 5px 8px rgba(255, 255, 255, 0.5);
+}
+
 .pop-ring {
   pointer-events: none;
   border-radius: 50%;
   border: 3px solid var(--c);
 }
+
 .pop-drop {
   pointer-events: none;
   --s: 7px;
@@ -445,34 +455,242 @@ body {
   background: var(--c);
 }
 
-/* -------------------------------------------------------------
-   Reveal saat scroll (kelas ditambahkan oleh landing.js)
-   ------------------------------------------------------------- */
-.reveal {
-  opacity: 0;
-  translate: 0 32px;
-  transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
-              translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.reveal.is-visible { opacity: 1; translate: 0 0; }
-
-/* Mobile-specific adjustments */
-@media (max-width: 768px) {
-  .hero { gap: 2rem 1.5rem !important; }
-  .hero h1 { letter-spacing: -0.02em !important; }
+/* =============================================================
+   4. SECTION FITUR PADA SIGNTALK (CARD UNGU PASTEL & KAPSUL KUNING)
+   ============================================================= */
+.fitur-card-pastel {
+  background-color: var(--color-pastel-1);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  color: var(--color-dark-purple);
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1.5px solid rgba(196, 181, 253, 0.4);
 }
 
-/* -------------------------------------------------------------
-   Aksesibilitas: hormati pengaturan "kurangi gerakan"
-   ------------------------------------------------------------- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+.fitur-card-pastel:hover {
+  transform: translateY(-6px);
+  background-color: var(--color-pastel-2);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-dark-purple);
+}
+
+.fitur-capsule-btn {
+  background-color: var(--color-yellow);
+  color: var(--color-dark-purple);
+  font-family: var(--font-heading);
+  border-radius: 999px;
+  padding: 0.85rem 2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(249, 199, 79, 0.35);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2.5px solid transparent;
+}
+
+.fitur-capsule-btn:hover {
+  transform: translateY(-4px) scale(1.04);
+  border-color: var(--color-dark-purple);
+  box-shadow: 0 14px 28px rgba(249, 199, 79, 0.5);
+}
+
+/* =============================================================
+   ALUR PENGGUNAAN SIGNTALK: CARD WARNA PASTEL UNGU & AUTO ZOOM
+   ============================================================= */
+.alur-card {
+  border-radius: 2rem;
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  background-color: var(--color-pastel-1); /* Card warna pastel ungu */
+  color: var(--color-dark-purple);
+  border: 2px solid rgba(196, 181, 253, 0.7);
+  box-shadow: 0 8px 18px rgba(43, 18, 76, 0.06);
+  transform: scale(1);
+  z-index: 1;
+}
+
+.alur-card .alur-icon-box {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background-color: #FFFFFF;
+  color: var(--color-dark-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 10px rgba(43, 18, 76, 0.05);
+}
+
+.alur-card .alur-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  margin-bottom: 0.5rem;
+  color: var(--color-dark-purple);
+  transition: color 0.4s ease;
+}
+
+.alur-card .alur-desc {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(43, 18, 76, 0.85);
+  font-weight: 500;
+  transition: color 0.4s ease;
+}
+
+/* KETIKA KARTU ALUR AKTIF / BERGERAK ZOOM */
+.alur-card.active,
+.alur-card:hover {
+  transform: translateY(-8px) scale(1.07);
+  background-color: var(--color-dark-purple);
+  color: #FFFFFF;
+  border-color: var(--color-yellow);
+  box-shadow: 0 20px 35px -5px rgba(43, 18, 76, 0.38), 0 0 0 2px var(--color-yellow);
+  z-index: 10;
+}
+
+.alur-card.active .alur-icon-box,
+.alur-card:hover .alur-icon-box {
+  background-color: var(--color-plum);
+  color: var(--color-yellow);
+  transform: scale(1.12);
+  box-shadow: 0 6px 14px rgba(249, 199, 79, 0.25);
+}
+
+.alur-card.active .alur-title,
+.alur-card:hover .alur-title {
+  color: #FFFFFF;
+}
+
+.alur-card.active .alur-desc,
+.alur-card:hover .alur-desc {
+  color: var(--color-pastel-1);
+}
+
+/* =============================================================
+   5. SECTION PESAN UNTUK TEMAN TULI: FRAMER GRAVITY PILLS
+   ============================================================= */
+.gravity-arena {
+  position: relative;
+  width: 100%;
+  height: 460px;
+  background: transparent;
+  border: none;
+  overflow: visible;
+  box-shadow: none;
+}
+
+#gravity-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+
+#gravity-canvas:active {
+  cursor: grabbing;
+}
+
+/* Bubble Love Menyebar Kanan, Kiri, dan Atas saat Dino Ditekan */
+.love-bubble-single {
+  position: absolute;
+  pointer-events: none;
+  z-index: 50;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 35% 30%, #FFE699 0%, #F9C74F 75%);
+  box-shadow: 0 8px 24px rgba(249, 199, 79, 0.45);
+  animation: spreadLoveBurst 2.5s cubic-bezier(0.16, 0.84, 0.44, 1) forwards;
+}
+
+@keyframes spreadLoveBurst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2) rotate(0deg);
   }
-  .hero-fade, .reveal-word { opacity: 1; filter: none; transform: none; }
-  .hero-swash path { stroke-dashoffset: 0; }
-  .reveal { opacity: 1; translate: 0 0; }
+  15% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--dx) * 0.35), calc(-50% + var(--dy) * 0.35)) scale(1.2) rotate(calc(var(--rot) * 0.5));
+  }
+  65% {
+    opacity: 0.95;
+    transform: translate(calc(-50% + var(--dx) * 0.85), calc(-50% + var(--dy) * 0.85)) scale(1.05) rotate(var(--rot));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.65) rotate(var(--rot));
+  }
 }
 
+/* =============================================================
+   MODAL POPUP INTERAKTIF (HANYA KATA-KATA TANPA PENJELASAN)
+   ============================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(43, 18, 76, 0.65);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: #FFFFFF;
+  border-radius: 2rem;
+  max-width: 680px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 3px solid var(--color-pastel-2);
+  box-shadow: 0 25px 55px rgba(43, 18, 76, 0.25);
+  transform: translateY(24px) scale(0.96);
+  transition: all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-close {
+  background: var(--color-pastel-1);
+  color: var(--color-dark-purple);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--color-yellow);
+  transform: rotate(90deg);
+}
