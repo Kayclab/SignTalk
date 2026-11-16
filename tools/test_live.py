@@ -33,9 +33,11 @@ from signtalk.features import (
 
 from signtalk.paths import (
     LIVE_TEST_RESULT_PATH as OUT_PATH,
-    MODEL_PATH,
+    MODEL_DIR,
     TASK_MODEL_PATH as TASK_PATH,
 )
+
+MODEL_PATH = MODEL_DIR / "random_forest_v4.pkl"
 
 COUNTDOWN_SEC = 3
 RECORD_SEC = 5
