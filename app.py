@@ -143,10 +143,10 @@ def draw_hand_landmarks(frame, hand_landmarks):
     points = [(int(p.x * width), int(p.y * height)) for p in hand_landmarks]
 
     for start, end in HAND_CONNECTIONS:
-        cv2.line(frame, points[start], points[end], (0, 255, 0), 2)
+        cv2.line(frame, points[start], points[end], (253, 181, 196), 1)  # ungu muda #C4B5FD (BGR)
 
     for point in points:
-        cv2.circle(frame, point, 4, (0, 0, 255), -1)
+        cv2.circle(frame, point, 3, (79, 209, 249), -1)  # kuning #F9D14F (BGR)
 
     return frame
 
@@ -203,6 +203,16 @@ def predict_from_frame(frame):
     features = extract_features(hands, width, height)
 
     return frame, result, predict_sign(features), len(hands)
+
+
+def detect_hands_only(frame):
+    """Seperti predict_from_frame tetapi tanpa ekstraksi fitur/prediksi (lebih ringan)."""
+
+    if MIRROR_INPUT:
+        frame = cv2.flip(frame, 1)
+
+    result = detect_hands(frame)
+    return frame, result, len(result.hand_landmarks or [])
 
 
 def build_response(prediction, hand_count, result=None):
@@ -417,6 +427,12 @@ def api_predict():
                 new_w = 360
                 new_h = int(h * (new_w / w))
                 frame = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
+
+            # Mode "track" (dipakai Game): hanya deteksi tangan, tanpa prediksi huruf,
+            # supaya respons lebih cepat dan gerakan tangan lebih mulus.
+            if request.form.get("mode") == "track":
+                _, result, hand_count = detect_hands_only(frame)
+                return jsonify(build_response(None, hand_count, result)), 200
 
             _, result, prediction, hand_count = predict_from_frame(frame)
 

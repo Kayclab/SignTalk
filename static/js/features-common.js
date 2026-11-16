@@ -75,26 +75,119 @@ function getGestureDescription(char) {
 }
 
 // SVG Illustration Generator untuk Kartu Kamus & Game
+// Bentuk tangan asli diambil dari dataset (static/js/hand-shapes.js, dibuat oleh
+// scripts/generate_hand_shapes.py). Jika label tidak ada, dipakai ilustrasi bawaan.
+const HAND_FINGERS = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]];
+const HAND_PALM = [0, 1, 5, 9, 13, 17];
+
+function renderDatasetHandSVG(hands, gid) {
+  // Susun tangan berdampingan, lalu skala agar pas di dalam lingkaran kartu
+  const gap = 0.35;
+  let cursor = 0;
+  const placed = hands.map(rawHand => {
+    // Dataset dinormalisasi memakai max(|x|,|y|,|z|); z sering mendominasi sehingga
+    // tangan tampak mengecil. Untuk gambar, skala ulang hanya berdasarkan x,y.
+    const m = Math.max(...rawHand.map(p => Math.max(Math.abs(p[0]), Math.abs(p[1]))), 1e-6);
+    const hand = rawHand.map(p => [p[0] / m, p[1] / m, p[2] / m]);
+    const xs = hand.map(p => p[0]);
+    const min = Math.min(...xs), max = Math.max(...xs);
+    const dx = cursor - min;
+    cursor += (max - min) + gap;
+    return hand.map(p => [p[0] + dx, p[1], p[2]]);
+  });
+  const all = placed.flat();
+  const minX = Math.min(...all.map(p => p[0])), maxX = Math.max(...all.map(p => p[0]));
+  const minY = Math.min(...all.map(p => p[1])), maxY = Math.max(...all.map(p => p[1]));
+  const box = 84;
+  const scale = box / Math.max(maxX - minX, maxY - minY, 0.01);
+  const offX = 80 - ((minX + maxX) / 2) * scale;
+  const offY = 80 - ((minY + maxY) / 2) * scale;
+  const T = p => [(p[0] * scale + offX).toFixed(1), (p[1] * scale + offY).toFixed(1)];
+
+  return placed.map(hand => {
+    const pts = hand.map(T);
+    const palm = HAND_PALM.map(i => pts[i].join(',')).join(' ');
+    // Jari yang lebih jauh dari kamera (z lebih besar) digambar lebih dulu
+    const fingers = HAND_FINGERS
+      .map(f => ({ f, z: f.reduce((a, i) => a + hand[i][2], 0) / f.length }))
+      .sort((a, b) => b.z - a.z)
+      .map(({ f }) => f.map(i => pts[i].join(',')).join(' '));
+    const outline = 'fill="none" stroke="#2B124C" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"';
+    const inner = 'fill="none" stroke="#F9D14F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"';
+    return `
+      <polygon points="${palm}" fill="#2B124C" stroke="#2B124C" stroke-width="9" stroke-linejoin="round"/>
+      ${fingers.map(f => `<polyline points="${f}" ${outline}/>`).join('')}
+      <polygon points="${palm}" fill="url(#${gid})" stroke="url(#${gid})" stroke-width="7" stroke-linejoin="round"/>
+      ${fingers.map(f => `<polyline points="${f}" ${inner}/>`).join('')}
+      ${HAND_FINGERS.map(f => f.map(i => `<circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="1.8" fill="#6346D8"/>`).join('')).join('')}
+    `;
+  }).join('');
+}
+
+// Foto/gambar tangan penuh untuk sisi belakang kartu.
+// Taruh file di static/img/hands/<nama>.jpeg (atau .jpg / .png / .webp), mis. A.jpeg, 10.jpeg,
+// Bahasa-isyarat.jpeg (spasi jadi "-"; huruf besar/kecil keduanya dicoba).
+// Jika file tidak ada, kartu otomatis memakai ilustrasi dari dataset.
+function handPhotoName(label) {
+  return String(label).trim().replace(/\s+/g, '-');
+}
+
+function attachHandPhoto(cardBack, label) {
+  const img = cardBack.querySelector('.cf-card-photo');
+  if (!img) return;
+  // Coba nama persis (A.jpg, A.jpeg) lalu huruf kecil (a.jpg, a.jpeg), tiap ekstensi
+  const name = handPhotoName(label);
+  const names = [...new Set([name, name.toLowerCase()])];
+  const exts = ['jpg', 'jpeg', 'png', 'webp'];  // jpg dulu untuk priority
+  const candidates = [];
+  names.forEach(n => exts.forEach(e => candidates.push('/static/img/hands/' + encodeURIComponent(n) + '.' + e)));
+  let i = 0;
+  img.onload = () => cardBack.classList.add('has-photo');
+  img.onerror = () => {
+    i += 1;
+    if (i < candidates.length) img.src = candidates[i];
+    else img.remove();
+  };
+  img.src = candidates[0];
+}
+
 function generateHandIllustrationSVG(item) {
   const isWord = item.type === 'Kata';
   const label = item.char;
+  const gid = 'handGrad_' + label.replace(/[^a-zA-Z0-9]/g, '_');
+  const shape = (typeof HAND_SHAPES !== 'undefined') ? HAND_SHAPES[label] : null;
+
+  const defs = `
+      <defs>
+        <linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="30" y1="30" x2="130" y2="130">
+          <stop offset="0%" stop-color="#F9D14F" />
+          <stop offset="100%" stop-color="#F0B8A8" />
+        </linearGradient>
+      </defs>`;
+
+  if (shape && shape.length) {
+    return `
+    <svg viewBox="0 0 160 160" class="w-full h-full drop-shadow-sm select-none" xmlns="http://www.w3.org/2000/svg">
+      ${defs}
+      <circle cx="80" cy="80" r="66" fill="#FFF8EE" stroke="#E9D5FF" stroke-width="2"/>
+      <circle cx="80" cy="80" r="58" fill="#EADBFC" stroke="#F9D14F" stroke-dasharray="3 3" stroke-width="1.5"/>
+      <g>${renderDatasetHandSVG(shape, gid)}</g>
+    </svg>
+  `;
+  }
+
   return `
     <svg viewBox="0 0 160 160" class="w-full h-full drop-shadow-sm select-none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="handGrad_${label.replace(/[^a-zA-Z0-9]/g, '_')}" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#F9C74F" />
-          <stop offset="100%" stop-color="#DFB6B2" />
-        </linearGradient>
-      </defs>
+      ${defs}
       <circle cx="80" cy="80" r="66" fill="#FFF8EE" stroke="#E9D5FF" stroke-width="2"/>
       <circle cx="80" cy="80" r="54" fill="#EADBFC" stroke="#F9C74F" stroke-dasharray="3 3" stroke-width="1.5"/>
       <g>
         ${isWord ? `
-          <path d="M54 110 C54 85, 46 70, 58 60 C65 55, 75 62, 70 78 L66 88 L75 88 C82 88, 86 98, 78 108 Z" fill="url(#handGrad_${label.replace(/[^a-zA-Z0-9]/g, '_')})" stroke="#2B124C" stroke-width="2.5"/>
-          <path d="M106 110 C106 85, 114 70, 102 60 C95 55, 85 62, 90 78 L94 88 L85 88 C78 88, 74 98, 82 108 Z" fill="url(#handGrad_${label.replace(/[^a-zA-Z0-9]/g, '_')})" stroke="#2B124C" stroke-width="2.5"/>
+          <path d="M54 110 C54 85, 46 70, 58 60 C65 55, 75 62, 70 78 L66 88 L75 88 C82 88, 86 98, 78 108 Z" fill="url(#${gid})" stroke="#2B124C" stroke-width="2.5"/>
+          <path d="M106 110 C106 85, 114 70, 102 60 C95 55, 85 62, 90 78 L94 88 L85 88 C78 88, 74 98, 82 108 Z" fill="url(#${gid})" stroke="#2B124C" stroke-width="2.5"/>
         ` : `
-          <path d="M60 115 L60 92 C60 84, 66 76, 76 76 C82 76, 86 80, 86 86 L86 68 C86 62, 92 58, 97 62 C101 65, 101 72, 101 78 L101 72 C101 66, 107 63, 112 67 C116 70, 116 76, 115 86 L115 115 Z" fill="url(#handGrad_${label.replace(/[^a-zA-Z0-9]/g, '_')})" stroke="#2B124C" stroke-width="2.5"/>
-          <path d="M50 98 C44 92, 46 82, 55 78 C62 74, 70 80, 72 90 Z" fill="url(#handGrad_${label.replace(/[^a-zA-Z0-9]/g, '_')})" stroke="#2B124C" stroke-width="2.5"/>
+          <path d="M60 115 L60 92 C60 84, 66 76, 76 76 C82 76, 86 80, 86 86 L86 68 C86 62, 92 58, 97 62 C101 65, 101 72, 101 78 L101 72 C101 66, 107 63, 112 67 C116 70, 116 76, 115 86 L115 115 Z" fill="url(#${gid})" stroke="#2B124C" stroke-width="2.5"/>
+          <path d="M50 98 C44 92, 46 82, 55 78 C62 74, 70 80, 72 90 Z" fill="url(#${gid})" stroke="#2B124C" stroke-width="2.5"/>
         `}
       </g>
     </svg>
@@ -178,8 +271,8 @@ class PredictionStabilizer {
 
 // =============================================================
 // 4. HAND SKELETON CONNECTIONS & RENDERER (PERSIS GAMBAR NO. 1)
-// - Garis Hijau Neon (#00FF44) solid berketebalan 3.5px
-// - Titik Sendi Magenta (#E024C3) dengan titik putih di tengah
+// - Garis Ungu muda (#C4B5FD) tipis 2px
+// - Titik Sendi Kuning (#F9D14F) dengan titik putih di tengah
 // =============================================================
 const HAND_CONNECTIONS = [
   // Radiasi dari pergelangan tangan (0)
@@ -204,12 +297,12 @@ function drawHandSkeleton(ctx, landmarks, canvasW, canvasH, isFlipped = false) {
   landmarks.forEach(hand => {
     // 1. Gambar Garis Kerangka Hijau Neon (Persis Gambar MediaPipe No. 1 / Gambar 2)
     ctx.save();
-    ctx.strokeStyle = '#00FF44';
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#C4B5FD';
+    ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.shadowColor = 'rgba(0, 255, 68, 0.7)';
-    ctx.shadowBlur = 5;
+    ctx.shadowColor = 'rgba(196, 181, 253, 0.6)';
+    ctx.shadowBlur = 3;
 
     HAND_CONNECTIONS.forEach(([i, j]) => {
       const p1 = hand[i];
@@ -239,13 +332,13 @@ function drawHandSkeleton(ctx, landmarks, canvasW, canvasH, isFlipped = false) {
 
       // Outer magenta circle
       ctx.beginPath();
-      ctx.arc(x, y, 6.5, 0, 2 * Math.PI);
-      ctx.fillStyle = '#E024C3';
+      ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = '#F9D14F';
       ctx.fill();
 
       // White inner center dot
       ctx.beginPath();
-      ctx.arc(x, y, 2.5, 0, 2 * Math.PI);
+      ctx.arc(x, y, 1.5, 0, 2 * Math.PI);
       ctx.fillStyle = '#FFFFFF';
       ctx.fill();
     });
@@ -265,7 +358,11 @@ class SignTalkCamera {
     pipelineToggleId = null,
     flipButtonId = 'flip-camera-btn',
     onPrediction = null,
-    minFrameGapMs = 60
+    minFrameGapMs = 60,
+    trackOnly = false,   // true: server hanya mendeteksi tangan (tanpa prediksi huruf)
+    smoothTauMs = 0,     // >0: landmark dihaluskan (waktu respons dalam ms)
+    holdMs = null,       // !=null: pertahankan landmark sekian ms saat deteksi hilang
+    onFrame = null       // dipanggil tiap frame render: ({hands, dt, now})
   }) {
     this.video = document.getElementById(videoElementId);
     this.canvas = document.getElementById(canvasElementId);
@@ -277,6 +374,13 @@ class SignTalkCamera {
 
     this.onPrediction = onPrediction;
     this.minFrameGapMs = minFrameGapMs;
+    this.trackOnly = trackOnly;
+    this.smoothTauMs = smoothTauMs;
+    this.holdMs = holdMs;
+    this.onFrame = onFrame;
+    this.displayLandmarks = [];
+    this.lastSeenAt = 0;
+    this._lastFrameT = 0;
 
     this.stream = null;
     this.isPredicting = false;
@@ -382,6 +486,7 @@ class SignTalkCamera {
     }
 
     this.latestLandmarks = [];
+    this.displayLandmarks = [];
 
     if (this.onPrediction) {
       this.onPrediction({
@@ -394,9 +499,36 @@ class SignTalkCamera {
     }
   }
 
+  // Haluskan landmark dari server (yang datang ~10-15x/detik) menjadi gerakan mulus per frame
+  updateDisplayLandmarks(dt) {
+    const target = this.latestLandmarks || [];
+    if (!this.smoothTauMs || target.length === 0) {
+      this.displayLandmarks = target;
+      return;
+    }
+    const shown = this.displayLandmarks;
+    const sameShape = shown.length === target.length &&
+      shown.every((hand, i) => hand.length === target[i].length);
+    if (!sameShape) {
+      this.displayLandmarks = target.map(hand => hand.map(p => ({ x: p.x, y: p.y })));
+      return;
+    }
+    const a = 1 - Math.exp(-dt / this.smoothTauMs);
+    target.forEach((hand, i) => hand.forEach((p, j) => {
+      const q = shown[i][j];
+      q.x += (p.x - q.x) * a;
+      q.y += (p.y - q.y) * a;
+    }));
+  }
+
   startCanvasRenderLoop(id) {
     const render = () => {
       if (id !== this.loopId || !this.stream) return;
+
+      const nowT = performance.now();
+      const dt = this._lastFrameT ? Math.min(nowT - this._lastFrameT, 100) : 16;
+      this._lastFrameT = nowT;
+      this.updateDisplayLandmarks(dt);
 
       if (this.canvas && this.video && this.video.videoWidth > 0 && this.video.videoHeight > 0) {
         if (this.canvas.width !== this.video.videoWidth || this.canvas.height !== this.video.videoHeight) {
@@ -422,14 +554,22 @@ class SignTalkCamera {
         // Di menu lain (Penerjemah, Latihan, Kuis), mengikuti switch toggle.
         const showPipeline = !this.pipelineToggle || this.pipelineToggle.checked;
 
-        if (showPipeline && this.latestLandmarks && this.latestLandmarks.length > 0) {
+        if (showPipeline && this.displayLandmarks && this.displayLandmarks.length > 0) {
           drawHandSkeleton(
             ctx,
-            this.latestLandmarks,
+            this.displayLandmarks,
             this.canvas.width,
             this.canvas.height,
             this.isFlipped
           );
+        }
+      }
+
+      if (this.onFrame) {
+        try {
+          this.onFrame({ hands: this.displayLandmarks, dt, now: nowT });
+        } catch (err) {
+          console.warn('onFrame error:', err);
         }
       }
 
@@ -465,6 +605,7 @@ class SignTalkCamera {
 
       const formData = new FormData();
       formData.append('frame', blob, 'frame.jpg');
+      if (this.trackOnly) formData.append('mode', 'track');
 
       const response = await fetch('/api/predict', {
         method: 'POST',
@@ -476,10 +617,16 @@ class SignTalkCamera {
       if (rawResult && rawResult.landmarks && rawResult.landmarks.length > 0) {
         this.latestLandmarks = rawResult.landmarks;
         this.missedLandmarksCount = 0;
+        this.lastSeenAt = performance.now();
       } else {
         this.missedLandmarksCount = (this.missedLandmarksCount || 0) + 1;
-        // Pertahankan kerangka selama 3 siklus agar tidak berkedip (smooth tracking)
-        if (this.missedLandmarksCount >= 3) {
+        if (this.holdMs != null) {
+          // Pertahankan kerangka sekian ms agar deteksi yang hilang sesaat tidak memutus gerakan
+          if (performance.now() - this.lastSeenAt > this.holdMs) {
+            this.latestLandmarks = [];
+          }
+        } else if (this.missedLandmarksCount >= 3) {
+          // Pertahankan kerangka selama 3 siklus agar tidak berkedip (smooth tracking)
           this.latestLandmarks = [];
         }
       }
@@ -568,6 +715,8 @@ function initKamusCoverFlow({
 
         <!-- MUKA BELAKANG KARTU (3D FLIP) -->
         <div class="cf-card-back">
+          <img class="cf-card-photo" alt="Isyarat ${item.char}" draggable="false">
+          <div class="cf-card-label">${item.char.length > 2 ? item.char[0] : item.char}</div>
           <span class="cf-card-badge">${item.char.length > 2 ? item.char[0] : item.char}</span>
           <div class="w-20 h-20 pointer-events-none mt-1">
             ${generateHandIllustrationSVG(item)}
@@ -581,6 +730,8 @@ function initKamusCoverFlow({
         </div>
       </div>
     `;
+
+    attachHandPhoto(card.querySelector('.cf-card-back'), item.char);
 
     card.addEventListener('click', () => {
       const isCenter = card.classList.contains('card-center');
