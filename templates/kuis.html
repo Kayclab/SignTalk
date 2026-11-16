@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuis Isyarat - SignTalk</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- CSS Khusus Fitur SignTalk -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/features.css') }}?v=2.2">
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-white text-[#2B124C]">
+
+  <!-- =======================================================
+       1. NAVBAR BERSAMA: PERSIS BENTUK CAPSULE FLOATING LANDING
+       ======================================================= -->
+  <header class="header-features px-4 md:px-8">
+    <nav class="nav-capsule">
+      
+      <div class="flex items-center gap-3">
+        <a href="/" class="btn-back-circle" title="Kembali ke Beranda">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+
+        <a href="/" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center p-1.5 shadow-sm border border-[#C4B5FD]/40 group-hover:scale-105 transition-transform">
+            <img src="{{ url_for('static', filename='img/Logo.svg') }}" alt="SignTalk Logo" class="w-full h-full object-contain" />
+          </div>
+          <span class="text-2xl font-extrabold font-heading text-[#2B124C]">SignTalk</span>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-2.5 overflow-x-auto py-1">
+        <a href="/penerjemah" class="nav-tab-item nav-tab-inactive" title="Penerjemah Bahasa Isyarat">
+          <i data-lucide="video" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Penerjemah</span>
+        </a>
+
+        <a href="/latihan" class="nav-tab-item nav-tab-inactive" title="Latihan Kata">
+          <i data-lucide="pen-tool" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Latihan Kata</span>
+        </a>
+
+        <a href="/kuis" class="nav-tab-item nav-tab-active" title="Kuis Isyarat">
+          <i data-lucide="help-circle" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Kuis Isyarat</span>
+        </a>
+
+        <a href="/game" class="nav-tab-item nav-tab-inactive" title="Game Puzzle">
+          <i data-lucide="gamepad-2" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Game Puzzle</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- =======================================================
+       MAIN CONTENT: KUIS ISYARAT
+       ======================================================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-12 py-6 space-y-8">
+
+    <!-- 1. PENGUMUMAN DINO KUIS (TANPA CARD, DINO GOYANG, LIST 1 2 3) -->
+    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-8 py-2">
+      <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center cursor-pointer group" onclick="launchCelebrationConfetti()">
+        <img src="{{ url_for('static', filename='img/Dino Kuis.png') }}" 
+             alt="Dino Kuis" 
+             class="w-full h-full object-contain animate-dino-wiggle group-hover:scale-110 transition-transform" />
+      </div>
+
+      <div class="space-y-2 flex-1 text-left">
+        <h2 class="font-heading font-extrabold text-xl text-[#2B124C]">Petunjuk Kuis Bahasa Isyarat</h2>
+        <div class="space-y-2 text-sm text-[#2B124C]/85">
+          <div class="petunjuk-list-item">
+            <span class="petunjuk-number">1</span>
+            <p>Pilih kategori kuis yang ingin Anda uji: Huruf A-Z, Angka 1-10, Kata BISINDO, atau Campuran.</p>
+          </div>
+          <div class="petunjuk-list-item">
+            <span class="petunjuk-number">2</span>
+            <p>Lihat tantangan isyarat di bagian tengah atas kamera, lalu peragakan bentuk tangan yang benar di depan webcam.</p>
+          </div>
+          <div class="petunjuk-list-item">
+            <span class="petunjuk-number">3</span>
+            <p>Sistem AI akan otomatis memeriksa jawaban Anda dan beralih ke soal berikutnya saat terdeteksi tepat.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. PILIHAN KATEGORI KUIS (GAMBAR PADA IMG PERSIS GAMBAR NO. 3) -->
+    <section id="category-selection-section" class="space-y-6">
+      <div class="text-center sm:text-left">
+        <h3 class="text-2xl font-extrabold font-heading text-[#2B124C]">Pilih Kategori Kuis</h3>
+        <p class="text-xs sm:text-sm text-[#2B124C]/75">Uji kemampuan ingatan dan ketepatan gestur BISINDO Anda.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Kategori 1: Huruf -->
+        <div class="quiz-cat-card">
+          <div class="quiz-cat-img-box">
+            <img src="{{ url_for('static', filename='img/kuis huruf.png') }}" alt="Huruf BISINDO" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 flex flex-col justify-between flex-1 gap-4 bg-white">
+            <div>
+              <h4 class="font-heading font-extrabold text-xl text-[#2B124C]">Huruf BISINDO</h4>
+              <p class="text-xs text-[#2B124C]/75 mt-1 leading-relaxed">Uji ketepatan 26 abjad isyarat tangan A sampai Z.</p>
+            </div>
+            <button onclick="startQuiz('huruf')" class="btn-yellow-action">
+              <span>Mulai Kuis</span>
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Kategori 2: Angka -->
+        <div class="quiz-cat-card">
+          <div class="quiz-cat-img-box">
+            <img src="{{ url_for('static', filename='img/kuis angka.png') }}" alt="Angka BISINDO" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 flex flex-col justify-between flex-1 gap-4 bg-white">
+            <div>
+              <h4 class="font-heading font-extrabold text-xl text-[#2B124C]">Angka BISINDO</h4>
+              <p class="text-xs text-[#2B124C]/75 mt-1 leading-relaxed">Tantangan membaca dan memperagakan angka 1-10.</p>
+            </div>
+            <button onclick="startQuiz('angka')" class="btn-yellow-action">
+              <span>Mulai Kuis</span>
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Kategori 3: Kata -->
+        <div class="quiz-cat-card">
+          <div class="quiz-cat-img-box">
+            <img src="{{ url_for('static', filename='img/kuis kata.png') }}" alt="Kata BISINDO" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 flex flex-col justify-between flex-1 gap-4 bg-white">
+            <div>
+              <h4 class="font-heading font-extrabold text-xl text-[#2B124C]">Kata BISINDO</h4>
+              <p class="text-xs text-[#2B124C]/75 mt-1 leading-relaxed">Latihan 10 kosakata isyarat BISINDO sehari-hari.</p>
+            </div>
+            <button onclick="startQuiz('kata')" class="btn-yellow-action">
+              <span>Mulai Kuis</span>
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Kategori 4: Campur -->
+        <div class="quiz-cat-card">
+          <div class="quiz-cat-img-box">
+            <img src="{{ url_for('static', filename='img/kuis campur.png') }}" alt="Campuran" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 flex flex-col justify-between flex-1 gap-4 bg-white">
+            <div>
+              <h4 class="font-heading font-extrabold text-xl text-[#2B124C]">Campuran</h4>
+              <p class="text-xs text-[#2B124C]/75 mt-1 leading-relaxed">Uji kombinasi huruf, angka, dan kata secara acak.</p>
+            </div>
+            <button onclick="startQuiz('campur')" class="btn-yellow-action">
+              <span>Mulai Kuis</span>
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ARENA KUIS KAMERA (DENGAN TOGGLE PIPELINE DAN TARGET DI TENGAH) -->
+    <section id="quiz-arena-section" class="hidden space-y-6">
+      <div class="card-pastel-purple p-5 sm:p-7 space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-[#2B124C]/10 flex-wrap gap-3">
+          <h3 id="quiz-category-title" class="text-xl font-extrabold font-heading text-[#2B124C]">
+            Kuis Huruf BISINDO
+          </h3>
+
+          <div class="flex items-center gap-3">
+            <!-- TOGGLE PIPELINE KERANGKA TANGAN -->
+            <div class="flex items-center gap-2 bg-white/70 px-3 py-1.5 rounded-full border border-[#2B124C]/15 shadow-sm">
+              <span class="text-xs font-bold font-heading text-[#2B124C]">Pipeline</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="pipeline-toggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <!-- TOMBOL BALIK KAMERA -->
+            <button id="flip-camera-btn" type="button" title="Balik Tampilan Kamera" class="w-10 h-10 rounded-full bg-white/70 hover:bg-white text-[#2B124C] border border-[#2B124C]/15 shadow-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95">
+              <i data-lucide="flip-horizontal" class="w-5 h-5"></i>
+            </button>
+
+            <!-- TOMBOL AKHIRI KUIS -->
+            <button onclick="endQuiz()" class="px-5 py-2.5 rounded-full bg-red-500 hover:bg-red-600 text-white font-heading font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95">
+              Akhiri Kuis
+            </button>
+          </div>
+        </div>
+
+        <div id="camera-box" class="camera-box aspect-[16/10] w-full relative flex items-center justify-center">
+          <div class="vf-corner vf-tl"></div>
+          <div class="vf-corner vf-tr"></div>
+          <div class="vf-corner vf-bl"></div>
+          <div class="vf-corner vf-br"></div>
+
+          <video id="camera-video" autoplay playsinline class="camera-video hidden"></video>
+          <canvas id="camera-canvas" class="camera-canvas"></canvas>
+
+          <!-- KOTAK PERAGAKAN TEPAT DI TENGAH ATAS KAMERA -->
+          <div class="quiz-target-center animate-bounce-slow">
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-[#2B124C]/80">PERAGAKAN:</span>
+            <span id="target-char" class="text-4xl font-extrabold font-heading text-[#2B124C] leading-none my-1">A</span>
+            <span id="target-type" class="text-[9px] font-bold text-[#2B124C]/70">Huruf</span>
+          </div>
+
+          <!-- PROGRESS DI POJOK KANAN ATAS -->
+          <div class="absolute top-4 right-4 z-30 bg-[#2B124C]/90 text-white px-4 py-2 rounded-xl backdrop-blur-md border border-[#F9C74F]/40 flex items-center gap-2">
+            <i data-lucide="clock" class="w-4 h-4 text-[#F9C74F]"></i>
+            <span id="quiz-progress" class="font-heading font-extrabold text-sm">1 / 10</span>
+          </div>
+
+          <!-- FLASH NOTIFIKASI BENAR -->
+          <div id="correct-flash" class="absolute inset-0 bg-emerald-500/80 z-40 flex flex-col items-center justify-center text-white opacity-0 pointer-events-none transition-opacity duration-300">
+            <i data-lucide="check-circle" class="w-20 h-20 text-[#F9C74F] animate-bounce"></i>
+            <span class="text-3xl font-extrabold font-heading mt-2">BENAR!</span>
+          </div>
+
+          <div id="camera-placeholder" class="camera-placeholder">
+            <div class="w-16 h-16 bg-[#522B5B] text-[#F9C74F] rounded-full flex items-center justify-center border-2 border-[#F9C74F]/40 shadow-lg mb-3">
+              <i data-lucide="video-off" class="w-8 h-8"></i>
+            </div>
+            <p class="font-heading font-extrabold text-base text-white">Kamera Belum Diaktifkan</p>
+            <p class="text-xs text-white/70 max-w-sm mt-1">Mengaktifkan webcam kuis...</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-[#2B124C]/80 px-2">
+          <span>Terdeteksi oleh AI: <strong id="quiz-live-detected" class="text-[#2B124C] font-bold font-heading text-sm">-</strong></span>
+          <span>Akurasi: <strong id="quiz-live-conf">0%</strong></span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =======================================================
+       POPUP MODAL HASIL KUIS (RESPONSIF & DINAMIS SESUAI SKOR)
+       ======================================================= -->
+  <div id="quiz-modal" class="result-popup-backdrop">
+    <div class="result-popup-dialog space-y-6">
+      
+      <div class="space-y-1">
+        <h3 id="quiz-modal-title" class="text-3xl font-extrabold font-heading text-[#2B124C]">
+          Hasil Kuis Anda
+        </h3>
+        <p id="quiz-modal-subtitle" class="text-xs sm:text-sm text-[#2B124C]/80 font-normal">
+          Terus berlatih agar semakin mahir dalam bahasa isyarat!
+        </p>
+      </div>
+
+      <!-- Rating Bintang Dinamis (1 sampai 5 Bintang) -->
+      <div id="quiz-modal-stars" class="flex items-center justify-center gap-2 text-[#F9C74F]">
+        <!-- Diisi secara dinamis oleh JS -->
+      </div>
+
+      <!-- Kartu Skor & Statistik -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="card-white-inner p-4">
+          <span class="text-xs text-[#2B124C]/60 font-bold">TOTAL SKOR</span>
+          <div id="modal-score" class="text-4xl font-extrabold font-heading text-[#2B124C] mt-1">0</div>
+        </div>
+        <div class="card-white-inner p-4">
+          <span class="text-xs text-[#2B124C]/60 font-bold">SOAL TEPAT</span>
+          <div id="modal-correct" class="text-4xl font-extrabold font-heading text-[#2B124C] mt-1">0 / 10</div>
+        </div>
+      </div>
+
+      <!-- Tombol Aksi di Modal -->
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button onclick="retryQuiz()" class="btn-yellow-action flex-1">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          <span>Ulangi Kuis</span>
+        </button>
+        <button onclick="backToCategories()" class="btn-camera-start flex-1 text-center justify-center">
+          <span>Pilih Kategori Lain</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =======================================================
+       FOOTER
+       ======================================================= -->
+  <!-- FOOTER (Sama Persis Landing Page) -->
+  <footer class="bg-[#19143A] text-white py-10 px-6 border-t border-[#2A2359] mt-10 w-full">
+    <div class="max-w-6xl mx-auto space-y-8">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 border-b border-[#2A2359] pb-8">
+        <!-- App Brand Info -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center p-1.5 shadow-md">
+              <img src="{{ url_for('static', filename='img/Logo.svg') }}" alt="SignTalk Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="text-2xl font-extrabold font-heading text-white">SignTalk</span>
+          </div>
+          <p class="text-xs text-[#A78BFA] max-w-sm">
+            MediaPipe Hands · Random Forest · Text-to-Speech · BISINDO
+          </p>
+        </div>
+
+        <!-- 3 Kotak Anggota Tim -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-auto">
+          <!-- Anggota 1 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Kaila Puteri Iskandar</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="https://instagram.com/kailaa.putri" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="https://linkedin.com/in/KailaPuteriIskandar" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href="mailto:kailaputeriiska@gmail.com" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Anggota 2 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Anggota Tim 2</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="#" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Anggota 3 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Anggota Tim 3</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="#" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#A78BFA]/80">
+        <p>&copy; 2026 SignTalk. Dibuat dengan cinta untuk inklusivitas dan komunikasi setara.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Kembali ke Atas</a>
+          <a href="/" class="hover:text-white transition-colors">Beranda</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =======================================================
+       LOGIKA JAVASCRIPT KUIS ISYARAT
+       ======================================================= -->
+  <script src="{{ url_for('static', filename='js/features-common.js') }}?v=2.2"></script>
+  <script>
+    lucide.createIcons();
+
+    let quizCamera = null;
+    let currentCategory = 'huruf';
+    let questions = [];
+    let questionIndex = 0;
+    let score = 0;
+
+    const catSection = document.getElementById('category-selection-section');
+    const arenaSection = document.getElementById('quiz-arena-section');
+    const modalEl = document.getElementById('quiz-modal');
+
+    const targetCharEl = document.getElementById('target-char');
+    const targetTypeEl = document.getElementById('target-type');
+    const progressEl = document.getElementById('quiz-progress');
+    const liveDetectedEl = document.getElementById('quiz-live-detected');
+    const liveConfEl = document.getElementById('quiz-live-conf');
+    const correctFlash = document.getElementById('correct-flash');
+
+    function startQuiz(cat) {
+      currentCategory = cat;
+      questionIndex = 0;
+      score = 0;
+
+      let pool = [];
+      if (cat === 'huruf') pool = KAMUS_DATA.filter(k => k.type === 'Huruf');
+      else if (cat === 'angka') pool = KAMUS_DATA.filter(k => k.type === 'Angka');
+      else if (cat === 'kata') pool = KAMUS_DATA.filter(k => k.type === 'Kata');
+      else pool = [...KAMUS_DATA];
+
+      questions = pool.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+      catSection.classList.add('hidden');
+      modalEl.classList.remove('is-open');
+      arenaSection.classList.remove('hidden');
+
+      const titleMap = {
+        'huruf': 'Kuis Huruf BISINDO',
+        'angka': 'Kuis Angka BISINDO',
+        'kata': 'Kuis Kata BISINDO',
+        'campur': 'Kuis Campuran BISINDO'
+      };
+      document.getElementById('quiz-category-title').textContent = titleMap[cat] || 'Kuis Bahasa Isyarat';
+
+      loadQuestion();
+
+      if (!quizCamera) {
+        quizCamera = new SignTalkCamera({
+          videoElementId: 'camera-video',
+          canvasElementId: 'camera-canvas',
+          placeholderId: 'camera-placeholder',
+          pipelineToggleId: 'pipeline-toggle',
+          flipButtonId: 'flip-camera-btn',
+          onPrediction: checkQuizAnswer
+        });
+      }
+      quizCamera.start();
+    }
+
+    function loadQuestion() {
+      if (questions.length === 0 || questionIndex >= questions.length) {
+        endQuiz();
+        return;
+      }
+
+      const q = questions[questionIndex];
+      targetCharEl.textContent = q.char;
+      targetTypeEl.textContent = q.type;
+      progressEl.textContent = `${questionIndex + 1} / ${questions.length}`;
+      liveDetectedEl.textContent = '-';
+      liveConfEl.textContent = '0%';
+    }
+
+    function checkQuizAnswer(data) {
+      if (!data || !data.detected || data.prediction === '-') {
+        liveDetectedEl.textContent = '-';
+        liveConfEl.textContent = '0%';
+        return;
+      }
+
+      liveDetectedEl.textContent = data.prediction;
+      liveConfEl.textContent = `${data.confidence}%`;
+
+      const currentTarget = questions[questionIndex]?.char;
+      if (currentTarget) {
+        const cleanTarget = String(currentTarget).replace(/[- ]/g, '').toUpperCase();
+        const cleanPred = String(data.prediction).replace(/[- ]/g, '').toUpperCase();
+
+        if (cleanPred === cleanTarget) {
+          score += 10;
+          showCorrectFlash();
+          questionIndex++;
+          setTimeout(loadQuestion, 800);
+        }
+      }
+    }
+
+    function showCorrectFlash() {
+      correctFlash.classList.remove('opacity-0');
+      correctFlash.classList.add('opacity-100');
+      setTimeout(() => {
+        correctFlash.classList.remove('opacity-100');
+        correctFlash.classList.add('opacity-0');
+      }, 600);
+    }
+
+    function endQuiz() {
+      if (quizCamera) quizCamera.stop();
+
+      const titleEl = document.getElementById('quiz-modal-title');
+      const subtitleEl = document.getElementById('quiz-modal-subtitle');
+      const starsEl = document.getElementById('quiz-modal-stars');
+      const scoreEl = document.getElementById('modal-score');
+      const correctEl = document.getElementById('modal-correct');
+
+      const totalQ = questions.length || 10;
+      scoreEl.textContent = score;
+      correctEl.textContent = `${Math.floor(score / 10)} / ${totalQ}`;
+
+      // Logika Pesan dan Bintang Dinamis sesuai Skor
+      // Skor 0 - 30: "Bisa Belajar Lagi! 🌱" dengan 1 bintang (tidak puji berlebihan saat 0)
+      if (score >= 90) {
+        titleEl.textContent = 'Luar Biasa! Sempurna! 🎉';
+        subtitleEl.textContent = 'Semua isyarat BISINDO diperagakan dengan sangat tepat!';
+        starsEl.innerHTML = renderStarsHTML(5);
+        launchCelebrationConfetti();
+      } else if (score >= 70) {
+        titleEl.textContent = 'Hebat Sekali! Kamu Berhasil! 👏';
+        subtitleEl.textContent = 'Kemampuan isyarat kamu sudah sangat baik, terus pertahankan!';
+        starsEl.innerHTML = renderStarsHTML(4);
+        launchCelebrationConfetti();
+      } else if (score >= 40) {
+        titleEl.textContent = 'Bagus! Terus Berlatih! 💪';
+        subtitleEl.textContent = 'Kamu sudah mulai hafal, ulangi lagi agar semakin mahir!';
+        starsEl.innerHTML = renderStarsHTML(3);
+      } else {
+        // Skor 0 - 30
+        titleEl.textContent = 'Bisa Belajar Lagi! 🌱';
+        subtitleEl.textContent = 'Jangan berkecil hati, yuk pelajari bentuk tangan di Kamus BISINDO dan coba lagi!';
+        starsEl.innerHTML = renderStarsHTML(1);
+      }
+
+      lucide.createIcons();
+      modalEl.classList.add('is-open');
+    }
+
+    function retryQuiz() {
+      modalEl.classList.remove('is-open');
+      startQuiz(currentCategory);
+    }
+
+    function backToCategories() {
+      modalEl.classList.remove('is-open');
+      arenaSection.classList.add('hidden');
+      catSection.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

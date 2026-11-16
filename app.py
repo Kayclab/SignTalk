@@ -8,7 +8,7 @@ import cv2
 import joblib
 import numpy as np
 
-from flask import Flask, Response, jsonify, render_template, request
+from flask import Flask, Response, jsonify, redirect, render_template, request, url_for
 
 from signtalk.features import (
     EXPECTED_FEATURES,
@@ -170,10 +170,15 @@ def predict_sign(features):
 
     probabilities = model.predict_proba(features)[0]
     best = int(np.argmax(probabilities))
+    conf = float(probabilities[best])
+
+    # Ambang batas minimal agar AI tidak menebak-nebak saat tangan diam/santai
+    is_confident = conf >= 0.55
 
     return {
         "prediction": str(model.classes_[best]),
-        "confidence": float(probabilities[best]),
+        "confidence": conf,
+        "is_confident": is_confident,
     }
 
 
@@ -200,16 +205,39 @@ def predict_from_frame(frame):
     return frame, result, predict_sign(features), len(hands)
 
 
-def build_response(prediction, hand_count):
+def build_response(prediction, hand_count, result=None):
+    # Ekstrak koordinat landmark sendi tangan untuk pipeline skeleton frontend
+    landmarks = []
+    if result is not None and getattr(result, "hand_landmarks", None):
+        for hand in result.hand_landmarks:
+            landmarks.append([
+                {"x": round(float(lm.x), 4), "y": round(float(lm.y), 4)}
+                for lm in hand
+            ])
 
     if prediction is None:
         return {
             "success": True,
-            "detected": False,
-            "detected_hands": 0,
+            "detected": bool(landmarks),
+            "detected_hands": len(landmarks),
             "prediction": "-",
             "confidence": 0,
-            "message": "Tidak ada tangan terdeteksi.",
+            "message": "Tidak ada tangan terdeteksi." if not landmarks else "Tangan terdeteksi.",
+            "landmarks": landmarks,
+        }
+
+    conf_pct = round(prediction["confidence"] * 100, 1)
+
+    # Jika tangan terlihat tapi belum membentuk isyarat dengan yakin (tangan diam/santai)
+    if not prediction.get("is_confident", True):
+        return {
+            "success": True,
+            "detected": True,
+            "detected_hands": hand_count,
+            "prediction": "-",
+            "confidence": conf_pct,
+            "message": f"{hand_count} tangan terdeteksi, isyarat belum jelas.",
+            "landmarks": landmarks,
         }
 
     return {
@@ -217,8 +245,9 @@ def build_response(prediction, hand_count):
         "detected": True,
         "detected_hands": hand_count,
         "prediction": prediction["prediction"],
-        "confidence": round(prediction["confidence"] * 100, 2),
+        "confidence": conf_pct,
         "message": "Prediksi berhasil.",
+        "landmarks": landmarks,
     }
 
 
@@ -228,17 +257,32 @@ def build_response(prediction, hand_count):
 
 @app.route("/")
 def index():
-
     return render_template("landing.html")
+
+
+@app.route("/penerjemah")
+def penerjemah():
+    return render_template("penerjemah.html")
+
+
+@app.route("/latihan")
+def latihan():
+    return render_template("latihan.html")
+
+
+@app.route("/kuis")
+def kuis():
+    return render_template("kuis.html")
+
+
+@app.route("/game")
+def game():
+    return render_template("game.html")
 
 
 @app.route("/camera")
 def camera():
-
-    if (TEMPLATES_DIR / "camera.html").exists():
-        return render_template("camera.html")
-
-    return render_template("landing.html")
+    return redirect(url_for("penerjemah"))
 
 
 # ============================================================
@@ -367,9 +411,16 @@ def api_predict():
                     "message": "Gambar tidak dapat dibaca OpenCV.",
                 }), 400
 
-            _, _, prediction, hand_count = predict_from_frame(frame)
+            # Optimasi performa: resize jika frame terlalu besar agar tidak lag/delay
+            if frame.shape[1] > 480:
+                h, w = frame.shape[:2]
+                new_w = 360
+                new_h = int(h * (new_w / w))
+                frame = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
 
-            return jsonify(build_response(prediction, hand_count)), 200
+            _, result, prediction, hand_count = predict_from_frame(frame)
+
+            return jsonify(build_response(prediction, hand_count, result)), 200
 
         data = request.get_json(silent=True)
 
@@ -420,9 +471,15 @@ def api_predict():
                     "message": "Gambar Base64 tidak valid.",
                 }), 400
 
-            _, _, prediction, hand_count = predict_from_frame(frame)
+            if frame.shape[1] > 480:
+                h, w = frame.shape[:2]
+                new_w = 360
+                new_h = int(h * (new_w / w))
+                frame = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
 
-            return jsonify(build_response(prediction, hand_count)), 200
+            _, result, prediction, hand_count = predict_from_frame(frame)
+
+            return jsonify(build_response(prediction, hand_count, result)), 200
 
         return jsonify({
             "success": False,

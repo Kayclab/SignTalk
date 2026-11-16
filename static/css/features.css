@@ -1,0 +1,811 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* =============================================================
+   DESIGN TOKENS & COLOR PALETTE LIBRARY (SIGNTALK FITUR)
+   ============================================================= */
+:root {
+  --color-dark-purple: #2B124C;
+  --color-plum: #522B5B;
+  --color-mauve: #854F6C;
+  --color-dusty-rose: #DFB6B2;
+  --color-peach: #FBE4DB;
+  --color-yellow: #F9C74F;
+  --color-yellow-hover: #F8B825;
+  --color-bg: #FFFFFF;
+  
+  --color-pastel-1: #E9D5FF;
+  --color-pastel-2: #C4B5FD;
+  --color-pastel-3: #D8B4E2;
+  --color-pastel-card: #EADBFC;
+  --color-ivory: #FFF8EE;
+  
+  --font-heading: 'Fredoka', cursive, sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  
+  --shadow-soft: 0 8px 24px rgba(43, 18, 76, 0.06);
+  --shadow-card: 0 10px 28px rgba(43, 18, 76, 0.08);
+  --shadow-hover: 0 16px 36px rgba(43, 18, 76, 0.14);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #FFFFFF !important;
+  color: var(--color-dark-purple);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading);
+}
+
+/* =============================================================
+   1. NAVBAR SIGNTALK: PERSIS BENTUK FLOATING CAPSULE LANDING PAGE
+   (TIDAK IKUT TURUN SAAT SCROLL / RELATIVE)
+   ============================================================= */
+.header-features {
+  position: relative !important; /* Tidak ikut turun saat scroll */
+  width: 100%;
+  padding-top: 1.25rem;
+  padding-bottom: 0.75rem;
+  background: transparent;
+  z-index: 40;
+}
+
+.nav-capsule {
+  max-width: 72rem; /* max-w-6xl */
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 9999px;
+  box-shadow: 0 8px 25px rgba(43, 18, 76, 0.07);
+  border: 1.5px solid var(--color-pastel-1);
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Tombol bulat kembali di samping logo */
+.btn-back-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  background-color: #FFFFFF;
+  border: 1.5px solid rgba(43, 18, 76, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-dark-purple);
+  box-shadow: 0 2px 8px rgba(43, 18, 76, 0.06);
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.btn-back-circle:hover {
+  background-color: var(--color-peach);
+  border-color: var(--color-yellow);
+  transform: scale(1.05);
+}
+
+/* Tab Menu Navbar:
+   - Sebelum dipilih: hanya logo (bulat tebal)
+   - Saat dipilih: melebar menampilkan logo + teks halaman
+   - Motion smooth & tetap sejajar vertikal
+*/
+.nav-tab-item {
+  height: 44px;
+  border-radius: 9999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0 12px;
+  transition: all 0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
+  border: 2px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nav-tab-inactive {
+  background-color: var(--color-dark-purple);
+  color: #FFFFFF;
+  width: 44px;
+  padding: 0 !important;
+}
+
+.nav-tab-inactive .nav-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-left: 0;
+  transition: max-width 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+}
+
+.nav-tab-inactive:hover {
+  background-color: var(--color-plum);
+  border-color: var(--color-yellow);
+}
+
+.nav-tab-active {
+  background-color: var(--color-yellow) !important;
+  color: var(--color-dark-purple) !important;
+  border-color: var(--color-dark-purple);
+  box-shadow: 0 4px 14px rgba(249, 199, 79, 0.4);
+  padding: 0 18px !important;
+  width: auto;
+  gap: 8px;
+  transform: none !important;
+}
+
+.nav-tab-active .nav-label {
+  max-width: 140px;
+  opacity: 1;
+  overflow: visible;
+  transition: max-width 0.35s ease, opacity 0.3s ease;
+}
+
+/* =============================================================
+   2. DINO GOYANG KANAN-KIRI
+   ============================================================= */
+@keyframes dinoWiggle {
+  0%, 100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  25% {
+    transform: rotate(-6deg) translateX(-6px);
+  }
+  75% {
+    transform: rotate(6deg) translateX(6px);
+  }
+}
+
+.animate-dino-wiggle {
+  animation: dinoWiggle 2.6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.petunjuk-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.petunjuk-number {
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background-color: var(--color-yellow);
+  color: var(--color-dark-purple);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* =============================================================
+   3. CARD UTAMA WARNA UNGU PASTEL
+   ============================================================= */
+.card-pastel-purple {
+  background-color: var(--color-pastel-card) !important;
+  border: 2px solid var(--color-pastel-3);
+  border-radius: 2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.card-white-inner {
+  background-color: #FFFFFF;
+  border: 2px solid rgba(43, 18, 76, 0.08);
+  border-radius: 1.5rem;
+}
+
+/* =============================================================
+   4. KAMERA VIEWPORT DENGAN CANVAS PIPELINE SKELETON
+   ============================================================= */
+.camera-box {
+  background-color: var(--color-dark-purple);
+  border-radius: 1.75rem;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--color-plum);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera-video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+/* Canvas kamera utama: menampilkan video webcam + kerangka sendi tangan (Pipeline Landmark) */
+.camera-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 1.5rem !important;
+  pointer-events: none !important;
+  z-index: 10 !important;
+  display: block !important;
+}
+
+.camera-placeholder {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-dark-purple);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  z-index: 20;
+  transition: opacity 0.3s ease;
+}
+
+.camera-placeholder.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.vf-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--color-yellow);
+  z-index: 25;
+  pointer-events: none;
+}
+.vf-tl { top: 14px; left: 14px; border-top: 3px solid; border-left: 3px solid; border-top-left-radius: 8px; }
+.vf-tr { top: 14px; right: 14px; border-top: 3px solid; border-right: 3px solid; border-top-right-radius: 8px; }
+.vf-bl { bottom: 14px; left: 14px; border-bottom: 3px solid; border-left: 3px solid; border-bottom-left-radius: 8px; }
+.vf-br { bottom: 14px; right: 14px; border-bottom: 3px solid; border-right: 3px solid; border-bottom-right-radius: 8px; }
+
+.btn-camera-start {
+  background-color: var(--color-dark-purple);
+  color: #FFFFFF;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(43, 18, 76, 0.2);
+}
+.btn-camera-start:hover:not(:disabled) {
+  background-color: var(--color-plum);
+  transform: translateY(-1px);
+}
+
+.btn-camera-stop {
+  background-color: #E2E8F0;
+  color: #64748B;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+}
+.btn-camera-stop.active-stop {
+  background-color: #EF4444 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+.btn-camera-stop.active-stop:hover {
+  background-color: #DC2626 !important;
+  transform: translateY(-1px);
+}
+
+/* =============================================================
+   5. TOMBOL KUNING & SWITCH PIPELINE / SUARA
+   ============================================================= */
+.btn-yellow-action {
+  background-color: var(--color-yellow);
+  color: var(--color-dark-purple);
+  padding: 0.85rem 1.5rem;
+  border-radius: 9999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 14px rgba(249, 199, 79, 0.4);
+  transition: all 0.2s ease;
+  width: 100%;
+  border: 2px solid rgba(43, 18, 76, 0.15);
+}
+.btn-yellow-action:hover:not(:disabled) {
+  background-color: var(--color-yellow-hover);
+  transform: translateY(-1px);
+}
+.btn-yellow-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #CBD5E1;
+  transition: 0.3s;
+  border-radius: 9999px;
+}
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+input:checked + .toggle-slider {
+  background-color: var(--color-dark-purple);
+}
+input:checked + .toggle-slider:before {
+  transform: translateX(22px);
+  background-color: var(--color-yellow);
+}
+
+/* =============================================================
+   6. KAMUS BISINDO: 3D COVER FLOW CAROUSEL (SESUAI GAMBAR NO.2)
+   - Gerak otomatis bergantian
+   - Saat di-search, hasil muncul di tengah
+   - Warna card tengah dibedakan secara kontras & menonjol
+   - 3D Flip saat diklik untuk melihat gambar isyarat
+   ============================================================= */
+.coverflow-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  min-height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  overflow: visible; /* Tidak boleh hidden agar kartu tidak terpotong */
+  user-select: none;
+  padding: 3rem 0;
+}
+
+.coverflow-card {
+  position: absolute;
+  width: 230px;
+  height: 310px;
+  border-radius: 1.75rem;
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Card Tengah (Highlight Utama) */
+.coverflow-card.card-center {
+  transform: translateX(0) translateZ(120px) scale(1.12) rotateY(0deg);
+  z-index: 25;
+}
+
+.coverflow-card.card-center .cf-card-front {
+  background-color: var(--color-yellow) !important;
+  color: var(--color-dark-purple) !important;
+  border: 3.5px solid var(--color-dark-purple);
+  box-shadow: 0 20px 40px rgba(249, 199, 79, 0.45);
+}
+
+.coverflow-card.card-center .cf-card-back {
+  background-color: var(--color-dark-purple) !important;
+  color: #FFFFFF !important;
+  border: 3.5px solid var(--color-yellow);
+  box-shadow: 0 20px 40px rgba(43, 18, 76, 0.45);
+}
+
+/* Card Samping 1 (Kiri & Kanan Dekat) */
+.coverflow-card.card-prev-1 {
+  transform: translateX(-190px) translateZ(0) scale(0.9) rotateY(26deg);
+  z-index: 15;
+  opacity: 0.9;
+}
+
+.coverflow-card.card-prev-1 .cf-card-front {
+  background-color: var(--color-pastel-card);
+  border: 2px solid var(--color-pastel-3);
+  color: var(--color-dark-purple);
+  box-shadow: 0 10px 24px rgba(43, 18, 76, 0.1);
+}
+
+.coverflow-card.card-next-1 {
+  transform: translateX(190px) translateZ(0) scale(0.9) rotateY(-26deg);
+  z-index: 15;
+  opacity: 0.9;
+}
+
+.coverflow-card.card-next-1 .cf-card-front {
+  background-color: var(--color-pastel-card);
+  border: 2px solid var(--color-pastel-3);
+  color: var(--color-dark-purple);
+  box-shadow: 0 10px 24px rgba(43, 18, 76, 0.1);
+}
+
+/* Card Samping 2 (Kiri & Kanan Luar) - Tetap Ungu Pastel */
+.coverflow-card.card-prev-2 {
+  transform: translateX(-350px) translateZ(-90px) scale(0.75) rotateY(38deg);
+  z-index: 8;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.coverflow-card.card-prev-2 .cf-card-front {
+  background-color: var(--color-pastel-card);
+  border: 2px solid rgba(43, 18, 76, 0.12);
+  color: var(--color-dark-purple);
+}
+
+.coverflow-card.card-next-2 {
+  transform: translateX(350px) translateZ(-90px) scale(0.75) rotateY(-38deg);
+  z-index: 8;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.coverflow-card.card-next-2 .cf-card-front {
+  background-color: var(--color-pastel-card);
+  border: 2px solid rgba(43, 18, 76, 0.12);
+  color: var(--color-dark-purple);
+}
+
+.coverflow-card.card-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.4);
+  z-index: 0;
+}
+
+/* 3D Flip di dalam Cover Flow Card */
+.cf-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  border-radius: 1.75rem;
+}
+
+.coverflow-card.is-flipped .cf-card-inner {
+  transform: rotateY(180deg);
+}
+
+.cf-card-front, .cf-card-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.cf-card-back {
+  transform: rotateY(180deg);
+}
+
+.cf-card-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: var(--color-yellow);
+  color: var(--color-dark-purple);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tombol Navigasi Cover Flow Carousel */
+.btn-cf-nav {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background-color: #FFFFFF;
+  border: 2px solid rgba(43, 18, 76, 0.2);
+  color: var(--color-dark-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(43, 18, 76, 0.08);
+  transition: all 0.25s ease;
+}
+.btn-cf-nav:hover {
+  background-color: var(--color-yellow);
+  border-color: var(--color-dark-purple);
+  transform: scale(1.1);
+}
+
+/* =============================================================
+   7. KUIS ISYARAT: CARD KATEGORI BESAR (SESUAI GAMBAR NO.3)
+   ============================================================= */
+.quiz-cat-card {
+  background-color: #FFFFFF;
+  border: 2px solid var(--color-pastel-3);
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s cubic-bezier(0.34, 1.3, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+}
+.quiz-cat-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-dark-purple);
+  box-shadow: var(--shadow-hover);
+}
+
+.quiz-cat-img-box {
+  width: 100%;
+  height: 200px;
+  background-color: #2B124C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-cat-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.quiz-cat-card:hover .quiz-cat-img-box img {
+  transform: scale(1.05);
+}
+
+/* Kotak PERAGAKAN Target di Tengah Layar Kamera */
+.quiz-target-center {
+  position: absolute;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  background-color: var(--color-yellow);
+  color: var(--color-dark-purple);
+  padding: 0.6rem 1.75rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border: 3px solid var(--color-dark-purple);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* =============================================================
+   8. GAME PUZZLE DI ATAS KAMERA REAL-TIME DENGAN FITUR PINCH / CUBIT
+   ============================================================= */
+.game-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 75vh;
+  border-radius: 2rem;
+  overflow: hidden;
+  background-color: var(--color-dark-purple);
+  box-shadow: var(--shadow-card);
+  border: 3px solid var(--color-plum);
+}
+
+.puzzle-hud {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.puzzle-block {
+  width: 70px;
+  height: 70px;
+  border-radius: 1.25rem;
+  background-color: var(--color-yellow);
+  color: var(--color-dark-purple);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 3px solid #FFFFFF;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  touch-action: none;
+}
+.puzzle-block:active {
+  cursor: grabbing;
+}
+.puzzle-block.is-dragged {
+  z-index: 50 !important;
+  transform: scale(1.18);
+  box-shadow: 0 16px 36px rgba(249, 199, 79, 0.7);
+  border-color: #2B124C;
+  cursor: grabbing;
+}
+
+.puzzle-slot {
+  width: 76px;
+  height: 76px;
+  border-radius: 1.25rem;
+  background: rgba(43, 18, 76, 0.75);
+  border: 3px dashed var(--color-yellow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+}
+.puzzle-slot.slot-matched {
+  background-color: rgba(34, 197, 94, 0.9);
+  border-color: #FFFFFF;
+  border-style: solid;
+  transform: scale(1.05);
+}
+
+/* Hand Cursor Reticle untuk Menunjukkan Posisi & Mode Cubit (Pinch) */
+.hand-cursor-reticle {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 199, 79, 0.7) 0%, rgba(249, 199, 79, 0.15) 70%, transparent 100%);
+  border: 3px solid #F9C74F;
+  box-shadow: 0 0 20px rgba(249, 199, 79, 0.9);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 40;
+  transition: width 0.12s ease, height 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.hand-cursor-reticle.is-pinching {
+  width: 28px;
+  height: 28px;
+  border-color: #00FF44;
+  background: rgba(0, 255, 68, 0.55);
+  box-shadow: 0 0 24px rgba(0, 255, 68, 1);
+}
+
+/* =============================================================
+   9. RESULT MODAL POPUP & INTERACTIVE CELEBRATION
+   ============================================================= */
+.result-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 18, 76, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.result-popup-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.result-popup-dialog {
+  background-color: var(--color-pastel-card);
+  border: 3px solid var(--color-pastel-3);
+  border-radius: 2.25rem;
+  padding: 2.5rem;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(43, 18, 76, 0.35);
+  transform: scale(0.85) translateY(24px);
+  transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.result-popup-backdrop.is-open .result-popup-dialog {
+  transform: scale(1) translateY(0);
+}
+
+/* Animasi Bintang */
+@keyframes starPop {
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  70% { transform: scale(1.25) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.star-pop-1 { animation: starPop 0.4s 0.1s both cubic-bezier(0.34, 1.4, 0.64, 1); }
+.star-pop-2 { animation: starPop 0.4s 0.2s both cubic-bezier(0.34, 1.4, 0.64, 1); }
+.star-pop-3 { animation: starPop 0.4s 0.3s both cubic-bezier(0.34, 1.4, 0.64, 1); }
+.star-pop-4 { animation: starPop 0.4s 0.4s both cubic-bezier(0.34, 1.4, 0.64, 1); }
+.star-pop-5 { animation: starPop 0.4s 0.5s both cubic-bezier(0.34, 1.4, 0.64, 1); }
+
+/* Confetti Canvas */
+.confetti-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 105;
+}

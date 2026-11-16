@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Puzzle Isyarat - SignTalk</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- CSS Khusus Fitur SignTalk -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/features.css') }}?v=2.0">
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-white text-[#2B124C]">
+
+  <!-- =======================================================
+       1. NAVBAR BERSAMA: PERSIS BENTUK CAPSULE FLOATING LANDING
+       ======================================================= -->
+  <header class="header-features px-4 md:px-8">
+    <nav class="nav-capsule">
+      
+      <div class="flex items-center gap-3">
+        <a href="/" class="btn-back-circle" title="Kembali ke Beranda">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+
+        <a href="/" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center p-1.5 shadow-sm border border-[#C4B5FD]/40 group-hover:scale-105 transition-transform">
+            <img src="{{ url_for('static', filename='img/Logo.svg') }}" alt="SignTalk Logo" class="w-full h-full object-contain" />
+          </div>
+          <span class="text-2xl font-extrabold font-heading text-[#2B124C]">SignTalk</span>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-2.5 overflow-x-auto py-1">
+        <a href="/penerjemah" class="nav-tab-item nav-tab-inactive" title="Penerjemah Bahasa Isyarat">
+          <i data-lucide="video" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Penerjemah</span>
+        </a>
+
+        <a href="/latihan" class="nav-tab-item nav-tab-inactive" title="Latihan Kata">
+          <i data-lucide="pen-tool" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Latihan Kata</span>
+        </a>
+
+        <a href="/kuis" class="nav-tab-item nav-tab-inactive" title="Kuis Isyarat">
+          <i data-lucide="help-circle" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Kuis Isyarat</span>
+        </a>
+
+        <a href="/game" class="nav-tab-item nav-tab-active" title="Game Puzzle">
+          <i data-lucide="gamepad-2" class="w-5 h-5 shrink-0"></i>
+          <span class="nav-label">Game Puzzle</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- =======================================================
+       MAIN CONTENT: GAME PUZZLE
+       ======================================================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-12 py-6 space-y-8">
+
+    <!-- 1. PENGUMUMAN DINO GAME (TANPA CARD, DINO GOYANG, LIST 1 2 3) -->
+    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-8 py-2">
+      <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
+        <img src="{{ url_for('static', filename='img/Dino Game.png') }}" 
+             alt="Dino Game" 
+             class="w-full h-full object-contain animate-dino-wiggle" />
+      </div>
+
+      <div class="space-y-2 flex-1 text-left">
+        <h2 class="font-heading font-extrabold text-xl text-[#2B124C]">Petunjuk Game Puzzle Isyarat</h2>
+        <div class="space-y-2 text-sm text-[#2B124C]/85">
+          <div class="petunjuk-list-item">
+            <span class="petunjuk-number">1</span>
+            <p>Tekan tombol <strong>Mulai Game</strong>. Kamera aktif dengan kerangka tangan otomatis menyala penuh.</p>
+          </div>
+          <div class="petunjuk-list-item">
+            <span class="petunjuk-number">2</span>
+            <p>Arahkan tangan ke depan kamera, lalu <strong>cubit (satukan ibu jari & telunjuk)</strong> pada balok untuk mengambil dan menyeretnya ke slot yang tepat!</p>
+          </div>
+          <div class="petunjuk-list-item">
+            <span class="petunjuk-number">3</span>
+            <p>Buka jari untuk melepas balok. Cocokkan semua kata sebelum waktu habis, atau tekan tombol <strong>Akhiri Game</strong> kapan saja.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ARENA GAME PUZZLE (FULL KAMERA DENGAN ELEMEN PUZZLE DI ATASNYA) -->
+    <section class="card-pastel-purple p-5 sm:p-7 space-y-4">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-[#2B124C]/10">
+        <div>
+          <h3 class="text-xl font-extrabold font-heading text-[#2B124C]">
+            Arena Puzzle Isyarat Tangan
+          </h3>
+          <p class="text-xs text-[#2B124C]/75 mt-0.5">Seret dan cubit balok menggunakan tangan Anda langsung melalui kamera</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Flip Camera -->
+          <button id="flip-camera-btn" type="button" title="Balik Tampilan Kamera" class="w-10 h-10 rounded-full bg-white/70 hover:bg-white text-[#2B124C] border border-[#2B124C]/15 shadow-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95">
+            <i data-lucide="flip-horizontal" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Mulai Game Button -->
+          <button id="game-start-btn" class="btn-yellow-action w-auto px-6 py-2.5">
+            <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+            <span>Mulai Game</span>
+          </button>
+
+          <!-- Akhiri Game Button -->
+          <button id="end-game-btn" onclick="endGame()" class="btn-camera-stop" disabled>
+            <i data-lucide="square" class="w-4 h-4"></i>
+            <span>Akhiri Game</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="game-stage" class="game-viewport relative flex items-center justify-center">
+        <video id="camera-video" autoplay playsinline class="camera-video hidden"></video>
+        <canvas id="camera-canvas" class="camera-canvas"></canvas>
+
+        <!-- KURSOR DETEKSI TANGAN VIRTUAL (PINCH INDICATOR) -->
+        <div id="hand-cursor" class="hand-cursor-reticle hidden"></div>
+
+        <!-- HUD TIMER & SKOR -->
+        <div class="puzzle-hud">
+          <div class="bg-[#2B124C]/90 text-white px-4 py-2 rounded-xl backdrop-blur-md border border-[#F9C74F]/40 flex items-center gap-2 shadow-lg">
+            <i data-lucide="timer" class="w-4 h-4 text-[#F9C74F]"></i>
+            <span id="game-timer" class="font-heading font-extrabold text-sm sm:text-base">60s</span>
+          </div>
+
+          <div class="bg-[#2B124C]/90 text-white px-4 py-2 rounded-xl backdrop-blur-md border border-[#F9C74F]/40 flex items-center gap-2 shadow-lg">
+            <i data-lucide="award" class="w-4 h-4 text-[#F9C74F]"></i>
+            <span id="game-score" class="font-heading font-extrabold text-sm sm:text-base">Skor: 0</span>
+          </div>
+        </div>
+
+        <!-- OVERLAY ELEMEN PUZZLE DI ATAS KAMERA -->
+        <div id="puzzle-overlay" class="absolute inset-0 z-20 flex flex-col justify-between p-6 sm:p-10 pointer-events-auto">
+          <!-- AREA BALOK YANG DAPAT DISERET (ATAS) -->
+          <div class="w-full flex justify-center items-center gap-4 sm:gap-6 pt-10">
+            <div id="blocks-container" class="flex flex-wrap justify-center items-center gap-4 sm:gap-6 relative min-h-[80px]"></div>
+          </div>
+
+          <!-- AREA TARGET SLOT COCOK (BAWAH) -->
+          <div class="w-full flex justify-center items-center gap-4 sm:gap-6 pb-4">
+            <div id="slots-container" class="flex flex-wrap justify-center items-center gap-4 sm:gap-6"></div>
+          </div>
+        </div>
+
+        <!-- PLACEHOLDER SEBELUM GAME DIMULAI -->
+        <div id="camera-placeholder" class="camera-placeholder">
+          <div class="w-16 h-16 bg-[#522B5B] text-[#F9C74F] rounded-full flex items-center justify-center border-2 border-[#F9C74F]/40 shadow-lg mb-3">
+            <i data-lucide="gamepad-2" class="w-8 h-8"></i>
+          </div>
+          <p class="font-heading font-extrabold text-base text-white">Game Belum Dimulai</p>
+          <p class="text-xs text-white/70 max-w-sm mt-1">Tekan tombol "Mulai Game" untuk mengaktifkan webcam dan fitur menggeser balok dengan tangan.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =======================================================
+       POPUP MODAL HASIL GAME
+       ======================================================= -->
+  <div id="game-modal" class="result-popup-backdrop">
+    <div class="result-popup-dialog space-y-6">
+      <div class="space-y-1">
+        <h3 id="game-modal-title" class="text-3xl font-extrabold font-heading text-[#2B124C]">
+          Permainan Selesai! 🎮
+        </h3>
+        <p id="game-modal-subtitle" class="text-xs sm:text-sm text-[#2B124C]/80 font-normal">
+          Terus berlatih agar semakin tangkas dalam mengenali isyarat!
+        </p>
+      </div>
+
+      <!-- Rating Bintang Dinamis -->
+      <div id="game-modal-stars" class="flex items-center justify-center gap-2 text-[#F9C74F]">
+        <!-- diisi oleh JS -->
+      </div>
+
+      <!-- Kartu Skor -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="card-white-inner p-4">
+          <span class="text-xs text-[#2B124C]/60 font-bold">TOTAL SKOR</span>
+          <div id="game-final-score" class="text-4xl font-extrabold font-heading text-[#2B124C] mt-1">0</div>
+        </div>
+        <div class="card-white-inner p-4">
+          <span class="text-xs text-[#2B124C]/60 font-bold">BALOK TERCOCOKKAN</span>
+          <div id="game-final-matched" class="text-4xl font-extrabold font-heading text-[#2B124C] mt-1">0 / 4</div>
+        </div>
+      </div>
+
+      <!-- Tombol Aksi di Modal -->
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button onclick="startGame()" class="btn-yellow-action flex-1">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          <span>Main Lagi</span>
+        </button>
+        <button onclick="closeGameModal()" class="btn-camera-start flex-1 text-center justify-center">
+          <span>Tutup</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER (Sama Persis Landing Page) -->
+  <footer class="bg-[#19143A] text-white py-10 px-6 border-t border-[#2A2359] mt-10 w-full">
+    <div class="max-w-6xl mx-auto space-y-8">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 border-b border-[#2A2359] pb-8">
+        <!-- App Brand Info -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center p-1.5 shadow-md">
+              <img src="{{ url_for('static', filename='img/Logo.svg') }}" alt="SignTalk Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="text-2xl font-extrabold font-heading text-white">SignTalk</span>
+          </div>
+          <p class="text-xs text-[#A78BFA] max-w-sm">
+            MediaPipe Hands · Random Forest · Text-to-Speech · BISINDO
+          </p>
+        </div>
+
+        <!-- 3 Kotak Anggota Tim -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-auto">
+          <!-- Anggota 1 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Kaila Puteri Iskandar</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="https://instagram.com/kailaa.putri" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="https://linkedin.com/in/KailaPuteriIskandar" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href="mailto:kailaputeriiska@gmail.com" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Anggota 2 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Anggota Tim 2</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="#" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Anggota 3 -->
+          <div class="bg-[#241D4E] p-4 rounded-2xl border border-[#352B6F] flex flex-col justify-between space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-[#6346D8]/20 text-[#A78BFA] rounded-full flex items-center justify-center border border-[#6346D8]/40 shrink-0">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Anggota Tim 3</p>
+                <p class="text-[10px] text-[#A78BFA]">Developer / Designer</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2.5 border-t border-[#352B6F]/60">
+              <a href="#" class="text-gray-400 hover:text-[#EC4899] transition-colors" title="Instagram">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#60A5FA] transition-colors" title="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#A78BFA] transition-colors" title="Email">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#A78BFA]/80">
+        <p>&copy; 2026 SignTalk. Dibuat dengan cinta untuk inklusivitas dan komunikasi setara.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Kembali ke Atas</a>
+          <a href="/" class="hover:text-white transition-colors">Beranda</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/features-common.js') }}?v=2.0"></script>
+  <script>
+    lucide.createIcons();
+
+    let gameCamera = null;
+    let timerInterval = null;
+    let timeLeft = 60;
+    let score = 0;
+    let matchedCount = 0;
+
+    // HANYA DARI 10 KATA RESMI SIGNTALK:
+    // BELAJAR, PERMISI, MAAF, TERIMAKASIH, SAMA SAMA, TEMAN-TEMAN, BISA, SEDIKIT, BAHASA ISYARAT, TOLONG
+    const WORDS_POOL = ['BISA', 'MAAF', 'BELAJAR', 'PERMISI', 'SEDIKIT', 'TOLONG'];
+    let currentTargetWord = 'BISA';
+    let letters = [];
+
+    const startBtn = document.getElementById('game-start-btn');
+    const endBtn = document.getElementById('end-game-btn');
+    const timerEl = document.getElementById('game-timer');
+    const scoreEl = document.getElementById('game-score');
+    const handCursor = document.getElementById('hand-cursor');
+    const blocksContainer = document.getElementById('blocks-container');
+    const slotsContainer = document.getElementById('slots-container');
+    const gameModal = document.getElementById('game-modal');
+
+    startBtn.addEventListener('click', startGame);
+
+    function startGame() {
+      closeGameModal();
+
+      timeLeft = 60;
+      score = 0;
+      matchedCount = 0;
+      scoreEl.textContent = 'Skor: 0';
+      timerEl.textContent = '60s';
+
+      startBtn.disabled = true;
+      startBtn.classList.add('opacity-40', 'cursor-not-allowed');
+
+      endBtn.disabled = false;
+      endBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+      endBtn.classList.add('active-stop');
+
+      currentTargetWord = WORDS_POOL[Math.floor(Math.random() * WORDS_POOL.length)];
+      letters = currentTargetWord.split('');
+
+      renderPuzzleArena();
+
+      if (!gameCamera) {
+        // Di Game, pipeline kerangka tangan selalu aktif (pipelineToggleId = null)
+        gameCamera = new SignTalkCamera({
+          videoElementId: 'camera-video',
+          canvasElementId: 'camera-canvas',
+          placeholderId: 'camera-placeholder',
+          flipButtonId: 'flip-camera-btn',
+          onPrediction: handleGameTracking
+        });
+      }
+      gameCamera.start();
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `${timeLeft}s`;
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function renderPuzzleArena() {
+      blocksContainer.innerHTML = '';
+      slotsContainer.innerHTML = '';
+
+      const shuffled = [...letters].sort(() => 0.5 - Math.random());
+      shuffled.forEach((char, idx) => {
+        const block = document.createElement('div');
+        block.className = 'puzzle-block';
+        block.dataset.char = char;
+        block.id = `block-${idx}`;
+        block.textContent = char;
+        block.draggable = true;
+
+        // Fallback HTML5 Drag & Drop dengan mouse
+        block.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', char);
+          e.dataTransfer.setData('block-id', block.id);
+        });
+
+        blocksContainer.appendChild(block);
+      });
+
+      letters.forEach((char, idx) => {
+        const itemData = KAMUS_DATA.find(k => k.char === char) || { char, type: 'Huruf' };
+        const slot = document.createElement('div');
+        slot.className = 'puzzle-slot';
+        slot.dataset.char = char;
+        slot.id = `slot-${idx}`;
+        slot.innerHTML = `
+          <div class="w-10 h-10 pointer-events-none">
+            ${generateHandIllustrationSVG(itemData)}
+          </div>
+          <span class="text-[10px] font-extrabold text-[#F9C74F] font-heading mt-0.5 select-none">${char}</span>
+        `;
+
+        slot.addEventListener('dragover', (e) => e.preventDefault());
+        slot.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const draggedChar = e.dataTransfer.getData('text/plain');
+          const blockId = e.dataTransfer.getData('block-id');
+          if (draggedChar === char && !slot.classList.contains('slot-matched')) {
+            matchSlot(slot, blockId);
+          }
+        });
+
+        slotsContainer.appendChild(slot);
+      });
+    }
+
+    function matchSlot(slot, blockId) {
+      if (!slot || slot.classList.contains('slot-matched')) return;
+
+      slot.classList.add('slot-matched');
+      const block = document.getElementById(blockId);
+      if (block) {
+        block.style.visibility = 'hidden';
+        block.classList.remove('is-dragged');
+      }
+
+      score += 25;
+      matchedCount++;
+      scoreEl.textContent = `Skor: ${score}`;
+
+      if (matchedCount === letters.length) {
+        launchCelebrationConfetti();
+        setTimeout(endGame, 800);
+      }
+    }
+
+    function returnBlockToRack(block) {
+      if (!block) return;
+      block.classList.remove('is-dragged');
+      block.style.position = '';
+      block.style.left = '';
+      block.style.top = '';
+    }
+
+    // =============================================================
+    // SISTEM DRAG & PINCH (CUBIT) MENGGUNAKAN TANGAN MELALUI KAMERA
+    // Sesuai video demo: Cubit jari di depan kamera untuk mengambil balok,
+    // seret tangan ke slot yang sesuai, lalu lepas cubitan untuk mencocokkan!
+    // =============================================================
+    let draggedBlockWithHand = null;
+
+    function handleGameTracking(data) {
+      if (!data || !data.landmarks || data.landmarks.length === 0) {
+        handCursor.classList.add('hidden');
+        if (draggedBlockWithHand) {
+          returnBlockToRack(draggedBlockWithHand);
+          draggedBlockWithHand = null;
+        }
+        return;
+      }
+
+      const hand = data.landmarks[0];
+      const thumb = hand[4]; // Ujung ibu jari
+      const index = hand[8]; // Ujung jari telunjuk
+      if (!thumb || !index) return;
+
+      const stage = document.getElementById('game-stage');
+      const rect = stage.getBoundingClientRect();
+
+      const isMirrored = gameCamera ? gameCamera.isFlipped : false;
+
+      // Hitung koordinat layar
+      const thumbX = (isMirrored ? thumb.x : (1 - thumb.x)) * rect.width;
+      const thumbY = thumb.y * rect.height;
+      const indexX = (isMirrored ? index.x : (1 - index.x)) * rect.width;
+      const indexY = index.y * rect.height;
+
+      // Titik tengah cubitan
+      const pinchX = (thumbX + indexX) / 2;
+      const pinchY = (thumbY + indexY) / 2;
+
+      // Jarak Euclidean antara ujung telunjuk dan ibu jari
+      const dist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
+      const isPinching = dist < 0.085; // Ambang batas gerakan cubit (pinch)
+
+      // Tampilkan kursor tangan
+      handCursor.classList.remove('hidden');
+      handCursor.style.left = `${pinchX}px`;
+      handCursor.style.top = `${pinchY}px`;
+
+      if (isPinching) {
+        handCursor.classList.add('is-pinching');
+
+        // Jika belum memegang balok, cari balok di bawah cubitan tangan
+        if (!draggedBlockWithHand) {
+          const elementsUnderPinch = document.elementsFromPoint(rect.left + pinchX, rect.top + pinchY);
+          const foundBlock = elementsUnderPinch.find(el => 
+            el.classList.contains('puzzle-block') && el.style.visibility !== 'hidden'
+          );
+
+          if (foundBlock) {
+            draggedBlockWithHand = foundBlock;
+            draggedBlockWithHand.classList.add('is-dragged');
+          }
+        }
+
+        // Jika sedang memegang balok, geser posisinya mengikuti tangan
+        if (draggedBlockWithHand) {
+          draggedBlockWithHand.style.position = 'absolute';
+          draggedBlockWithHand.style.left = `${pinchX - 35}px`;
+          draggedBlockWithHand.style.top = `${pinchY - 35}px`;
+        }
+      } else {
+        handCursor.classList.remove('is-pinching');
+
+        // Jika cubitan dilepas saat sedang memegang balok, cek apakah pas di slot
+        if (draggedBlockWithHand) {
+          let matchedSlot = null;
+          const slots = document.querySelectorAll('.puzzle-slot:not(.slot-matched)');
+
+          slots.forEach(slot => {
+            const sRect = slot.getBoundingClientRect();
+            const sCenterX = sRect.left + sRect.width / 2 - rect.left;
+            const sCenterY = sRect.top + sRect.height / 2 - rect.top;
+            const distanceToSlot = Math.hypot(pinchX - sCenterX, pinchY - sCenterY);
+
+            // Jika dalam radius 75px dan karakternya sama
+            if (distanceToSlot < 75 && slot.dataset.char === draggedBlockWithHand.dataset.char) {
+              matchedSlot = slot;
+            }
+          });
+
+          if (matchedSlot) {
+            matchSlot(matchedSlot, draggedBlockWithHand.id);
+          } else {
+            returnBlockToRack(draggedBlockWithHand);
+          }
+
+          draggedBlockWithHand = null;
+        }
+      }
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      if (gameCamera) gameCamera.stop();
+
+      handCursor.classList.add('hidden');
+
+      startBtn.disabled = false;
+      startBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+
+      endBtn.disabled = true;
+      endBtn.classList.add('opacity-40', 'cursor-not-allowed');
+      endBtn.classList.remove('active-stop');
+
+      if (draggedBlockWithHand) {
+        returnBlockToRack(draggedBlockWithHand);
+        draggedBlockWithHand = null;
+      }
+
+      const titleEl = document.getElementById('game-modal-title');
+      const subtitleEl = document.getElementById('game-modal-subtitle');
+      const starsEl = document.getElementById('game-modal-stars');
+      const finalScoreEl = document.getElementById('game-final-score');
+      const finalMatchedEl = document.getElementById('game-final-matched');
+
+      finalScoreEl.textContent = score;
+      finalMatchedEl.textContent = `${matchedCount} / ${letters.length || 0}`;
+
+      // Logika Skor & Bintang Dinamis
+      const ratio = letters.length > 0 ? (matchedCount / letters.length) : 0;
+      if (ratio >= 1.0) {
+        titleEl.textContent = 'Luar Biasa! Semua Cocok! 🎉';
+        subtitleEl.textContent = 'Hebat sekali, Anda menyelesaikan seluruh puzzle isyarat dengan sempurna!';
+        starsEl.innerHTML = renderStarsHTML(5);
+        launchCelebrationConfetti();
+      } else if (ratio >= 0.7) {
+        titleEl.textContent = 'Hebat! Hampir Sempurna! 👏';
+        subtitleEl.textContent = 'Kemampuan navigasi tangan Anda sangat cekatan!';
+        starsEl.innerHTML = renderStarsHTML(4);
+        launchCelebrationConfetti();
+      } else if (ratio >= 0.4) {
+        titleEl.textContent = 'Bagus! Terus Berlatih! 💪';
+        subtitleEl.textContent = 'Anda sudah memahami cara menyeret balok dengan gestur isyarat!';
+        starsEl.innerHTML = renderStarsHTML(3);
+      } else {
+        titleEl.textContent = 'Yuk Coba Lagi! 🌱';
+        subtitleEl.textContent = 'Gunakan cubitan tangan di depan kamera dan arahkan ke kotak isyarat yang sesuai.';
+        starsEl.innerHTML = renderStarsHTML(1);
+      }
+
+      lucide.createIcons();
+      gameModal.classList.add('is-open');
+    }
+
+    function closeGameModal() {
+      gameModal.classList.remove('is-open');
+    }
+  </script>
+</body>
+</html>
