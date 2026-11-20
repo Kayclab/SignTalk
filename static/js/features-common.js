@@ -138,7 +138,7 @@ function attachHandPhoto(cardBack, label) {
   // Coba nama persis (A.jpg, A.jpeg) lalu huruf kecil (a.jpg, a.jpeg), tiap ekstensi
   const name = handPhotoName(label);
   const names = [...new Set([name, name.toLowerCase()])];
-  const exts = ['jpg', 'jpeg', 'png', 'webp'];  // jpg dulu untuk priority
+  const exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];  // jpg dulu untuk priority; gif untuk kata
   const candidates = [];
   names.forEach(n => exts.forEach(e => candidates.push('/static/img/hands/' + encodeURIComponent(n) + '.' + e)));
   let i = 0;
@@ -716,7 +716,7 @@ function initKamusCoverFlow({
         <!-- MUKA BELAKANG KARTU (3D FLIP) -->
         <div class="cf-card-back">
           <img class="cf-card-photo" alt="Isyarat ${item.char}" draggable="false">
-          <div class="cf-card-label">${item.char.length > 2 ? item.char[0] : item.char}</div>
+          <div class="cf-card-label">${item.char}</div>
           <span class="cf-card-badge">${item.char.length > 2 ? item.char[0] : item.char}</span>
           <div class="w-20 h-20 pointer-events-none mt-1">
             ${generateHandIllustrationSVG(item)}

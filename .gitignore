@@ -24,3 +24,5 @@ Thumbs.db
 
 # Temporary Files
 *.log
+# Backup GIF asli (besar)
+_backup_gif_asli/

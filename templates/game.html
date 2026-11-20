@@ -16,7 +16,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   
   <!-- CSS Khusus Fitur SignTalk -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/features.css') }}?v=4.6">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/features.css') }}?v=4.9">
 </head>
 <body class="min-h-screen flex flex-col justify-between bg-white text-[#2B124C]">
 
@@ -318,7 +318,7 @@
     </div>
   </footer>
 
-  <script src="{{ url_for('static', filename='js/features-common.js') }}?v=6.2"></script>
+  <script src="{{ url_for('static', filename='js/features-common.js') }}?v=6.4"></script>
   <script>
     lucide.createIcons();
 
@@ -326,7 +326,8 @@
     let timerInterval = null;
     let timeLeft = 60;
     let score = 0;
-    let matchedCount = 0;
+    let matchedCount = 0; // slot terisi benar
+    let filledCount = 0;  // semua slot terisi (benar + salah)
 
     // HANYA DARI 10 KATA RESMI SIGNTALK:
     // BELAJAR, PERMISI, MAAF, TERIMAKASIH, SAMA SAMA, TEMAN-TEMAN, BISA, SEDIKIT, BAHASA ISYARAT, TOLONG
@@ -351,6 +352,7 @@
       timeLeft = 60;
       score = 0;
       matchedCount = 0;
+      filledCount = 0;
       scoreEl.textContent = 'Skor: 0';
       timerEl.textContent = '60s';
 
@@ -455,7 +457,7 @@
           e.preventDefault();
           const draggedChar = e.dataTransfer.getData('text/plain');
           const blockId = e.dataTransfer.getData('block-id');
-          if (draggedChar === char && !slot.classList.contains('slot-matched')) {
+          if (blockId && !isSlotFilled(slot)) {
             matchSlot(slot, blockId);
           }
         });
@@ -464,22 +466,32 @@
       });
     }
 
-    function matchSlot(slot, blockId) {
-      if (!slot || slot.classList.contains('slot-matched')) return;
+    // Slot yang sudah terisi (benar = hijau, salah = merah) terkunci permanen.
+    function isSlotFilled(slot) {
+      return slot.classList.contains('slot-matched') || slot.classList.contains('slot-wrong');
+    }
 
-      slot.classList.add('slot-matched');
+    function matchSlot(slot, blockId) {
+      if (!slot || isSlotFilled(slot)) return;
+
       const block = document.getElementById(blockId);
+      const isCorrect = !!block && block.dataset.char === slot.dataset.char;
+
+      slot.classList.add(isCorrect ? 'slot-matched' : 'slot-wrong');
       if (block) {
         block.style.visibility = 'hidden';
         block.classList.remove('is-dragged');
       }
 
-      score += 25;
-      matchedCount++;
-      scoreEl.textContent = `Skor: ${score}`;
+      filledCount++;
+      if (isCorrect) {
+        score += 25;
+        matchedCount++;
+        scoreEl.textContent = `Skor: ${score}`;
+      }
 
-      if (matchedCount === letters.length) {
-        launchCelebrationConfetti();
+      if (filledCount === letters.length) {
+        if (matchedCount === letters.length) launchCelebrationConfetti();
         setTimeout(endGame, 800);
       }
     }
@@ -576,7 +588,8 @@
         // Jika cubitan dilepas saat sedang memegang balok, cek apakah pas di slot
         if (draggedBlockWithHand) {
           let matchedSlot = null;
-          const slots = document.querySelectorAll('.puzzle-slot:not(.slot-matched)');
+          let nearestDist = 75; // radius toleransi (px)
+          const slots = document.querySelectorAll('.puzzle-slot:not(.slot-matched):not(.slot-wrong)');
 
           slots.forEach(slot => {
             const sRect = slot.getBoundingClientRect();
@@ -584,8 +597,9 @@
             const sCenterY = sRect.top + sRect.height / 2 - rect.top;
             const distanceToSlot = Math.hypot(pinchX - sCenterX, pinchY - sCenterY);
 
-            // Jika dalam radius 75px dan karakternya sama
-            if (distanceToSlot < 75 && slot.dataset.char === draggedBlockWithHand.dataset.char) {
+            // Slot terdekat dalam radius diterima (benar/salah ditentukan di matchSlot)
+            if (distanceToSlot < nearestDist) {
+              nearestDist = distanceToSlot;
               matchedSlot = slot;
             }
           });

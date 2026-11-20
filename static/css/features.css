@@ -729,6 +729,13 @@ input:checked + .toggle-slider:before {
   transform: scale(1.05);
 }
 
+.puzzle-slot.slot-wrong {
+  background-color: rgba(239, 68, 68, 0.9);
+  border-color: #FFFFFF;
+  border-style: solid;
+  transform: scale(1.05);
+}
+
 /* Hand Cursor Reticle untuk Menunjukkan Posisi & Mode Cubit (Pinch) */
 .hand-cursor-reticle {
   position: absolute;
@@ -827,6 +834,11 @@ input:checked + .toggle-slider:before {
   padding: 0;
 }
 
+/* Latar putih (bukan ungu gelap) agar GIF terlihat jelas */
+.coverflow-card .cf-card-back.has-photo {
+  background-color: #FFFFFF !important;
+}
+
 .cf-card-back.has-photo > *:not(.cf-card-photo):not(.cf-card-label) {
   display: none;
 }
@@ -837,7 +849,7 @@ input:checked + .toggle-slider:before {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* GIF (rasio 4:5) memenuhi kartu penuh tanpa celah; hanya ~9px tiap sisi terpotong */
   object-position: center;
   pointer-events: none;
   user-select: none;
@@ -849,15 +861,18 @@ input:checked + .toggle-slider:before {
   right: 12px;
   background-color: rgba(43, 18, 76, 0.85);
   color: #F9D14F;
-  width: 36px;
+  min-width: 36px;
   height: 36px;
+  padding: 0 12px;
+  max-width: calc(100% - 24px);
+  white-space: nowrap;
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 1.25rem;
+  font-size: 1rem;
   border: 2px solid #F9D14F;
   z-index: 10;
   pointer-events: none;
