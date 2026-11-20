@@ -415,6 +415,27 @@ class SignTalkCamera {
     this.isFlipped = !this.isFlipped;
   }
 
+  // HP: samakan rasio kotak kamera dengan rasio video (kamera HP biasanya potret)
+  // supaya gambar tidak terpotong dan posisi tangan tetap sejajar.
+  _fitBoxToVideo() {
+    const box = this.canvas && this.canvas.parentElement;
+    if (!box || !this.video) return;
+    const apply = () => {
+      const vw = this.video.videoWidth;
+      const vh = this.video.videoHeight;
+      if (!vw || !vh) return;
+      const small = window.matchMedia('(max-width: 767px)').matches;
+      box.style.aspectRatio = (small || vh > vw) ? `${vw} / ${vh}` : '';
+    };
+    apply();
+    this.video.addEventListener('loadedmetadata', apply, { once: true });
+  }
+
+  _resetBoxAspect() {
+    const box = this.canvas && this.canvas.parentElement;
+    if (box) box.style.aspectRatio = '';
+  }
+
   async start() {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({
@@ -428,6 +449,7 @@ class SignTalkCamera {
 
       this.video.srcObject = this.stream;
       await this.video.play();
+      this._fitBoxToVideo();
 
       if (this.placeholder) {
         this.placeholder.classList.add('hidden');
@@ -455,6 +477,7 @@ class SignTalkCamera {
 
   stop() {
     this.loopId++;
+    this._resetBoxAspect();
 
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());
@@ -844,6 +867,27 @@ function initKamusCoverFlow({
 
   stage.addEventListener('mouseenter', () => { isHovered = true; });
   stage.addEventListener('mouseleave', () => { isHovered = false; });
+
+  // Geser jari (HP/tablet): geser kiri = berikutnya, geser kanan = sebelumnya
+  let touchStartX = null;
+  let touchStartY = null;
+  stage.addEventListener('touchstart', (e) => {
+    const t = e.touches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+    isHovered = true; // jeda putar otomatis saat disentuh
+  }, { passive: true });
+  stage.addEventListener('touchend', (e) => {
+    isHovered = false;
+    if (touchStartX === null) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    touchStartX = null;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      if (dx < 0) nextSlide(); else prevSlide();
+    }
+  }, { passive: true });
 
   if (prevBtn) prevBtn.addEventListener('click', prevSlide);
   if (nextBtn) nextBtn.addEventListener('click', nextSlide);

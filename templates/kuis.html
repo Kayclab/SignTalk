@@ -16,7 +16,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   
   <!-- CSS Khusus Fitur SignTalk -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/features.css') }}?v=4.9">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/features.css') }}?v=5.3">
 </head>
 <body class="min-h-screen flex flex-col justify-between bg-white text-[#2B124C]">
 
@@ -220,7 +220,7 @@
           </div>
 
           <!-- PROGRESS DI POJOK KANAN ATAS -->
-          <div class="absolute top-4 right-4 z-30 bg-[#2B124C]/90 text-white px-4 py-2 rounded-xl backdrop-blur-md border border-[#F9C74F]/40 flex items-center gap-2">
+          <div class="quiz-progress-pill absolute top-4 right-4 z-30 bg-[#2B124C]/90 text-white px-4 py-2 rounded-xl backdrop-blur-md border border-[#F9C74F]/40 flex items-center gap-2">
             <i data-lucide="clock" class="w-4 h-4 text-[#F9C74F]"></i>
             <span id="quiz-progress" class="font-heading font-extrabold text-sm">1 / 10</span>
           </div>
@@ -404,7 +404,7 @@
   <!-- =======================================================
        LOGIKA JAVASCRIPT KUIS ISYARAT
        ======================================================= -->
-  <script src="{{ url_for('static', filename='js/features-common.js') }}?v=6.4"></script>
+  <script src="{{ url_for('static', filename='js/features-common.js') }}?v=6.6"></script>
   <script>
     lucide.createIcons();
 

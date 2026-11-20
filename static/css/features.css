@@ -25,10 +25,18 @@
   --shadow-soft: 0 8px 24px rgba(43, 18, 76, 0.06);
   --shadow-card: 0 10px 28px rgba(43, 18, 76, 0.08);
   --shadow-hover: 0 16px 36px rgba(43, 18, 76, 0.14);
+
+  /* Ukuran kartu Kamus (coverflow) - disesuaikan per ukuran layar di bagian RESPONSIVE */
+  --cf-w: 230px;
+  --cf-h: 310px;
+  --cf-x1: 190px;
+  --cf-x2: 350px;
+  --cf-stage-min: 450px;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden; /* cegah halaman bisa digeser ke samping di HP (iOS) */
 }
 
 body {
@@ -412,20 +420,22 @@ input:checked + .toggle-slider:before {
   width: 100%;
   max-width: 1080px;
   margin: 0 auto;
-  min-height: 450px;
+  min-height: var(--cf-stage-min);
   display: flex;
   align-items: center;
   justify-content: center;
   perspective: 1200px;
-  overflow: visible; /* Tidak boleh hidden agar kartu tidak terpotong */
+  overflow-x: clip;   /* kartu samping tidak boleh melebarkan halaman */
+  overflow-y: visible; /* vertikal tetap visible agar kartu tidak terpotong */
+  touch-action: pan-y; /* geser horizontal dipakai untuk memutar kartu */
   user-select: none;
   padding: 3rem 0;
 }
 
 .coverflow-card {
   position: absolute;
-  width: 230px;
-  height: 310px;
+  width: var(--cf-w);
+  height: var(--cf-h);
   border-radius: 1.75rem;
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   cursor: pointer;
@@ -457,7 +467,7 @@ input:checked + .toggle-slider:before {
 
 /* Card Samping 1 (Kiri & Kanan Dekat) */
 .coverflow-card.card-prev-1 {
-  transform: translateX(-190px) translateZ(0) scale(0.9) rotateY(26deg);
+  transform: translateX(calc(var(--cf-x1) * -1)) translateZ(0) scale(0.9) rotateY(26deg);
   z-index: 15;
   opacity: 0.9;
 }
@@ -470,7 +480,7 @@ input:checked + .toggle-slider:before {
 }
 
 .coverflow-card.card-next-1 {
-  transform: translateX(190px) translateZ(0) scale(0.9) rotateY(-26deg);
+  transform: translateX(var(--cf-x1)) translateZ(0) scale(0.9) rotateY(-26deg);
   z-index: 15;
   opacity: 0.9;
 }
@@ -484,7 +494,7 @@ input:checked + .toggle-slider:before {
 
 /* Card Samping 2 (Kiri & Kanan Luar) - Tetap Ungu Pastel */
 .coverflow-card.card-prev-2 {
-  transform: translateX(-350px) translateZ(-90px) scale(0.75) rotateY(38deg);
+  transform: translateX(calc(var(--cf-x2) * -1)) translateZ(-90px) scale(0.75) rotateY(38deg);
   z-index: 8;
   opacity: 0.6;
   pointer-events: none;
@@ -497,7 +507,7 @@ input:checked + .toggle-slider:before {
 }
 
 .coverflow-card.card-next-2 {
-  transform: translateX(350px) translateZ(-90px) scale(0.75) rotateY(-38deg);
+  transform: translateX(var(--cf-x2)) translateZ(-90px) scale(0.75) rotateY(-38deg);
   z-index: 8;
   opacity: 0.6;
   pointer-events: none;
@@ -887,4 +897,103 @@ input:checked + .toggle-slider:before {
   border-color: #FFFFFF;
   transform: scale(1.12);
   box-shadow: 0 0 24px rgba(249, 209, 79, 0.9);
+}
+
+/* =============================================================
+   RESPONSIVE: HP (<=480), HP besar/tablet kecil (<=767), tablet (<=1023)
+   ============================================================= */
+
+/* Navbar: di layar sempit, logo di atas dan tab menu di bawah (tidak terpotong) */
+@media (max-width: 640px) {
+  .header-features { padding-top: 0.75rem; padding-bottom: 0.5rem; }
+  .nav-capsule {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 1.75rem;
+    padding: 0.55rem 0.9rem;
+    row-gap: 0.5rem;
+  }
+  .nav-capsule > div:last-child {
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-capsule > div:last-child::-webkit-scrollbar { display: none; }
+  .nav-tab-item { height: 42px; flex-shrink: 0; }
+  .nav-tab-inactive { width: 42px; }
+  .nav-tab-active { padding: 0 14px !important; }
+  .nav-tab-active .nav-label { max-width: 120px; white-space: nowrap; }
+}
+
+/* Kamus (coverflow): kartu lebih kecil agar muat di layar HP */
+@media (max-width: 1023px) {
+  :root { --cf-w: 210px; --cf-h: 284px; --cf-x1: 168px; --cf-x2: 300px; --cf-stage-min: 420px; }
+}
+@media (max-width: 767px) {
+  :root { --cf-w: 190px; --cf-h: 256px; --cf-x1: 136px; --cf-x2: 230px; --cf-stage-min: 390px; }
+  .coverflow-stage { padding: 2rem 0; }
+}
+@media (max-width: 479px) {
+  :root { --cf-w: 170px; --cf-h: 230px; --cf-x1: 118px; --cf-x2: 200px; --cf-stage-min: 350px; }
+  .coverflow-stage { padding: 1.5rem 0; }
+  /* kartu luar tidak perlu terlihat di layar sempit */
+  .coverflow-card.card-prev-2,
+  .coverflow-card.card-next-2 { opacity: 0; }
+}
+
+/* Kartu hasil & blok game: sentuhan nyaman di HP */
+@media (max-width: 767px) {
+  .card-pastel-purple { border-radius: 1.5rem; }
+  .camera-box { border-radius: 1.25rem; }
+  .btn-camera-start, .btn-camera-stop { padding: 0.8rem 1.25rem; }
+}
+
+/* Game di HP: arena dibuat tinggi (rasio mengikuti video lewat JS, bawaan 3:4),
+   balok & slot mengecil mengikuti lebar arena agar semua huruf muat satu baris */
+.game-viewport { container-type: inline-size; }
+
+@media (max-width: 1023px) {
+  .game-viewport { aspect-ratio: 4 / 3; max-height: none; border-radius: 1.25rem; }
+  .puzzle-hud { top: 0.5rem; left: 0.5rem; right: 0.5rem; }
+  #puzzle-overlay { padding: 0.6rem; }
+  #puzzle-overlay > div:first-child { padding-top: 2.6rem; }
+  #blocks-container, #slots-container { gap: 6px; }
+  .puzzle-block { width: 40px; height: 40px; border-radius: 0.75rem; border-width: 2px; font-size: 1.1rem; }
+  .puzzle-slot { width: 44px; height: 44px; border-radius: 0.75rem; border-width: 2px; }
+  .puzzle-slot span { font-size: 0.95rem; }
+}
+@media (max-width: 767px) {
+  .game-viewport { aspect-ratio: 3 / 4; } /* HP potret; JS menyesuaikan dengan rasio video */
+}
+@supports (width: 1cqw) {
+  @media (max-width: 1023px) {
+    .puzzle-block {
+      width: clamp(34px, calc((100cqw - 1.2rem - 36px) / 7), 64px);
+      height: clamp(34px, calc((100cqw - 1.2rem - 36px) / 7), 64px);
+    }
+    .puzzle-slot {
+      width: clamp(36px, calc((100cqw - 1.2rem - 36px) / 7), 68px);
+      height: clamp(36px, calc((100cqw - 1.2rem - 36px) / 7), 68px);
+    }
+  }
+}
+
+/* Kuis di HP: kotak PERAGAKAN lebih kecil, penghitung soal tidak menimpa */
+@media (max-width: 639px) {
+  .quiz-target-center { top: 0.5rem; padding: 0.3rem 0.9rem; border-width: 2px; border-radius: 1rem; }
+  #target-char { font-size: 1.9rem; margin: 0.1rem 0; }
+  .quiz-progress-pill { top: 0.5rem !important; right: 0.5rem !important; padding: 0.3rem 0.55rem !important; }
+  .quiz-progress-pill span { font-size: 0.75rem; }
+}
+
+/* Layar sangat sempit (<=380px): rapatkan tab menu agar keempat tab terlihat utuh */
+@media (max-width: 380px) {
+  .header-features { padding-left: 0.6rem; padding-right: 0.6rem; }
+  .nav-capsule { padding: 0.5rem 0.6rem; }
+  .nav-capsule > div:last-child { gap: 6px; }
+  .nav-tab-item { height: 38px; font-size: 0.8rem; }
+  .nav-tab-inactive { width: 38px; }
+  .nav-tab-active { padding: 0 10px !important; gap: 6px; }
+  .nav-tab-active .nav-label { max-width: 96px; }
 }

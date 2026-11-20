@@ -28,6 +28,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden; /* cegah halaman bisa digeser ke samping di HP (iOS) */
 }
 
 body {
@@ -137,6 +138,7 @@ body b,
 }
 
 .dino-sway {
+  max-width: 100%;
   animation: dinoRocking 3.5s ease-in-out infinite;
   transform-origin: center bottom;
   will-change: transform;
