@@ -26,3 +26,6 @@ Thumbs.db
 *.log
 # Backup GIF asli (besar)
 _backup_gif_asli/
+
+# Staging deploy Hugging Face
+_hf_space/
