@@ -5,7 +5,7 @@ Membuat bentuk tangan untuk kartu Kamus/Game dari dataset landmark.
 
 Dataset kita bukan foto, tapi koordinat 21 titik sendi (hasil MediaPipe).
 Script ini mengambil SATU sampel paling "tipikal" (medoid) untuk tiap huruf/
-angka/kata, lalu menyimpannya ke static/js/hand-shapes.js. File itu dibaca
+angka/kata, lalu menyimpannya ke public/static/js/hand-shapes.js. File itu dibaca
 generateHandIllustrationSVG() di features-common.js untuk menggambar tangan
 berwarna palet SignTalk di kartu.
 
@@ -22,8 +22,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
 DATASET = ROOT / "dataset" / "dataset_tangan.csv"
-OUTPUT = ROOT / "static" / "js" / "hand-shapes.js"
-FEATURES_JS = ROOT / "static" / "js" / "features-common.js"
+OUTPUT = ROOT / "public" / "static" / "js" / "hand-shapes.js"
+FEATURES_JS = ROOT / "public" / "static" / "js" / "features-common.js"
 
 HAND_FEATURES = 63
 

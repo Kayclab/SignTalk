@@ -4,9 +4,18 @@ import os
 import threading
 from pathlib import Path
 
-import cv2
-import joblib
 import numpy as np
+
+# OpenCV & MediaPipe di sisi server bersifat OPSIONAL.
+# Deteksi tangan kini dilakukan di browser (MediaPipe JS); server hanya
+# mengklasifikasi 126 fitur. Dengan begitu app muat di Vercel (serverless).
+try:
+    import cv2
+    import mediapipe  # noqa: F401
+    HAS_VISION = True
+except ImportError:
+    cv2 = None
+    HAS_VISION = False
 
 from flask import Flask, Response, jsonify, redirect, render_template, request, url_for
 
@@ -59,7 +68,14 @@ def load_random_forest():
         if not model_path.is_absolute():
             model_path = BASE_DIR / model_path
     else:
-        model_path = model_dir / "random_forest_v4.pkl"
+        # Urutan: .npz ringan (numpy murni, tanpa scikit-learn) ->
+        # .pkl ringan (120 pohon) -> v4 penuh.
+        candidates = [
+            model_dir / "random_forest_v4_lite.npz",
+            model_dir / "random_forest_v4_lite.pkl",
+            model_dir / "random_forest_v4.pkl",
+        ]
+        model_path = next((c for c in candidates if c.exists()), candidates[-1])
 
     if not model_path.exists():
         raise FileNotFoundError(
@@ -69,6 +85,7 @@ def load_random_forest():
     # Pilih metadata sesuai model yang digunakan.
     metadata_files = {
         "random_forest_v4": model_dir / "model_v4_meta.json",
+        "random_forest_v4_lite": model_dir / "model_v4_meta.json",
         "random_forest_v3_augmented": model_dir / "model_v3_augmented_meta.json",
         "random_forest_v2": META_PATH,
         "random_forest": META_PATH,
@@ -88,7 +105,14 @@ def load_random_forest():
                 f"Aplikasi: {FEATURE_VERSION}"
             )
 
-    loaded = joblib.load(model_path)
+    if model_path.suffix == ".npz":
+        from signtalk.numpy_forest import NumpyForest
+
+        loaded = NumpyForest(model_path)
+    else:
+        import joblib  # butuh scikit-learn (requirements-full.txt)
+
+        loaded = joblib.load(model_path)
 
     if not hasattr(loaded, "predict"):
         raise TypeError(
@@ -125,9 +149,14 @@ model = load_random_forest()
 # 3. MEDIAPIPE (konfigurasi sama dengan collector)
 # ============================================================
 
-hand_landmarker = create_landmarker(TASK_MODEL_PATH)
+hand_landmarker = None
 landmarker_lock = threading.Lock()
-print("[INFO] MediaPipe HandLandmarker siap.")
+
+if HAS_VISION:
+    hand_landmarker = create_landmarker(TASK_MODEL_PATH)
+    print("[INFO] MediaPipe HandLandmarker (server) siap.")
+else:
+    print("[INFO] Mode ringan: deteksi tangan dijalankan di browser.")
 
 
 HAND_CONNECTIONS = [
@@ -374,6 +403,12 @@ def generate_frames():
 @app.route("/video_feed")
 def video_feed():
 
+    if not HAS_VISION:
+        return jsonify({
+            "success": False,
+            "message": "Streaming server tidak tersedia di mode ringan.",
+        }), 501
+
     return Response(
         generate_frames(),
         mimetype="multipart/x-mixed-replace; boundary=frame",
@@ -404,6 +439,12 @@ def api_predict():
             image_file = request.files.get("image")
 
         if image_file is not None:
+
+            if not HAS_VISION:
+                return jsonify({
+                    "success": False,
+                    "message": "Deteksi di server tidak aktif. Kirim 'features' (126 fitur).",
+                }), 501
 
             image_bytes = image_file.read()
 
@@ -474,6 +515,12 @@ def api_predict():
         # MODE 3: gambar base64 dalam JSON
         if data is not None and data.get("image"):
 
+            if not HAS_VISION:
+                return jsonify({
+                    "success": False,
+                    "message": "Deteksi di server tidak aktif. Kirim 'features' (126 fitur).",
+                }), 501
+
             image_data = data["image"]
 
             if "," in image_data:
@@ -522,8 +569,8 @@ def health():
     return jsonify({
         "success": True,
         "application": "SignTalk",
-        "mediapipe": "Tasks API",
-        "hand_detection": True,
+        "mediapipe": "Tasks API" if HAS_VISION else "browser",
+        "hand_detection": HAS_VISION,
         "max_hands": MAX_HANDS,
         "feature_count": EXPECTED_FEATURES,
         "feature_version": FEATURE_VERSION,
@@ -554,5 +601,6 @@ if __name__ == "__main__":
 
     finally:
 
-        hand_landmarker.close()
-        print("[INFO] MediaPipe berhasil ditutup.")
+        if hand_landmarker is not None:
+            hand_landmarker.close()
+            print("[INFO] MediaPipe berhasil ditutup.")

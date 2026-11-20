@@ -1,8 +1,5 @@
+# Dependensi RINGAN untuk deploy (Vercel). Deteksi tangan berjalan di browser dan
+# model Random Forest dijalankan dengan numpy murni (signtalk/numpy_forest.py),
+# jadi OpenCV, MediaPipe, scikit-learn, dan scipy TIDAK diperlukan di server.
 Flask==3.1.3
-gunicorn
 numpy==2.5.5
-scikit-learn==1.9.1
-joblib==1.6.0
-mediapipe==1.2.3
-opencv-contrib-python==5.0.0
-pandas

@@ -39,7 +39,7 @@ BASE_DIR = Path(__file__).resolve().parents[2]  # root proyek
 app = Flask(
     __name__,
     template_folder=str(BASE_DIR / "templates"),
-    static_folder=str(BASE_DIR / "static"),
+    static_folder=str(BASE_DIR / "public" / "static"),
 )
 
 MODEL_DIR = BASE_DIR / "model"

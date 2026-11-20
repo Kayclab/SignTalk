@@ -5,11 +5,11 @@ Menghapus latar belakang foto isyarat tangan lalu mengisinya dengan warna
 #F8F2FF (warna latar kartu SignTalk).
 
 Alur:
-  1. Foto asli taruh di  static/img/hands_original/   (A.jpeg, B.jpeg, ...)
+  1. Foto asli taruh di  public/static/img/hands_original/   (A.jpeg, B.jpeg, ...)
   2. Jalankan:           python scripts/remove_bg_hands.py
-  3. Hasil otomatis ke   static/img/hands/            (dipakai oleh kartu)
+  3. Hasil otomatis ke   public/static/img/hands/            (dipakai oleh kartu)
 
-Foto yang baru ditaruh langsung di static/img/hands/ otomatis dipindah dulu
+Foto yang baru ditaruh langsung di public/static/img/hands/ otomatis dipindah dulu
 ke hands_original/ sebagai cadangan sebelum diproses.
 Opsi: python scripts/remove_bg_hands.py A B C   (hanya huruf tertentu)
 """
@@ -24,8 +24,8 @@ from scipy import ndimage
 from rembg import new_session, remove
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT_DIR = ROOT / "static" / "img" / "hands"
-ORIG_DIR = ROOT / "static" / "img" / "hands_original"
+OUT_DIR = ROOT / "public" / "static" / "img" / "hands"
+ORIG_DIR = ROOT / "public" / "static" / "img" / "hands_original"
 EXTS = {".jpeg", ".jpg", ".png", ".webp"}
 BACKGROUND = (0xF8, 0xF2, 0xFF)  # #F8F2FF
 

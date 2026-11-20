@@ -1,0 +1,7 @@
+# Dependensi LENGKAP untuk pengembangan lokal (training, collector, tools, deteksi server-side).
+-r requirements.txt
+scikit-learn==1.9.1
+joblib==1.6.0
+mediapipe
+opencv-contrib-python
+pandas

@@ -13,7 +13,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 DATASET_DIR = ROOT_DIR / "dataset"
 MODEL_DIR = ROOT_DIR / "model"
 TEMPLATES_DIR = ROOT_DIR / "templates"
-STATIC_DIR = ROOT_DIR / "static"
+STATIC_DIR = ROOT_DIR / "public" / "static"   # di public/ agar dilayani CDN saat deploy Vercel
 
 # Dataset
 DATASET_PATH = DATASET_DIR / "dataset_v2.csv"            # standar v2 (aktif)
