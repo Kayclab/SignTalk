@@ -135,13 +135,19 @@ function handPhotoName(label) {
 function attachHandPhoto(cardBack, label) {
   const img = cardBack.querySelector('.cf-card-photo');
   if (!img) return;
-  // Coba nama persis (A.jpg, A.jpeg) lalu huruf kecil (a.jpg, a.jpeg), tiap ekstensi
   const name = handPhotoName(label);
-  const names = [...new Set([name, name.toLowerCase()])];
-  const exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];  // jpg dulu untuk priority; gif untuk kata
+  // Kata (mis. "Belajar") memakai WebP/GIF berhuruf kecil -> coba itu dulu agar tidak
+  // membuang banyak request 404 (server Linux/Vercel membedakan huruf besar/kecil).
+  const isWord = String(label).trim().length > 2 && isNaN(Number(label));
+  const isNumber = !isWord && !isNaN(Number(label));
+  const names = [...new Set(isWord ? [name.toLowerCase(), name] : [name, name.toLowerCase()])];
+  const exts = isWord
+    ? ['webp', 'gif', 'jpg', 'jpeg', 'png']
+    : (isNumber ? ['jpeg', 'jpg', 'png', 'webp', 'gif'] : ['jpg', 'jpeg', 'png', 'webp', 'gif']);
   const candidates = [];
   names.forEach(n => exts.forEach(e => candidates.push('/static/img/hands/' + encodeURIComponent(n) + '.' + e)));
   let i = 0;
+  img.decoding = 'async';
   img.onload = () => cardBack.classList.add('has-photo');
   img.onerror = () => {
     i += 1;
@@ -754,7 +760,12 @@ function initKamusCoverFlow({
       </div>
     `;
 
-    attachHandPhoto(card.querySelector('.cf-card-back'), item.char);
+    // Foto dimuat malas (lazy): baru diminta saat kartu mendekat ke tengah
+    card._loadPhoto = () => {
+      if (card._photoRequested) return;
+      card._photoRequested = true;
+      attachHandPhoto(card.querySelector('.cf-card-back'), item.char);
+    };
 
     card.addEventListener('click', () => {
       const isCenter = card.classList.contains('card-center');
@@ -802,6 +813,10 @@ function initKamusCoverFlow({
 
     const total = activePool.length;
 
+    // Kartu tengah dimuat paling dulu
+    const centerCard = cardElements[currentIndex];
+    if (centerCard && centerCard._loadPhoto) centerCard._loadPhoto();
+
     cardElements.forEach((card, idx) => {
       const diff = idx - currentIndex;
       let wrappedDiff = diff;
@@ -831,6 +846,9 @@ function initKamusCoverFlow({
       } else {
         card.classList.add('card-hidden');
       }
+
+      // Muat foto hanya untuk kartu yang terlihat (hemat bandwidth)
+      if (!card.classList.contains('card-hidden') && card._loadPhoto) card._loadPhoto();
     });
   }
 

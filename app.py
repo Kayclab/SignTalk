@@ -59,7 +59,12 @@ def load_random_forest():
         if not model_path.is_absolute():
             model_path = BASE_DIR / model_path
     else:
-        model_path = model_dir / "random_forest_v4.pkl"
+        # Urutan: V7 ringan (.npz, numpy murni) -> V4 penuh (.pkl)
+        candidates = [
+            model_dir / "random_forest_v7_lite.npz",
+            model_dir / "random_forest_v4.pkl",
+        ]
+        model_path = next((c for c in candidates if c.exists()), candidates[-1])
 
     if not model_path.exists():
         raise FileNotFoundError(
@@ -69,6 +74,7 @@ def load_random_forest():
     # Pilih metadata sesuai model yang digunakan.
     metadata_files = {
         "random_forest_v4": model_dir / "model_v4_meta.json",
+        "random_forest_v7_lite": model_dir / "model_v7_meta.json",
         "random_forest_v3_augmented": model_dir / "model_v3_augmented_meta.json",
         "random_forest_v2": META_PATH,
         "random_forest": META_PATH,
@@ -88,7 +94,12 @@ def load_random_forest():
                 f"Aplikasi: {FEATURE_VERSION}"
             )
 
-    loaded = joblib.load(model_path)
+    if model_path.suffix == ".npz":
+        from signtalk.numpy_forest import NumpyForest
+
+        loaded = NumpyForest(model_path)
+    else:
+        loaded = joblib.load(model_path)
 
     if not hasattr(loaded, "predict"):
         raise TypeError(

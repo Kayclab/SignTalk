@@ -29,3 +29,8 @@ _backup_gif_asli/
 
 # Staging deploy Hugging Face
 _hf_space/
+
+# Model besar hasil latihan (dipakai versi ringan .npz)
+model/random_forest_v6.pkl
+model/random_forest_v7.pkl
+model/model_v6_meta.json
