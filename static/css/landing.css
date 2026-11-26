@@ -28,6 +28,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden; /* cegah halaman bisa digeser ke samping di HP */
 }
 
 body {
