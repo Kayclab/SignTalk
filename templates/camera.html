@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kamera BISINDO</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="{{ url_for('static', filename='img/favicon-64.png') }}?v=1">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32.png') }}?v=1">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}?v=1">
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +34,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    /* Footer menyatu ke bawah: ruang tersisa di bawah footer tetap berwarna ungu footer */
+    footer { box-shadow: 0 0 0 100vmax #19143A; clip-path: inset(0 -100vmax -100vmax -100vmax); }
     html {
       scroll-behavior: smooth;
     }

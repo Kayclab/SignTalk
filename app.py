@@ -285,6 +285,11 @@ def build_response(prediction, hand_count, result=None):
 # 5. ROUTING HALAMAN
 # ============================================================
 
+@app.route("/favicon.ico")
+def favicon():
+    return redirect(url_for("static", filename="img/favicon-64.png"))
+
+
 @app.route("/")
 def index():
     return render_template("landing.html")

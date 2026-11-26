@@ -28,7 +28,6 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden; /* cegah halaman bisa digeser ke samping di HP (iOS) */
 }
 
 body {
@@ -782,4 +781,12 @@ body b,
 .modal-close:hover {
   background: var(--color-yellow);
   transform: rotate(90deg);
+}
+
+/* Footer menyatu ke bawah: bila ada ruang tersisa di bawah footer (mis. layar tinggi),
+   warnanya tetap ungu footer, sehingga halaman terlihat berakhir tepat di footer.
+   clip-path menjaga bayangan hanya di sisi bawah dan samping, tidak menimpa konten di atasnya. */
+footer {
+  box-shadow: 0 0 0 100vmax #19143A;
+  clip-path: inset(0 -100vmax -100vmax -100vmax);
 }
