@@ -790,3 +790,13 @@ footer {
   box-shadow: 0 0 0 100vmax #19143A;
   clip-path: inset(0 -100vmax -100vmax -100vmax);
 }
+
+/* Jarak antar bagian Landing dilonggarkan sedikit (HP 32->40px, desktop 40->56px per sisi) */
+section#home { padding-bottom: 2.5rem; }
+section#about, section#types, section#workflow, section#features, section#messages,
+section:last-of-type { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+@media (min-width: 768px) {
+  section#home { padding-bottom: 3.5rem; }
+  section#about, section#types, section#workflow, section#features, section#messages,
+  section:last-of-type { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+}
