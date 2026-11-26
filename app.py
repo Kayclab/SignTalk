@@ -61,6 +61,7 @@ def load_random_forest():
     else:
         # Urutan: V7 ringan (.npz, numpy murni) -> V4 penuh (.pkl)
         candidates = [
+            model_dir / "mlp_v8.npz",   # V8: jaringan saraf (numpy murni, 0,2 MB)
             model_dir / "random_forest_v7_lite.npz",
             model_dir / "random_forest_v4.pkl",
         ]
@@ -74,6 +75,7 @@ def load_random_forest():
     # Pilih metadata sesuai model yang digunakan.
     metadata_files = {
         "random_forest_v4": model_dir / "model_v4_meta.json",
+        "mlp_v8": model_dir / "model_v8_meta.json",
         "random_forest_v7_lite": model_dir / "model_v7_meta.json",
         "random_forest_v3_augmented": model_dir / "model_v3_augmented_meta.json",
         "random_forest_v2": META_PATH,
@@ -95,9 +97,14 @@ def load_random_forest():
             )
 
     if model_path.suffix == ".npz":
-        from signtalk.numpy_forest import NumpyForest
+        if model_path.stem.startswith("mlp"):
+            from signtalk.numpy_mlp import NumpyMLP
 
-        loaded = NumpyForest(model_path)
+            loaded = NumpyMLP(model_path)
+        else:
+            from signtalk.numpy_forest import NumpyForest
+
+            loaded = NumpyForest(model_path)
     else:
         loaded = joblib.load(model_path)
 
@@ -184,7 +191,9 @@ def predict_sign(features):
     conf = float(probabilities[best])
 
     # Ambang batas minimal agar AI tidak menebak-nebak saat tangan diam/santai
-    is_confident = conf >= 0.55
+    # Ambang bergantung model: jaringan saraf lebih yakin (juga saat salah), jadi lebih tinggi
+    threshold = getattr(model, "confidence_threshold", 0.55)
+    is_confident = conf >= threshold
 
     return {
         "prediction": str(model.classes_[best]),

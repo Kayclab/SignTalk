@@ -34,3 +34,4 @@ _hf_space/
 model/random_forest_v6.pkl
 model/random_forest_v7.pkl
 model/model_v6_meta.json
+model/mlp_v8.pkl
